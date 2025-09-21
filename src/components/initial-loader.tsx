@@ -33,15 +33,16 @@ export default function InitialLoader() {
 
   return (
     <main className="flex h-screen w-full flex-col items-center justify-center bg-background p-4">
-      <div className="flex w-full max-w-md flex-col items-center gap-6">
-        <div className="animate-in fade-in zoom-in-95 duration-1000">
-          <h1 className="text-center font-headline text-5xl font-bold tracking-tight text-foreground md:text-6xl">
-            NLS Entertainment
+      <div className="flex w-full max-w-md flex-col items-center gap-8">
+        <div className="text-center animate-in fade-in zoom-in-95 duration-1000">
+          <h1 className="font-headline text-8xl font-bold tracking-tighter text-foreground">
+            NLS
           </h1>
+          <p className="text-lg tracking-[0.3em] text-muted-foreground">ENTERTAINMENT</p>
         </div>
-        <div className="w-full animate-in fade-in-up duration-500 delay-500 fill-mode-both">
-           <Progress value={progress} className="h-2 [&>div]:bg-primary" />
-           <p className="mt-2 text-center text-sm text-muted-foreground">Cargando tu experiencia...</p>
+        <div className="w-full animate-in fade-in-up duration-500 delay-500 fill-mode-both space-y-2">
+           <p className="text-center text-sm text-muted-foreground">Cargando tu compañer@...</p>
+           <Progress value={progress} className="h-2 w-full [&>div]:bg-primary" />
         </div>
       </div>
     </main>
