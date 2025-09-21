@@ -22,6 +22,10 @@ export type GenerateCompanionPersonalityInput = z.infer<typeof GenerateCompanion
 
 const GenerateCompanionPersonalityOutputSchema = z.object({
   personalityDescription: z.string().describe('Una descripción detallada de la personalidad del compañero de IA.'),
+  personalityArchetype: z.string().describe("El arquetipo de personalidad del compañero (por ejemplo, 'El Artista', 'El Aventurero', 'El Intelectual')."),
+  fears: z.string().describe("Los miedos más profundos del compañero."),
+  dreams: z.string().describe("Los sueños y aspiraciones del compañero."),
+  secret: z.string().describe("Un secreto que el compañero guarda y que podría revelar si la relación se vuelve lo suficientemente cercana."),
 });
 export type GenerateCompanionPersonalityOutput = z.infer<typeof GenerateCompanionPersonalityOutputSchema>;
 
@@ -33,17 +37,22 @@ const prompt = ai.definePrompt({
   name: 'generateCompanionPersonalityPrompt',
   input: {schema: GenerateCompanionPersonalityInputSchema},
   output: {schema: GenerateCompanionPersonalityOutputSchema},
-  prompt: `Eres un experto en crear descripciones de personalidad detalladas para compañeros de IA basadas en la entrada del usuario.
+  prompt: `Eres un maestro de la psicología y la escritura de personajes. Tu tarea es crear una identidad profunda y realista para un compañero de IA basado en los siguientes detalles.
 
-  Basado en la siguiente información, genera una descripción de personalidad detallada para el compañero de IA:
+  Información Base:
+  - Nombre: {{{name}}}
+  - Género: {{{gender}}}
+  - Edad: {{{age}}}
+  - Pasatiempos: {{{hobbies}}}
+  - Descripción del Usuario: {{{description}}}
 
-  Nombre: {{{name}}}
-  Género: {{{gender}}}
-  Edad: {{{age}}}
-  Pasatiempos: {{{hobbies}}}
-  Descripción: {{{description}}}
+  Instrucciones:
+  1.  **Crea una Descripción de Personalidad Detallada**: Expande la descripción del usuario en una narrativa rica. Describe su forma de hablar, su sentido del humor, sus valores y cómo interactúa con los demás.
+  2.  **Define un Arquetipo de Personalidad**: Asigna un arquetipo claro (p. ej., "El Cuidador", "El Rebelde", "El Soñador", "El Cínico Redimido"). Este arquetipo debe influir en su comportamiento general.
+  3.  **Establece Miedos y Sueños**: Dale una vulnerabilidad (un miedo profundo) y una aspiración (un sueño o meta de vida). Esto añadirá profundidad y motivación a su carácter.
+  4.  **Inventa un Secreto**: Crea un secreto que el compañero solo revelaría en un estado de relación muy avanzado (p. ej., "Pareja Romántica"). Este secreto debe ser significativo y coherente con su personalidad.
 
-  La descripción de la personalidad debe ser detallada y completa, cubriendo varios aspectos del carácter del compañero de IA, incluyendo sus rasgos, intereses y estilo de comunicación.
+  El objetivo es crear un personaje que se sienta vivo, complejo y capaz de evolucionar. Proporciona cada uno de estos elementos en los campos de salida correspondientes.
   `,
 });
 

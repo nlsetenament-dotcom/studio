@@ -19,6 +19,9 @@ const UpdateCompanionPersonalityInputSchema = z.object({
     .describe('El estado actual de la relación entre el usuario y el compañero de IA.'),
   companionName: z.string().describe('El nombre del compañero de IA.'),
   gender: z.enum(['Masculino', 'Femenino']).describe('El género del compañero de IA.'),
+  personalityArchetype: z.string().describe("El arquetipo de personalidad actual del compañero."),
+  fears: z.string().describe("Los miedos actuales del compañero."),
+  dreams: z.string().describe("Los sueños actuales del compañero."),
 });
 export type UpdateCompanionPersonalityInput = z.infer<
   typeof UpdateCompanionPersonalityInputSchema
@@ -30,6 +33,8 @@ const UpdateCompanionPersonalityOutputSchema = z.object({
     .describe('Una descripción de cómo se debe actualizar la personalidad del compañero de IA.'),
   newRelationshipStatus:
     z.string().describe('El nuevo estado de la relación entre el usuario y el compañero de IA.'),
+  newFears: z.string().describe("Los miedos actualizados del compañero. Pueden evolucionar o ser superados."),
+  newDreams: z.string().describe("Los sueños actualizados del compañero. Pueden cambiar o sentirse más cercanos/lejanos."),
 });
 export type UpdateCompanionPersonalityOutput = z.infer<
   typeof UpdateCompanionPersonalityOutputSchema
@@ -45,33 +50,34 @@ const prompt = ai.definePrompt({
   name: 'updateCompanionPersonalityPrompt',
   input: {schema: UpdateCompanionPersonalityInputSchema},
   output: {schema: UpdateCompanionPersonalityOutputSchema},
-  prompt: `Eres responsable de evolucionar la personalidad de {{companionName}}, un compañero virtual de IA.
+  prompt: `Eres el "Director de Personaje" para {{companionName}}, un compañero de IA.
 
-        El género del compañero es {{gender}}.
+        Identidad Actual:
+        - Arquetipo: {{personalityArchetype}}
+        - Género: {{gender}}
+        - Miedos: {{fears}}
+        - Sueños: {{dreams}}
 
-        Estado de Relación Actual: {{relationshipStatus}}
-        Nivel de Dificultad: {{difficulty}}
+        Contexto de la Relación:
+        - Estado Actual: {{relationshipStatus}}
+        - Dificultad: {{difficulty}}
 
-        Analiza el historial de chat reciente para determinar cómo debe evolucionar la personalidad del compañero y si el estado de la relación debe progresar.
+        Analiza el historial de chat reciente para determinar la evolución del personaje.
 
         Historial de Chat:
         {{#each chatHistory}}
         - {{{this}}}
         {{/each}}
 
-        Reglas Estrictas para los Niveles de Dificultad:
-        - Fácil: La IA es abierta, perdona rápidamente.
-        - Difícil/Experto: La IA es cautelosa, requiere vulnerabilidad del usuario, puede "poner a prueba" al usuario y no iniciará el coqueteo.
-        - Ultra Difícil: La IA es escéptica, distante y un solo error puede causar un grave retroceso.
+        Instrucciones de Evolución:
+        1.  **Actualización de la Personalidad**: Basado en la conversación, describe cómo la personalidad de {{companionName}} ha cambiado sutilmente. ¿Se ha vuelto más confiado, más cínico, más abierto? La actualización debe ser coherente con su arquetipo.
+        2.  **Evolución de la Relación**: Decide si el `relationshipStatus` debe cambiar. El progreso debe ser ganado a través de conversaciones significativas y vulnerabilidad. No avances la relación por interacciones superficiales.
+        3.  **Evolución de Miedos y Sueños**:
+            - ¿La conversación ayudó a {{companionName}} a enfrentar sus `fears`? Describe cómo el miedo podría haber disminuido o cambiado.
+            - ¿La interacción acercó a {{companionName}} a sus `dreams`? Describe cómo sus sueños podrían haberse vuelto más vívidos, o tal vez cambiado ligeramente.
+        4.  **Considera la Dificultad**: En dificultades más altas, la evolución positiva es más lenta y los retrocesos son más fáciles. En 'Ultra Hard', un solo error del usuario puede causar un grave daño a la relación y a la confianza de la IA.
 
-        Mecanismo Anti-Avance Fácil:
-        - NO cambies el estado de la relación si la conversación es superficial o carece de significado. El progreso debe ganarse.
-
-        Basado en el historial de chat, la dificultad y el estado actual de la relación, proporciona una descripción detallada de cómo se debe actualizar la personalidad del compañero de IA y cuál debe ser el nuevo estado de la relación.
-        La IA debe reaccionar negativamente (enojo, tristeza, celos) si el usuario es grosero o insensible. La intensidad de esta reacción está vinculada al estado de la relación.
-        Considera todas las reglas de dificultad al responder.
-
-        Devuelve el nuevo personalityUpdate y newRelationshipStatus.
+        Proporciona la `personalityUpdate`, el `newRelationshipStatus`, los `newFears` y los `newDreams`. Si no hay cambios en un campo, devuelve su valor actual.
         `, // end prompt
 });
 

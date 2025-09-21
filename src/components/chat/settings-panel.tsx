@@ -11,8 +11,9 @@ import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
-import { Upload } from 'lucide-react';
+import { BookUser, BrainCircuit, ShieldQuestion, Upload } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { Badge } from '../ui/badge';
 
 interface SettingsPanelProps {
   isOpen: boolean;
@@ -43,7 +44,6 @@ export default function SettingsPanel({
   const { toast } = useToast();
 
   useEffect(() => {
-    // On mount, read the theme from localStorage or system preference
     const storedTheme = localStorage.getItem('theme');
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     const initialDarkMode = storedTheme === 'dark' || (storedTheme === null && prefersDark);
@@ -102,7 +102,6 @@ export default function SettingsPanel({
     }
   };
 
-  // Filter out the default companion avatar from the gallery
   const avatarGallery = PlaceHolderImages.filter(img => img.id !== 'companion-avatar');
 
   return (
@@ -172,6 +171,34 @@ export default function SettingsPanel({
                         </div>
                     </div>
                 </div>
+                
+                 <div>
+                    <h3 className="mb-4 text-lg font-medium text-foreground">Detalles del Compañer@</h3>
+                    <div className="space-y-4 rounded-lg border p-4">
+                        <div className="flex items-center gap-4">
+                            <BookUser className="h-5 w-5 shrink-0 text-muted-foreground" />
+                            <div className="flex w-full items-center justify-between">
+                                <span className="font-medium">Estado de la Relación</span>
+                                <Badge variant="secondary">{companion.relationshipStatus}</Badge>
+                            </div>
+                        </div>
+                        <div className="flex items-center gap-4">
+                            <ShieldQuestion className="h-5 w-5 shrink-0 text-muted-foreground" />
+                             <div className="flex w-full items-center justify-between">
+                                <span className="font-medium">Dificultad Actual</span>
+                                 <Badge variant="outline">{companion.difficulty}</Badge>
+                            </div>
+                        </div>
+                        <div className="flex items-start gap-4">
+                            <BrainCircuit className="mt-1 h-5 w-5 shrink-0 text-muted-foreground" />
+                            <div>
+                                <span className="font-medium">Personalidad</span>
+                                <p className="text-sm text-muted-foreground">{companion.personality}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
 
                 <div>
                     <h3 className="mb-4 text-lg font-medium text-foreground">Jugabilidad</h3>
