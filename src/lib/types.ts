@@ -7,6 +7,7 @@ export interface Companion {
   gender: Gender;
   age: number;
   birthDate: string; // ISO 8601 date string
+  residence: string;
   hobbies: string;
   description: string;
   personality: string;

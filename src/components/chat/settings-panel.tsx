@@ -11,7 +11,7 @@ import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
-import { BookUser, BrainCircuit, ImageIcon, Palette, ShieldQuestion, Upload, RotateCcw } from 'lucide-react';
+import { BookUser, BrainCircuit, ImageIcon, MapPin, Palette, ShieldQuestion, Upload, RotateCcw } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Badge } from '../ui/badge';
 
@@ -201,6 +201,13 @@ export default function SettingsPanel({
                             <div className="flex w-full items-center justify-between">
                                 <span className="font-medium">Estado de la Relación</span>
                                 <Badge variant="secondary">{companion.relationshipStatus}</Badge>
+                            </div>
+                        </div>
+                         <div className="flex items-center gap-4">
+                            <MapPin className="h-5 w-5 shrink-0 text-muted-foreground" />
+                            <div className="flex w-full items-center justify-between">
+                                <span className="font-medium">Residencia</span>
+                                <Badge variant="secondary">{companion.residence}</Badge>
                             </div>
                         </div>
                         <div className="flex items-start gap-4">

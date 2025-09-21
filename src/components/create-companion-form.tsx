@@ -19,6 +19,7 @@ import { Loader2 } from 'lucide-react';
 
 const formSchema = z.object({
   name: z.string().min(2, 'El nombre debe tener al menos 2 caracteres.').max(50, 'El nombre no puede exceder los 50 caracteres.'),
+  residence: z.string().min(2, 'El lugar de residencia debe tener al menos 2 caracteres.').max(100, 'El lugar de residencia no puede exceder los 100 caracteres.'),
   gender: z.enum(['Masculino', 'Femenino'], { required_error: 'Por favor selecciona un género.' }),
   birthDay: z.string().min(1, 'Día es requerido.').max(2),
   birthMonth: z.string().min(1, 'Mes es requerido.').max(2),
@@ -47,6 +48,7 @@ export default function CreateCompanionForm() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: '',
+      residence: '',
       hobbies: '',
       description: '',
       birthDay: '',
@@ -71,7 +73,6 @@ export default function CreateCompanionForm() {
             return;
         }
         
-        // Ensure month and day are two digits
         const formattedMonth = month.toString().padStart(2, '0');
         const formattedDay = day.toString().padStart(2, '0');
 
@@ -128,6 +129,20 @@ export default function CreateCompanionForm() {
                   <FormLabel>Nombre</FormLabel>
                   <FormControl>
                     <Input placeholder="p. ej., Lucía, Alex" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            
+            <FormField
+              control={form.control}
+              name="residence"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Lugar de Residencia</FormLabel>
+                  <FormControl>
+                    <Input placeholder="p. ej., Madrid, España o Buenos Aires, Argentina" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

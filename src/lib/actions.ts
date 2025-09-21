@@ -9,6 +9,7 @@ import { PlaceHolderImages } from './placeholder-images';
 
 const createCompanionSchema = z.object({
   name: z.string().min(2).max(50),
+  residence: z.string().min(2).max(100),
   gender: z.enum(['Masculino', 'Femenino']),
   birthDate: z.string().datetime(),
   hobbies: z.string().min(3).max(200),
@@ -37,10 +38,10 @@ export async function createCompanionAction(formData: FormData) {
 
   if (!validatedFields.success) {
     console.error(validatedFields.error.flatten().fieldErrors);
-    return { error: 'Datos de formulario inválidos. Asegúrate de que la fecha de nacimiento sea válida.' };
+    return { error: 'Datos de formulario inválidos. Asegúrate de que todos los campos son correctos.' };
   }
   
-  const { name, gender, birthDate, hobbies, description } = validatedFields.data;
+  const { name, gender, birthDate, hobbies, description, residence } = validatedFields.data;
 
   try {
     const birthDateObj = new Date(birthDate);
@@ -53,7 +54,7 @@ export async function createCompanionAction(formData: FormData) {
         return { error: 'La edad no puede exceder los 100 años.' };
     }
 
-    const personalityResult = await generateCompanionPersonality({ name, gender, age, hobbies, description });
+    const personalityResult = await generateCompanionPersonality({ name, gender, age, hobbies, description, residence });
     
     const companionAvatar = PlaceHolderImages.find(img => img.id === 'companion-avatar');
 
@@ -63,6 +64,7 @@ export async function createCompanionAction(formData: FormData) {
       gender,
       age,
       birthDate: birthDate,
+      residence,
       hobbies,
       description,
       difficulty: 'Hard', // Default difficulty

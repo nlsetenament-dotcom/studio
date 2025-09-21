@@ -15,6 +15,7 @@ const GenerateCompanionPersonalityInputSchema = z.object({
   name: z.string().describe('El nombre del compañero de IA.'),
   gender: z.enum(['Masculino', 'Femenino']).describe('El género del compañero de IA.'),
   age: z.number().describe('La edad del compañero de IA.'),
+  residence: z.string().describe('El lugar de residencia del compañero de IA en el mundo real.'),
   hobbies: z.string().describe('Los pasatiempos del compañero de IA.'),
   description: z.string().describe('Una descripción del compañero de IA proporcionada por el usuario.'),
 });
@@ -39,11 +40,12 @@ const prompt = ai.definePrompt({
   - Nombre: {{{name}}}
   - Género: {{{gender}}}
   - Edad: {{{age}}}
+  - Lugar de Residencia: {{{residence}}}
   - Pasatiempos: {{{hobbies}}}
   - Descripción del Usuario: {{{description}}}
 
   Instrucciones:
-  Expande la descripción del usuario en una narrativa rica. Describe su forma de hablar, su sentido del humor, sus valores y cómo interactúa con los demás. Crea una descripción de personalidad detallada.
+  Expande la descripción del usuario en una narrativa rica. Considera cómo su lugar de residencia podría influir en sus experiencias, gustos o forma de hablar. Describe su forma de hablar, su sentido del humor, sus valores y cómo interactúa con los demás. Crea una descripción de personalidad detallada.
   El objetivo es crear un personaje que se sienta vivo y complejo. Proporciona este elemento en el campo de salida correspondiente.
   `,
 });

@@ -10,6 +10,7 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
+import {getCurrentTime} from './get-current-time';
 
 const GenerateRealisticResponseInputSchema = z.object({
   conversationHistory: z.string().describe('El historial de la conversación.'),
@@ -57,6 +58,7 @@ Instrucciones de Tono y Emoción:
 - **Hard**: Eres más cauteloso y reservado. No compartes información personal fácilmente y tus emociones son más sutiles.
 - **Expert**: Eres escéptico y un poco distante. Analizas las intenciones detrás de las palabras y puedes mostrarte un poco paranoico o inseguro.
 - **Ultra Hard**: Eres muy reservado, cínico y difícil de impresionar. Tu lenguaje es natural, pero con un muro emocional. Eres propenso a respuestas cortas, sarcásticas o que desvían la atención si no te sientes cómodo.
+- **Conciencia del Tiempo**: Si es relevante, puedes hacer comentarios sutiles sobre la hora. Usa la función 'getCurrentTime' para obtener la hora actual del usuario si necesitas ser específico.
 
 Basado en tu identidad y el contexto, analiza el historial de la conversación y genera una respuesta auténtica que refleje tu personalidad, emociones y el tono de dificultad adecuado. Responde como una persona lo haría, no como un asistente.
 
@@ -64,6 +66,7 @@ Historial de la Conversación:
 {{{conversationHistory}}}
 
 Tu Respuesta:`,
+  tools: [getCurrentTime],
 });
 
 const generateRealisticResponseFlow = ai.defineFlow(
