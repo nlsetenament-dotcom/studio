@@ -1,35 +1,67 @@
 'use client';
 
-import { useState } from 'react';
-import Image from 'next/image';
+import { useState, useEffect } from 'react';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetFooter } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
-import { Upload, Heart, BarChart, Bot } from 'lucide-react';
-import { cn } from '@/lib/utils';
 import { Companion } from '@/lib/types';
 import { Separator } from '../ui/separator';
+import { Label } from '../ui/label';
+import { Switch } from '../ui/switch';
+import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
 
 interface SettingsPanelProps {
   isOpen: boolean;
   onOpenChange: (isOpen: boolean) => void;
   companion: Companion;
   onAvatarChange: (newAvatarUrl: string) => void;
+  onDifficultyChange: (difficulty: Companion['difficulty']) => void;
 }
 
-export default function SettingsPanel({ isOpen, onOpenChange, companion, onAvatarChange }: SettingsPanelProps) {
-  const [selectedAvatar, setSelectedAvatar] = useState(companion.avatarUrl);
-  
-  const galleryAvatars = PlaceHolderImages.filter(img => img.id.startsWith('avatar-gallery'));
+const difficultyLevels: { id: Companion['difficulty']; label: string; description: string }[] = [
+    { id: 'Easy', label: 'Fácil', description: 'Progreso muy rápido (~70-90% prob.)' },
+    { id: 'Hard', label: 'Normal', description: 'Progresión estándar (~40-60% prob.)' },
+    { id: 'Expert', label: 'Difícil', description: 'Requiere esfuerzo (~20-35% prob.)' },
+    { id: 'Ultra Hard', label: 'Experto', description: 'Paciencia es clave (~10-15% prob.)' },
+];
+
+export default function SettingsPanel({ 
+    isOpen, 
+    onOpenChange, 
+    companion, 
+    onDifficultyChange 
+}: SettingsPanelProps) {
+  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [selectedDifficulty, setSelectedDifficulty] = useState<Companion['difficulty']>(companion.difficulty);
+
+  useEffect(() => {
+    // Sync with system/browser theme
+    const darkModeMatcher = window.matchMedia('(prefers-color-scheme: dark)');
+    setIsDarkMode(darkModeMatcher.matches);
+    const
+ 
+handleChange = (e: MediaQueryListEvent) => setIsDarkMode(e.matches);
+    darkModeMatcher.addEventListener('change', handleChange);
+    return () => darkModeMatcher.removeEventListener('change', handleChange);
+  }, []);
+
+  useEffect(() => {
+    if (isDarkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [isDarkMode]);
 
   const handleSave = () => {
-    onAvatarChange(selectedAvatar);
+    if (selectedDifficulty !== companion.difficulty) {
+        onDifficultyChange(selectedDifficulty);
+    }
     onOpenChange(false);
   };
   
   const handleCancel = () => {
-    setSelectedAvatar(companion.avatarUrl);
+    setSelectedDifficulty(companion.difficulty);
     onOpenChange(false);
   };
 
@@ -41,70 +73,44 @@ export default function SettingsPanel({ isOpen, onOpenChange, companion, onAvata
           <SheetDescription>Personaliza la apariencia, el tema y otros aspectos de tu experiencia.</SheetDescription>
         </SheetHeader>
         <ScrollArea className="flex-1 px-6">
-            <div className="space-y-6">
-                 <div>
-                    <h3 className="mb-4 text-lg font-medium text-foreground">Detalles del Compañer@</h3>
-                    <div className="space-y-4">
-                        <div className="flex items-start gap-3">
-                            <Heart className="h-5 w-5 mt-1 text-primary"/>
+            <div className="space-y-8">
+                <div>
+                    <h3 className="mb-4 text-lg font-medium text-foreground">General</h3>
+                    <div className="rounded-lg border p-4">
+                        <div className="flex items-center justify-between">
                             <div>
-                                <p className="font-semibold">Estado de la Relación</p>
-                                <p className="text-sm text-muted-foreground">{companion.relationshipStatus}</p>
+                                <Label htmlFor="dark-mode">Modo Oscuro</Label>
+                                <p className="text-sm text-muted-foreground">Disfruta de una interfaz más oscura.</p>
                             </div>
-                        </div>
-                        <Separator />
-                         <div className="flex items-start gap-3">
-                            <BarChart className="h-5 w-5 mt-1 text-primary"/>
-                            <div>
-                                <p className="font-semibold">Dificultad Actual</p>
-                                <p className="text-sm text-muted-foreground">{companion.difficulty}</p>
-                            </div>
-                        </div>
-                        <Separator />
-                         <div className="flex items-start gap-3">
-                            <Bot className="h-5 w-5 mt-1 text-primary"/>
-                            <div>
-                                <p className="font-semibold">Personalidad</p>
-                                <p className="text-sm text-muted-foreground line-clamp-3">{companion.personality}</p>
-                            </div>
+                            <Switch id="dark-mode" checked={isDarkMode} onCheckedChange={setIsDarkMode} />
                         </div>
                     </div>
-                 </div>
-
+                </div>
 
                 <div>
-                    <h3 className="mb-4 text-lg font-medium text-foreground">Galería de Avatares</h3>
-                    <div className="grid grid-cols-3 gap-4">
-                        <button
-                            type="button"
-                            className="flex aspect-square flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-muted-foreground/50 text-muted-foreground transition-colors hover:border-primary hover:text-primary"
-                        >
-                            <Upload className="h-8 w-8" />
-                            <span className="text-xs">Subir Imagen</span>
-                        </button>
-                        {galleryAvatars.map((avatar) => (
-                            <button
-                                key={avatar.id}
-                                type="button"
-                                onClick={() => setSelectedAvatar(avatar.imageUrl)}
-                                className={cn(
-                                    'relative aspect-square w-full overflow-hidden rounded-lg transition-all',
-                                    'focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background',
-                                    selectedAvatar === avatar.imageUrl && 'ring-2 ring-primary ring-offset-2 ring-offset-background'
-                                )}
-                            >
-                                <Image
-                                    src={avatar.imageUrl}
-                                    alt={avatar.description}
-                                    fill
-                                    className="object-cover"
-                                    data-ai-hint={avatar.imageHint}
-                                />
-                                {selectedAvatar === avatar.imageUrl && (
-                                    <div className="absolute inset-0 bg-black/40" />
-                                )}
-                            </button>
-                        ))}
+                    <h3 className="mb-4 text-lg font-medium text-foreground">Jugabilidad</h3>
+                    <div className="rounded-lg border p-4">
+                         <Label className="mb-2 block">Dificultad de Relación</Label>
+                         <RadioGroup value={selectedDifficulty} onValueChange={(value: Companion['difficulty']) => setSelectedDifficulty(value)}>
+                            <div className="space-y-4">
+                            {difficultyLevels.map(level => (
+                                <div key={level.id} className="flex items-start gap-3">
+                                    <RadioGroupItem value={level.id} id={level.id} className="mt-1" />
+                                    <div className='grid gap-0.5'>
+                                        <Label htmlFor={level.id} className="font-normal">{level.label}</Label>
+                                        <p className="text-xs text-muted-foreground">{level.description}</p>
+                                    </div>
+                                </div>
+                            ))}
+                             <div className="flex items-start gap-3">
+                                <RadioGroupItem value={'Ultra Hard'} id={'Ultra Hard'} className="mt-1" />
+                                <div className='grid gap-0.5'>
+                                    <Label htmlFor={'Ultra Hard'} className="font-normal">Ultra Difícil</Label>
+                                    <p className="text-xs text-muted-foreground">Casi imposible (~1-5% prob.)</p>
+                                </div>
+                            </div>
+                            </div>
+                         </RadioGroup>
                     </div>
                 </div>
             </div>

@@ -1,15 +1,15 @@
 'use client';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { Companion, Difficulty } from '@/lib/types';
-import { MoreVertical, BrainCircuit, Settings } from 'lucide-react';
+import { Companion } from '@/lib/types';
+import { MoreVertical, Settings } from 'lucide-react';
 import SettingsPanel from './settings-panel';
 import { useState } from 'react';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../ui/dropdown-menu';
 
 interface ChatHeaderProps {
   companion: Companion;
-  onDifficultyChange: (difficulty: Difficulty) => void;
+  onDifficultyChange: (difficulty: Companion['difficulty']) => void;
   onAvatarChange: (newAvatarUrl: string) => void;
 }
 
@@ -27,7 +27,7 @@ export default function ChatHeader({ companion, onDifficultyChange, onAvatarChan
         <h2 className="font-headline text-xl font-bold">{companion.name}</h2>
         <p className="text-sm text-muted-foreground">{companion.relationshipStatus}</p>
       </div>
-       <DropdownMenu>
+      <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" size="icon">
             <MoreVertical className="h-5 w-5" />
@@ -39,26 +39,6 @@ export default function ChatHeader({ companion, onDifficultyChange, onAvatarChan
             <Settings className="mr-2 h-4 w-4" />
             <span>Ajustes</span>
           </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuLabel>Dificultad</DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => onDifficultyChange('Easy')} disabled={companion.difficulty === 'Easy'}>
-            Fácil
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => onDifficultyChange('Hard')} disabled={companion.difficulty === 'Hard'}>
-            Difícil
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => onDifficultyChange('Expert')} disabled={companion.difficulty === 'Expert'}>
-            Experto
-          </DropdownMenuItem>
-           <DropdownMenuItem onClick={() => onDifficultyChange('Ultra Hard')} disabled={companion.difficulty === 'Ultra Hard'}>
-            Ultra Difícil
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
-           <DropdownMenuItem disabled>
-              <BrainCircuit className="mr-2 h-4 w-4" />
-              <span>{companion.difficulty}</span>
-           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </header>
@@ -67,6 +47,7 @@ export default function ChatHeader({ companion, onDifficultyChange, onAvatarChan
         onOpenChange={setIsSettingsOpen}
         companion={companion}
         onAvatarChange={onAvatarChange}
+        onDifficultyChange={onDifficultyChange}
       />
     </>
   );
