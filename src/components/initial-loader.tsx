@@ -35,7 +35,7 @@ export default function InitialLoader() {
       <div className="flex flex-col items-center gap-4 text-center">
         <div className="animate-in fade-in zoom-in duration-1000">
           <h1 className="font-headline text-5xl font-bold tracking-tight text-foreground md:text-7xl">
-            Altered Self
+            NLS Entertainment
           </h1>
         </div>
         <div className="w-64 animate-in fade-in-up duration-500 delay-500 fill-mode-both">

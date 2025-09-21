@@ -18,12 +18,12 @@ import { useCompanion } from '@/hooks/use-companion';
 import { Loader2 } from 'lucide-react';
 
 const formSchema = z.object({
-  name: z.string().min(2, 'Name must be at least 2 characters.').max(50, 'Name cannot exceed 50 characters.'),
-  gender: z.enum(['Masculino', 'Femenino'], { required_error: 'Please select a gender.' }),
-  age: z.coerce.number({ required_error: 'Age is required.' }).int().min(18, 'Must be at least 18.').max(100, 'Age cannot exceed 100.'),
-  hobbies: z.string().min(3, 'Hobbies must be at least 3 characters.').max(200, 'Hobbies cannot exceed 200 characters.'),
-  description: z.string().min(10, 'Description must be at least 10 characters.').max(500, 'Description cannot exceed 500 characters.'),
-  difficulty: z.enum(['Easy', 'Hard', 'Expert', 'Ultra Hard'], { required_error: 'Please select a difficulty.' }),
+  name: z.string().min(2, 'El nombre debe tener al menos 2 caracteres.').max(50, 'El nombre no puede exceder los 50 caracteres.'),
+  gender: z.enum(['Masculino', 'Femenino'], { required_error: 'Por favor selecciona un género.' }),
+  age: z.coerce.number({ required_error: 'La edad es requerida.' }).int().min(18, 'Debe tener al menos 18 años.').max(100, 'La edad no puede exceder los 100 años.'),
+  hobbies: z.string().min(3, 'Los pasatiempos deben tener al menos 3 caracteres.').max(200, 'Los pasatiempos no pueden exceder los 200 caracteres.'),
+  description: z.string().min(10, 'La descripción debe tener al menos 10 caracteres.').max(500, 'La descripción no puede exceder los 500 caracteres.'),
+  difficulty: z.enum(['Easy', 'Hard', 'Expert', 'Ultra Hard'], { required_error: 'Por favor selecciona una dificultad.' }),
 });
 
 export default function CreateCompanionForm() {
@@ -53,14 +53,14 @@ export default function CreateCompanionForm() {
       if (result.error) {
         toast({
           variant: 'destructive',
-          title: 'Creation Failed',
+          title: 'Creación Fallida',
           description: result.error,
         });
       } else if (result.success && result.companion) {
         saveCompanion(result.companion);
         toast({
-          title: 'Companion Created!',
-          description: `Get ready to meet ${result.companion.name}.`,
+          title: '¡Compañero Creado!',
+          description: `Prepárate para conocer a ${result.companion.name}.`,
         });
         router.push('/chat');
       }
@@ -70,8 +70,8 @@ export default function CreateCompanionForm() {
   return (
     <Card className="w-full max-w-2xl shadow-lg">
       <CardHeader>
-        <CardTitle className="font-headline text-3xl">Create Your Companion</CardTitle>
-        <CardDescription>Design the personality and background of your new AI friend.</CardDescription>
+        <CardTitle className="font-headline text-3xl">Crea tu Compañero</CardTitle>
+        <CardDescription>Diseña la personalidad y antecedentes de tu nuevo amigo IA.</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -82,9 +82,9 @@ export default function CreateCompanionForm() {
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Name</FormLabel>
+                    <FormLabel>Nombre</FormLabel>
                     <FormControl>
-                      <Input placeholder="e.g., Lucia, Alex" {...field} />
+                      <Input placeholder="p. ej., Lucía, Alex" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -95,9 +95,9 @@ export default function CreateCompanionForm() {
                 name="age"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Age</FormLabel>
+                    <FormLabel>Edad</FormLabel>
                     <FormControl>
-                      <Input type="number" placeholder="e.g., 25" {...field} />
+                      <Input type="number" placeholder="p. ej., 25" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -109,11 +109,11 @@ export default function CreateCompanionForm() {
               name="gender"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Gender</FormLabel>
+                  <FormLabel>Género</FormLabel>
                   <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select a gender" />
+                        <SelectValue placeholder="Selecciona un género" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
@@ -130,11 +130,11 @@ export default function CreateCompanionForm() {
               name="hobbies"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Hobbies</FormLabel>
+                  <FormLabel>Pasatiempos</FormLabel>
                   <FormControl>
-                    <Input placeholder="e.g., Reading, hiking, playing piano" {...field} />
+                    <Input placeholder="p. ej., Leer, senderismo, tocar el piano" {...field} />
                   </FormControl>
-                  <FormDescription>Separate hobbies with a comma.</FormDescription>
+                  <FormDescription>Separa los pasatiempos con una coma.</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -144,9 +144,9 @@ export default function CreateCompanionForm() {
               name="description"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Backstory / Description</FormLabel>
+                  <FormLabel>Historia / Descripción</FormLabel>
                   <FormControl>
-                    <Textarea placeholder="Describe their personality, what makes them unique..." className="min-h-[100px]" {...field} />
+                    <Textarea placeholder="Describe su personalidad, qué los hace únicos..." className="min-h-[100px]" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -157,21 +157,21 @@ export default function CreateCompanionForm() {
               name="difficulty"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Difficulty</FormLabel>
+                  <FormLabel>Dificultad</FormLabel>
                   <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select a difficulty level" />
+                        <SelectValue placeholder="Selecciona un nivel de dificultad" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="Easy">Easy - Forgiving and open.</SelectItem>
-                      <SelectItem value="Hard">Hard - Cautious and requires effort.</SelectItem>
-                      <SelectItem value="Expert">Expert - A true challenge to connect.</SelectItem>
-                      <SelectItem value="Ultra Hard">Ultra Hard - Skeptical and distant.</SelectItem>
+                      <SelectItem value="Easy">Fácil - Permisivo y abierto.</SelectItem>
+                      <SelectItem value="Hard">Difícil - Cauteloso y requiere esfuerzo.</SelectItem>
+                      <SelectItem value="Expert">Experto - Un verdadero desafío para conectar.</SelectItem>
+                      <SelectItem value="Ultra Hard">Ultra Difícil - Escéptico y distante.</SelectItem>
                     </SelectContent>
                   </Select>
-                  <FormDescription>This will determine how the relationship evolves.</FormDescription>
+                  <FormDescription>Esto determinará cómo evoluciona la relación.</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -180,10 +180,10 @@ export default function CreateCompanionForm() {
               {isPending ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Generating Personality...
+                  Generando Personalidad...
                 </>
               ) : (
-                'Begin Journey'
+                'Comenzar Viaje'
               )}
             </Button>
           </form>

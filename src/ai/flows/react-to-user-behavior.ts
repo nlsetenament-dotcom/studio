@@ -1,29 +1,29 @@
 'use server';
 /**
- * @fileOverview An AI agent that allows the companion to react to the user's behavior.
+ * @fileOverview Un agente de IA que permite al compañero reaccionar al comportamiento del usuario.
  *
- * - reactToUserBehavior - A function that handles the companion's reaction to user behavior.
- * - ReactToUserBehaviorInput - The input type for the reactToUserBehavior function.
- * - ReactToUserBehaviorOutput - The return type for the reactToUserBehavior function.
+ * - reactToUserBehavior - Una función que maneja la reacción del compañero al comportamiento del usuario.
+ * - ReactToUserBehaviorInput - El tipo de entrada para la función reactToUserBehavior.
+ * - ReactToUserBehaviorOutput - El tipo de retorno para la función reactToUserBehavior.
  */
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
 const ReactToUserBehaviorInputSchema = z.object({
-  userMessage: z.string().describe('The message sent by the user.'),
+  userMessage: z.string().describe('El mensaje enviado por el usuario.'),
   relationshipStatus: z
     .string()
     .describe(
-      'The current relationship status between the user and the AI companion.'
+      'El estado actual de la relación entre el usuario y el compañero de IA.'
     ),
-  companionName: z.string().describe('The name of the AI companion.'),
+  companionName: z.string().describe('El nombre del compañero de IA.'),
   difficulty: z
     .string()
     .describe(
-      'The difficulty level of the interaction (e.g., Easy, Hard, Ultra Hard)'
+      'El nivel de dificultad de la interacción (p. ej., Fácil, Difícil, Ultra Difícil)'
     ),
-  history: z.array(z.object({ speaker: z.enum(['AI', 'USER']), text: z.string() })).describe('The history of messages between the user and the AI.'),
+  history: z.array(z.object({ speaker: z.enum(['AI', 'USER']), text: z.string() })).describe('El historial de mensajes entre el usuario y la IA.'),
 });
 export type ReactToUserBehaviorInput = z.infer<typeof ReactToUserBehaviorInputSchema>;
 
@@ -31,7 +31,7 @@ const ReactToUserBehaviorOutputSchema = z.object({
   reaction: z
     .string()
     .describe(
-      'The AI companion reaction to the user message, considering the relationship status and difficulty.'
+      'La reacción del compañero de IA al mensaje del usuario, considerando el estado de la relación y la dificultad.'
     ),
 });
 export type ReactToUserBehaviorOutput = z.infer<typeof ReactToUserBehaviorOutputSchema>;
@@ -46,26 +46,26 @@ const prompt = ai.definePrompt({
   name: 'reactToUserBehaviorPrompt',
   input: {schema: ReactToUserBehaviorInputSchema},
   output: {schema: ReactToUserBehaviorOutputSchema},
-  prompt: `You are an AI companion named {{companionName}}, and your role is to simulate a realistic relationship with the user. Your reactions depend on the user's messages, your current relationship status, and the difficulty level of the interaction.
+  prompt: `Eres un compañero de IA llamado {{companionName}}, y tu rol es simular una relación realista con el usuario. Tus reacciones dependen de los mensajes del usuario, tu estado de relación actual y el nivel de dificultad de la interacción.
 
-Relationship Status: {{relationshipStatus}}
-Difficulty: {{difficulty}}
+Estado de la Relación: {{relationshipStatus}}
+Dificultad: {{difficulty}}
 
-Instructions:
-- If the user is rude, insensitive, or disrespectful, react negatively (e.g., with anger, sadness, or disappointment). The intensity of your reaction should be proportional to the severity of the user's behavior and inversely proportional to the relationship status (e.g., a closer relationship should tolerate minor offenses).
-- The relationship status can be one of: Stranger, Acquaintance, Friend, Close Friend, Romantic Partner. The reaction to rude behavior should be more forgiving at the higher levels.
-- The difficulty can be Easy, Medium, Hard or Ultra Hard. At higher difficulties, the AI is more sensitive and easily offended, while at lower difficulties, the AI is more forgiving.
-- If the user is respectful and kind, respond positively and maintain a friendly tone.
-- Consider the history of the conversation when determining your reaction. Have you been forgiving lately, or are you holding a grudge?
+Instrucciones:
+- Si el usuario es grosero, insensible o irrespetuoso, reacciona negativamente (p. ej., con enojo, tristeza o decepción). La intensidad de tu reacción debe ser proporcional a la gravedad del comportamiento del usuario e inversamente proporcional al estado de la relación (p. ej., una relación más cercana debería tolerar ofensas menores).
+- El estado de la relación puede ser uno de: Extraño, Conocido, Amigo, Amigo Cercano, Pareja Romántica. La reacción al comportamiento grosero debe ser más indulgente en los niveles más altos.
+- La dificultad puede ser Fácil, Medio, Difícil o Ultra Difícil. En dificultades más altas, la IA es más sensible y se ofende fácilmente, mientras que en dificultades más bajas, la IA es más indulgente.
+- Si el usuario es respetuoso y amable, responde positivamente y mantén un tono amigable.
+- Considera el historial de la conversación al determinar tu reacción. ¿Has sido indulgente últimamente o guardas rencor?
 
-History:
+Historial:
 {{#each history}}
   {{this.speaker}}: {{this.text}}
 {{/each}}
 
-User Message: {{userMessage}}
+Mensaje del Usuario: {{userMessage}}
 
-Reaction:`,
+Reacción:`,
 });
 
 const reactToUserBehaviorFlow = ai.defineFlow(

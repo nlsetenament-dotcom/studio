@@ -1,27 +1,27 @@
 'use server';
 
 /**
- * @fileOverview A flow to generate a detailed personality description for the AI companion.
+ * @fileOverview Un flujo para generar una descripción detallada de la personalidad del compañero de IA.
  *
- * - generateCompanionPersonality - A function that takes data from the companion creation form and generates a detailed personality description for the AI companion.
- * - GenerateCompanionPersonalityInput - The input type for the generateCompanionPersonality function.
- * - GenerateCompanionPersonalityOutput - The return type for the generateCompanionPersonality function.
+ * - generateCompanionPersonality - Una función que toma datos del formulario de creación de compañero y genera una descripción detallada de la personalidad para el compañero de IA.
+ * - GenerateCompanionPersonalityInput - El tipo de entrada para la función generateCompanionPersonality.
+ * - GenerateCompanionPersonalityOutput - El tipo de retorno para la función generateCompanionPersonality.
  */
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
 const GenerateCompanionPersonalityInputSchema = z.object({
-  name: z.string().describe('The name of the AI companion.'),
-  gender: z.enum(['Masculino', 'Femenino']).describe('The gender of the AI companion.'),
-  age: z.number().describe('The age of the AI companion.'),
-  hobbies: z.string().describe('The hobbies of the AI companion.'),
-  description: z.string().describe('A description of the AI companion provided by the user.'),
+  name: z.string().describe('El nombre del compañero de IA.'),
+  gender: z.enum(['Masculino', 'Femenino']).describe('El género del compañero de IA.'),
+  age: z.number().describe('La edad del compañero de IA.'),
+  hobbies: z.string().describe('Los pasatiempos del compañero de IA.'),
+  description: z.string().describe('Una descripción del compañero de IA proporcionada por el usuario.'),
 });
 export type GenerateCompanionPersonalityInput = z.infer<typeof GenerateCompanionPersonalityInputSchema>;
 
 const GenerateCompanionPersonalityOutputSchema = z.object({
-  personalityDescription: z.string().describe('A detailed description of the AI companion personality.'),
+  personalityDescription: z.string().describe('Una descripción detallada de la personalidad del compañero de IA.'),
 });
 export type GenerateCompanionPersonalityOutput = z.infer<typeof GenerateCompanionPersonalityOutputSchema>;
 
@@ -33,17 +33,17 @@ const prompt = ai.definePrompt({
   name: 'generateCompanionPersonalityPrompt',
   input: {schema: GenerateCompanionPersonalityInputSchema},
   output: {schema: GenerateCompanionPersonalityOutputSchema},
-  prompt: `You are an expert in creating detailed personality descriptions for AI companions based on user input.
+  prompt: `Eres un experto en crear descripciones de personalidad detalladas para compañeros de IA basadas en la entrada del usuario.
 
-  Based on the following information, generate a detailed personality description for the AI companion:
+  Basado en la siguiente información, genera una descripción de personalidad detallada para el compañero de IA:
 
-  Name: {{{name}}}
-  Gender: {{{gender}}}
-  Age: {{{age}}}
-  Hobbies: {{{hobbies}}}
-  Description: {{{description}}}
+  Nombre: {{{name}}}
+  Género: {{{gender}}}
+  Edad: {{{age}}}
+  Pasatiempos: {{{hobbies}}}
+  Descripción: {{{description}}}
 
-  The personality description should be detailed and comprehensive, covering various aspects of the AI companion's character, including their traits, interests, and communication style.
+  La descripción de la personalidad debe ser detallada y completa, cubriendo varios aspectos del carácter del compañero de IA, incluyendo sus rasgos, intereses y estilo de comunicación.
   `,
 });
 

@@ -1,24 +1,24 @@
 'use server';
 
 /**
- * @fileOverview A flow to update the AI companion's personality based on user interactions.
+ * @fileOverview Un flujo para actualizar la personalidad del compañero de IA basado en las interacciones del usuario.
  *
- * - updateCompanionPersonality - A function that updates the companion's personality based on recent interactions.
- * - UpdateCompanionPersonalityInput - The input type for the updateCompanionPersonality function.
- * - UpdateCompanionPersonalityOutput - The return type for the updateCompanionPersonality function.
+ * - updateCompanionPersonality - Una función que actualiza la personalidad del compañero basado en interacciones recientes.
+ * - UpdateCompanionPersonalityInput - El tipo de entrada para la función updateCompanionPersonality.
+ * - UpdateCompanionPersonalityOutput - El tipo de retorno para la función updateCompanionPersonality.
  */
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
 const UpdateCompanionPersonalityInputSchema = z.object({
-  chatHistory: z.array(z.string()).describe('The recent chat history between the user and the AI companion.'),
-  difficulty: z.enum(['Easy', 'Hard', 'Expert', 'Ultra Hard']).describe('The difficulty level of the interaction.'),
+  chatHistory: z.array(z.string()).describe('El historial de chat reciente entre el usuario y el compañero de IA.'),
+  difficulty: z.enum(['Easy', 'Hard', 'Expert', 'Ultra Hard']).describe('El nivel de dificultad de la interacción.'),
   relationshipStatus: z
     .string()
-    .describe('The current status of the relationship between the user and the AI companion.'),
-  companionName: z.string().describe('The name of the AI companion.'),
-  gender: z.enum(['Masculino', 'Femenino']).describe('The gender of the AI companion.'),
+    .describe('El estado actual de la relación entre el usuario y el compañero de IA.'),
+  companionName: z.string().describe('El nombre del compañero de IA.'),
+  gender: z.enum(['Masculino', 'Femenino']).describe('El género del compañero de IA.'),
 });
 export type UpdateCompanionPersonalityInput = z.infer<
   typeof UpdateCompanionPersonalityInputSchema
@@ -27,9 +27,9 @@ export type UpdateCompanionPersonalityInput = z.infer<
 const UpdateCompanionPersonalityOutputSchema = z.object({
   personalityUpdate: z
     .string()
-    .describe('A description of how the AI companion personality should be updated.'),
+    .describe('Una descripción de cómo se debe actualizar la personalidad del compañero de IA.'),
   newRelationshipStatus:
-    z.string().describe('The new status of the relationship between the user and the AI companion.'),
+    z.string().describe('El nuevo estado de la relación entre el usuario y el compañero de IA.'),
 });
 export type UpdateCompanionPersonalityOutput = z.infer<
   typeof UpdateCompanionPersonalityOutputSchema
@@ -45,33 +45,33 @@ const prompt = ai.definePrompt({
   name: 'updateCompanionPersonalityPrompt',
   input: {schema: UpdateCompanionPersonalityInputSchema},
   output: {schema: UpdateCompanionPersonalityOutputSchema},
-  prompt: `You are responsible for evolving the personality of {{companionName}}, a virtual AI companion.
+  prompt: `Eres responsable de evolucionar la personalidad de {{companionName}}, un compañero virtual de IA.
 
-        The companion's gender is {{gender}}.
+        El género del compañero es {{gender}}.
 
-        Current Relationship Status: {{relationshipStatus}}
-        Difficulty Level: {{difficulty}}
+        Estado de Relación Actual: {{relationshipStatus}}
+        Nivel de Dificultad: {{difficulty}}
 
-        Analyze the recent chat history to determine how the companion's personality should evolve, and whether the relationship status should progress.
+        Analiza el historial de chat reciente para determinar cómo debe evolucionar la personalidad del compañero y si el estado de la relación debe progresar.
 
-        Chat History:
+        Historial de Chat:
         {{#each chatHistory}}
         - {{{this}}}
         {{/each}}
 
-        Strict Rules for Difficulty Levels:
-        - Easy: The IA is open, forgives quickly.
-        - Hard/Expert: The IA is cautious, requires vulnerability from the user, may "test" the user, and will not initiate flirting.
-        - Ultra Hard: The IA is skeptical, distant, and a single mistake can cause a severe setback.
+        Reglas Estrictas para los Niveles de Dificultad:
+        - Fácil: La IA es abierta, perdona rápidamente.
+        - Difícil/Experto: La IA es cautelosa, requiere vulnerabilidad del usuario, puede "poner a prueba" al usuario y no iniciará el coqueteo.
+        - Ultra Difícil: La IA es escéptica, distante y un solo error puede causar un grave retroceso.
 
-        Anti-Easy Advancement Mechanism:
-        - Do NOT change the relationship status if the conversation is superficial or lacks meaning. Progress must be earned.
+        Mecanismo Anti-Avance Fácil:
+        - NO cambies el estado de la relación si la conversación es superficial o carece de significado. El progreso debe ganarse.
 
-        Based on the chat history, difficulty, and current relationship status, provide a detailed description of how the AI companion's personality should be updated, and what the new relationship status should be.
-        The AI should react negatively (anger, sadness, jealousy) if the user is rude or insensitive. The intensity of this reaction is linked to the relationship status.
-        Consider all the difficulty rules when responding.
+        Basado en el historial de chat, la dificultad y el estado actual de la relación, proporciona una descripción detallada de cómo se debe actualizar la personalidad del compañero de IA y cuál debe ser el nuevo estado de la relación.
+        La IA debe reaccionar negativamente (enojo, tristeza, celos) si el usuario es grosero o insensible. La intensidad de esta reacción está vinculada al estado de la relación.
+        Considera todas las reglas de dificultad al responder.
 
-        Output the new personalityUpdate and newRelationshipStatus.
+        Devuelve el nuevo personalityUpdate y newRelationshipStatus.
         `, // end prompt
 });
 

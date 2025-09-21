@@ -62,7 +62,7 @@ export default function ChatPage() {
       });
 
     } else if (result.error) {
-        toast({ variant: 'destructive', title: 'Response Error', description: result.error });
+        toast({ variant: 'destructive', title: 'Error de Respuesta', description: result.error });
         const errorMessage: Message = {
             id: crypto.randomUUID(),
             text: result.error,
@@ -78,8 +78,8 @@ export default function ChatPage() {
           updateCompanionDetails({ difficulty: newDifficulty });
           resetChat();
           toast({
-              title: "A Fresh Start",
-              description: `Difficulty set to ${newDifficulty}. Your relationship has been reset to "Acquaintance".`
+              title: "Un Nuevo Comienzo",
+              description: `Dificultad establecida a ${newDifficulty}. Tu relación se ha reiniciado a "Conocido".`
           });
       }
   };

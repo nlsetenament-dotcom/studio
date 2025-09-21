@@ -27,7 +27,7 @@ export async function createCompanionAction(formData: FormData) {
   const validatedFields = createCompanionSchema.safeParse(Object.fromEntries(formData.entries()));
 
   if (!validatedFields.success) {
-    return { error: 'Invalid form data.' };
+    return { error: 'Datos de formulario inválidos.' };
   }
   
   const { name, gender, age, hobbies, description, difficulty } = validatedFields.data;
@@ -46,20 +46,20 @@ export async function createCompanionAction(formData: FormData) {
       description,
       difficulty,
       personality: personalityResult.personalityDescription,
-      relationshipStatus: 'Stranger',
+      relationshipStatus: 'Desconocido',
       avatarUrl: companionAvatar?.imageUrl || 'https://picsum.photos/seed/companion/200/200',
     };
 
     return { success: true, companion: newCompanion };
   } catch (error) {
-    console.error('Error creating companion:', error);
-    return { error: 'Failed to create companion personality. Please try again.' };
+    console.error('Error creando compañero:', error);
+    return { error: 'No se pudo crear la personalidad del compañero. Por favor, inténtalo de nuevo.' };
   }
 }
 
 export async function getAIResponseAction(companion: Companion, messages: Message[]) {
   try {
-    const conversationHistory = messages.map(msg => `${msg.sender === 'user' ? 'User' : companion.name}: ${msg.text}`).join('\n');
+    const conversationHistory = messages.map(msg => `${msg.sender === 'user' ? 'Usuario' : companion.name}: ${msg.text}`).join('\n');
     
     const responseResult = await generateRealisticResponse({
       companionName: companion.name,
@@ -73,14 +73,14 @@ export async function getAIResponseAction(companion: Companion, messages: Messag
 
     return { response: responseResult.response };
   } catch (error) {
-    console.error('Error generating AI response:', error);
-    return { error: 'I... I can\'t think right now. Maybe we can talk later?' };
+    console.error('Error generando respuesta de IA:', error);
+    return { error: 'Yo... no puedo pensar en este momento. ¿Quizás podamos hablar más tarde?' };
   }
 }
 
 export async function updatePersonalityAction(companion: Companion, messages: Message[]) {
     try {
-        const recentHistory = messages.slice(-10).map(msg => `${msg.sender === 'user' ? 'User' : companion.name}: ${msg.text}`);
+        const recentHistory = messages.slice(-10).map(msg => `${msg.sender === 'user' ? 'Usuario' : companion.name}: ${msg.text}`);
 
         const updateResult = await updateCompanionPersonality({
             companionName: companion.name,
@@ -97,7 +97,7 @@ export async function updatePersonalityAction(companion: Companion, messages: Me
 
         return { success: true, updates: updatedCompanion };
     } catch (error) {
-        console.error('Error updating personality:', error);
-        return { error: 'Failed to update companion personality.' };
+        console.error('Error actualizando la personalidad:', error);
+        return { error: 'No se pudo actualizar la personalidad del compañero.' };
     }
 }

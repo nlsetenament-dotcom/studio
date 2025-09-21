@@ -25,23 +25,23 @@ export default function ChatHeader({ companion, onDifficultyChange }: ChatHeader
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" size="icon">
             <MoreVertical className="h-5 w-5" />
-            <span className="sr-only">Settings</span>
+            <span className="sr-only">Ajustes</span>
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuLabel>Difficulty</DropdownMenuLabel>
+          <DropdownMenuLabel>Dificultad</DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => onDifficultyChange('Easy')} disabled={companion.difficulty === 'Easy'}>
-            Easy
+            Fácil
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => onDifficultyChange('Hard')} disabled={companion.difficulty === 'Hard'}>
-            Hard
+            Difícil
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => onDifficultyChange('Expert')} disabled={companion.difficulty === 'Expert'}>
-            Expert
+            Experto
           </DropdownMenuItem>
            <DropdownMenuItem onClick={() => onDifficultyChange('Ultra Hard')} disabled={companion.difficulty === 'Ultra Hard'}>
-            Ultra Hard
+            Ultra Difícil
           </DropdownMenuItem>
           <DropdownMenuSeparator />
            <DropdownMenuItem disabled>

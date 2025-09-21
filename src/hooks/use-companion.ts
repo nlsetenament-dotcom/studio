@@ -62,7 +62,7 @@ export function useCompanion() {
   const resetChat = useCallback(() => {
       saveMessages([]);
       if(companion){
-          updateCompanionDetails({relationshipStatus: 'Acquaintance'});
+          updateCompanionDetails({relationshipStatus: 'Conocido'});
       }
   }, [saveMessages, companion, updateCompanionDetails]);
 
