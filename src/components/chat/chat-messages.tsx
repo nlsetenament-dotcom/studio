@@ -10,26 +10,35 @@ interface ChatMessagesProps {
   messages: Message[];
   companion: Companion;
   isTyping: boolean;
+  selectedMessageId: string | null;
+  onMessageSelect: (messageId: string) => void;
 }
 
-export default function ChatMessages({ messages, companion, isTyping }: ChatMessagesProps) {
+export default function ChatMessages({ messages, companion, isTyping, selectedMessageId, onMessageSelect }: ChatMessagesProps) {
   const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+  
   useEffect(() => {
-    if (scrollAreaRef.current) {
-        const viewport = scrollAreaRef.current.querySelector('div');
-        if (viewport) {
-            viewport.scrollTop = viewport.scrollHeight;
-        }
-    }
+    scrollToBottom();
   }, [messages, isTyping]);
   
   return (
     <ScrollArea className="flex-1" ref={scrollAreaRef}>
         <div className="p-4 sm:p-6 space-y-4">
             {messages.map((message) => (
-                <ChatMessage key={message.id} message={message} companion={companion} />
+                <ChatMessage 
+                    key={message.id} 
+                    message={message} 
+                    companion={companion}
+                    isSelected={selectedMessageId === message.id}
+                    onSelect={onMessageSelect}
+                />
             ))}
+             <div ref={messagesEndRef} />
             {isTyping && (
                 <div className="flex items-end justify-start">
                     <TypingIndicator />

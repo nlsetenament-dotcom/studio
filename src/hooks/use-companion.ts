@@ -62,6 +62,18 @@ export function useCompanion() {
         return updatedMessages;
     });
   }, []);
+  
+  const removeMessage = useCallback((messageId: string) => {
+    setMessages(prevMessages => {
+        const updatedMessages = prevMessages.filter(msg => msg.id !== messageId);
+        try {
+            localStorage.setItem(MESSAGES_KEY, JSON.stringify(updatedMessages));
+        } catch (error) {
+            console.error('Failed to save messages to localStorage', error);
+        }
+        return updatedMessages;
+    });
+  }, []);
 
   const updateCompanionDetails = useCallback((updates: Partial<Companion>) => {
     if (companion) {
@@ -83,6 +95,7 @@ export function useCompanion() {
     isLoading,
     saveCompanion,
     addMessage,
+    removeMessage,
     updateCompanionDetails,
     resetChat,
   };

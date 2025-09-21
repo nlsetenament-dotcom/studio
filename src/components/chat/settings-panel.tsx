@@ -11,7 +11,7 @@ import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
-import { BookUser, BrainCircuit, ImageIcon, Palette, ShieldQuestion, Upload } from 'lucide-react';
+import { BookUser, BrainCircuit, ImageIcon, Palette, ShieldQuestion, Upload, RotateCcw } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Badge } from '../ui/badge';
 
@@ -42,6 +42,8 @@ export default function SettingsPanel({
   const [selectedAvatar, setSelectedAvatar] = useState(companion.avatarUrl);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
+
+  const originalAvatar = PlaceHolderImages.find(img => img.id === 'companion-avatar')?.imageUrl || 'https://picsum.photos/seed/companion/200/200';
 
   useEffect(() => {
     const storedTheme = localStorage.getItem('theme');
@@ -102,6 +104,14 @@ export default function SettingsPanel({
     }
   };
 
+  const handleResetAvatar = () => {
+    setSelectedAvatar(originalAvatar);
+    toast({
+        title: 'Avatar Restaurado',
+        description: 'Se ha restaurado la imagen de perfil original.',
+    });
+  };
+
   const avatarGallery = PlaceHolderImages.filter(img => img.id !== 'companion-avatar');
 
   return (
@@ -116,7 +126,7 @@ export default function SettingsPanel({
                  <div>
                     <h3 className="mb-4 text-lg font-medium text-foreground flex items-center gap-2"><ImageIcon className="h-5 w-5 text-primary" />Galería de Avatares</h3>
                      <div className="rounded-lg border p-4">
-                        <div className="grid grid-cols-3 gap-4">
+                        <div className="grid grid-cols-4 gap-4">
                              <input 
                                 type="file"
                                 ref={fileInputRef}
@@ -126,16 +136,29 @@ export default function SettingsPanel({
                              />
                              <button
                                 className={cn(
-                                    'relative flex aspect-square flex-col items-center justify-center gap-2 rounded-md border-2 border-dashed border-muted-foreground/50 bg-muted/25 text-muted-foreground transition-colors',
+                                    'relative flex aspect-square flex-col items-center justify-center gap-1 rounded-md border-2 border-dashed border-muted-foreground/50 bg-muted/25 text-muted-foreground transition-colors',
                                     'hover:bg-muted/50 hover:border-muted-foreground',
                                     'ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
                                 )}
                                 onClick={handleUploadClick}
+                                title="Subir Imagen"
                             >
                                 <Upload className="h-6 w-6" />
-                                <span className="text-xs">Subir Imagen</span>
+                                <span className="text-xs">Subir</span>
                              </button>
-                            {avatarGallery.map(image => (
+                             <button
+                                className={cn(
+                                    'relative flex aspect-square flex-col items-center justify-center gap-1 rounded-md border-2 border-muted-foreground/50 bg-muted/25 text-muted-foreground transition-colors',
+                                    'hover:bg-muted/50 hover:border-muted-foreground',
+                                    'ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+                                )}
+                                onClick={handleResetAvatar}
+                                title="Restaurar Original"
+                            >
+                                <RotateCcw className="h-6 w-6" />
+                                <span className="text-xs">Restaurar</span>
+                             </button>
+                            {avatarGallery.slice(0, 10).map(image => (
                                 <button
                                     key={image.id}
                                     className={cn(
@@ -144,6 +167,7 @@ export default function SettingsPanel({
                                         selectedAvatar === image.imageUrl && 'ring-2 ring-primary ring-offset-2'
                                     )}
                                     onClick={() => setSelectedAvatar(image.imageUrl)}
+                                    title={image.description}
                                 >
                                     <Image 
                                         src={image.imageUrl} 
