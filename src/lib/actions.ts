@@ -80,7 +80,7 @@ export async function createCompanionAction(formData: FormData) {
   }
 }
 
-export async function getAIResponseAction(companion: Companion, messages: Message[]) {
+export async function getAIResponseAction(companion: Companion, messages: Message[], userLocalTime: string) {
   try {
     const conversationHistory = messages.map(msg => `${msg.sender === 'user' ? 'Usuario' : companion.name}: ${msg.text}`).join('\n');
     
@@ -90,6 +90,7 @@ export async function getAIResponseAction(companion: Companion, messages: Messag
       relationshipStatus: companion.relationshipStatus,
       difficulty: companion.difficulty,
       conversationHistory: conversationHistory,
+      userLocalTime: userLocalTime,
     });
 
     await new Promise(res => setTimeout(res, calculateTypingDelay(responseResult.response)));

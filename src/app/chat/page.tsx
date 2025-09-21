@@ -40,7 +40,8 @@ export default function ChatPage() {
     setIsTyping(true);
 
     const currentMessages = [...messages, userMessage];
-    const result = await getAIResponseAction(companion, currentMessages);
+    const userLocalTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const result = await getAIResponseAction(companion, currentMessages, userLocalTime);
 
     setIsTyping(false);
 
