@@ -5,6 +5,72 @@
       "description": "Default avatar for the AI companion",
       "imageUrl": "https://picsum.photos/seed/companion/200/200",
       "imageHint": "avatar person"
+    },
+    {
+      "id": "avatar-gallery-1",
+      "description": "Avatar gallery image 1",
+      "imageUrl": "https://picsum.photos/seed/gal1/200/200",
+      "imageHint": "raspberries cup"
+    },
+    {
+      "id": "avatar-gallery-2",
+      "description": "Avatar gallery image 2",
+      "imageUrl": "https://picsum.photos/seed/gal2/200/200",
+      "imageHint": "blue rustic door"
+    },
+    {
+      "id": "avatar-gallery-3",
+      "description": "Avatar gallery image 3",
+      "imageUrl": "https://picsum.photos/seed/gal3/200/200",
+      "imageHint": "castle hill"
+    },
+    {
+      "id": "avatar-gallery-4",
+      "description": "Avatar gallery image 4",
+      "imageUrl": "https://picsum.photos/seed/gal4/200/200",
+      "imageHint": "wild grass"
+    },
+    {
+      "id": "avatar-gallery-5",
+      "description": "Avatar gallery image 5",
+      "imageUrl": "https://picsum.photos/seed/gal5/200/200",
+      "imageHint": "train tracks sunset"
+    },
+    {
+      "id": "avatar-gallery-6",
+      "description": "Avatar gallery image 6",
+      "imageUrl": "https://picsum.photos/seed/gal6/200/200",
+      "imageHint": "jellyfish water"
+    },
+    {
+      "id": "avatar-gallery-7",
+      "description": "Avatar gallery image 7",
+      "imageUrl": "https://picsum.photos/seed/gal7/200/200",
+      "imageHint": "park bench autumn"
+    },
+    {
+      "id": "avatar-gallery-8",
+      "description": "Avatar gallery image 8",
+      "imageUrl": "https://picsum.photos/seed/gal8/200/200",
+      "imageHint": "abstract paper"
+    },
+    {
+      "id": "avatar-gallery-9",
+      "description": "Avatar gallery image 9",
+      "imageUrl": "https://picsum.photos/seed/gal9/200/200",
+      "imageHint": "person camera"
+    },
+    {
+      "id": "avatar-gallery-10",
+      "description": "Avatar gallery image 10",
+      "imageUrl": "https://picsum.photos/seed/gal10/200/200",
+      "imageHint": "forest lake"
+    },
+    {
+      "id": "avatar-gallery-11",
+      "description": "Avatar gallery image 11",
+      "imageUrl": "https://picsum.photos/seed/gal11/200/200",
+      "imageHint": "vintage car interior"
     }
   ]
 }

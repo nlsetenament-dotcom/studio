@@ -84,6 +84,16 @@ export default function ChatPage() {
       }
   };
 
+  const handleAvatarChange = (newAvatarUrl: string) => {
+    if (companion) {
+      updateCompanionDetails({ avatarUrl: newAvatarUrl });
+       toast({
+          title: "Avatar Actualizado",
+          description: "La imagen de tu compañero ha sido cambiada.",
+      });
+    }
+  };
+
   if (isCompanionLoading || !companion) {
     return (
         <div className="flex h-screen w-full flex-col">
@@ -108,6 +118,7 @@ export default function ChatPage() {
       <ChatHeader 
         companion={companion} 
         onDifficultyChange={handleDifficultyChange}
+        onAvatarChange={handleAvatarChange}
       />
       <ChatMessages messages={messages} companion={companion} isTyping={isTyping} />
       <ChatInput onSendMessage={handleSendMessage} disabled={isTyping} />
