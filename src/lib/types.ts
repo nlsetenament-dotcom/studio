@@ -13,10 +13,6 @@ export interface Companion {
   relationshipStatus: string;
   difficulty: Difficulty;
   avatarUrl: string;
-  personalityArchetype: string;
-  fears: string;
-  dreams: string;
-  secret: string;
 }
 
 export interface Message {

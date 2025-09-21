@@ -70,10 +70,6 @@ export async function createCompanionAction(formData: FormData) {
       personality: personalityResult.personalityDescription,
       relationshipStatus: 'Conocido',
       avatarUrl: companionAvatar?.imageUrl || 'https://picsum.photos/seed/companion/200/200',
-      personalityArchetype: personalityResult.personalityArchetype,
-      fears: personalityResult.fears,
-      dreams: personalityResult.dreams,
-      secret: personalityResult.secret,
     };
 
     return { success: true, companion: newCompanion };
@@ -93,9 +89,6 @@ export async function getAIResponseAction(companion: Companion, messages: Messag
       relationshipStatus: companion.relationshipStatus,
       difficulty: companion.difficulty,
       conversationHistory: conversationHistory,
-      personalityArchetype: companion.personalityArchetype,
-      fears: companion.fears,
-      dreams: companion.dreams,
     });
 
     await new Promise(res => setTimeout(res, calculateTypingDelay(responseResult.response)));
@@ -117,16 +110,12 @@ export async function updatePersonalityAction(companion: Companion, messages: Me
             difficulty: companion.difficulty,
             relationshipStatus: companion.relationshipStatus,
             chatHistory: recentHistory,
-            personalityArchetype: companion.personalityArchetype,
-            fears: companion.fears,
-            dreams: companion.dreams,
+            companionPersonality: companion.personality,
         });
 
         const updatedCompanion: Partial<Companion> = {
             personality: updateResult.personalityUpdate,
             relationshipStatus: updateResult.newRelationshipStatus,
-            fears: updateResult.newFears,
-            dreams: updateResult.newDreams,
         };
 
         return { success: true, updates: updatedCompanion };

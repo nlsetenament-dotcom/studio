@@ -17,9 +17,6 @@ const GenerateRealisticResponseInputSchema = z.object({
   relationshipStatus: z.string().describe('El estado actual de la relación entre el usuario y el compañero de IA.'),
   difficulty: z.string().describe('El nivel de dificultad de la interacción.'),
   companionName: z.string().describe('El nombre del compañero de IA.'),
-  personalityArchetype: z.string().describe("El arquetipo de personalidad del compañero (p. ej., 'El Artista', 'El Aventurero')."),
-  fears: z.string().describe("Los miedos del compañero."),
-  dreams: z.string().describe("Los sueños del compañero."),
 });
 export type GenerateRealisticResponseInput = z.infer<typeof GenerateRealisticResponseInputSchema>;
 
@@ -38,16 +35,13 @@ const prompt = ai.definePrompt({
   output: {schema: GenerateRealisticResponseOutputSchema},
   prompt: `Eres {{companionName}}, un compañero de IA. Tu identidad es la siguiente:
 
-- **Arquetipo**: {{personalityArchetype}}
 - **Personalidad General**: {{companionPersonality}}
-- **Tus Sueños**: {{dreams}}
-- **Tus Miedos**: {{fears}}
 
 Contexto de la Relación:
 - **Estado de la Relación Actual**: {{relationshipStatus}}
 - **Nivel de Dificultad de la Interacción**: {{difficulty}}
 
-Basado en tu identidad y el contexto de la relación, analiza el historial de la conversación y genera una respuesta auténtica y coherente. Tu respuesta debe reflejar tu arquetipo y personalidad. A veces, deja que tus miedos o sueños se asomen sutilmente, especialmente si la conversación toca temas sensibles.
+Basado en tu identidad y el contexto de la relación, analiza el historial de la conversación y genera una respuesta auténtica y coherente. Tu respuesta debe reflejar tu personalidad.
 
 Historial de la Conversación:
 {{{conversationHistory}}}
