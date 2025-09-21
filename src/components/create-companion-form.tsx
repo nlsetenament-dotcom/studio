@@ -118,7 +118,7 @@ export default function CreateCompanionForm() {
                             )}
                           >
                             {field.value ? (
-                              format(field.value, "PPP", { locale: es })
+                              format(field.value, "dd/MM/yyyy")
                             ) : (
                               <span>Elige una fecha</span>
                             )}
