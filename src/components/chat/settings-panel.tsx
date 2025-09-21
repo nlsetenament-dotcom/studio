@@ -85,23 +85,22 @@ export default function SettingsPanel({
         </SheetHeader>
         <ScrollArea className="flex-1 px-6">
             <div className="space-y-8">
-                <div>
-                    <h3 className="mb-4 text-lg font-medium text-foreground">Apariencia</h3>
-                    <div className="rounded-lg border p-4">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <Label htmlFor="dark-mode">Modo Oscuro</Label>
-                                <p className="text-sm text-muted-foreground">Disfruta de una interfaz más oscura.</p>
-                            </div>
-                            <Switch id="dark-mode" checked={isDarkMode} onCheckedChange={setIsDarkMode} />
-                        </div>
-                    </div>
-                </div>
 
-                <div>
+                 <div>
                     <h3 className="mb-4 text-lg font-medium text-foreground">Galería de Avatares</h3>
                      <div className="rounded-lg border p-4">
                         <div className="grid grid-cols-3 gap-4">
+                             <button
+                                className={cn(
+                                    'relative flex aspect-square flex-col items-center justify-center gap-2 rounded-md border-2 border-dashed border-muted-foreground/50 bg-muted/25 text-muted-foreground transition-colors',
+                                    'hover:bg-muted/50 hover:border-muted-foreground',
+                                    'ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+                                )}
+                                // onClick={() => { /* Handle image upload */ }}
+                            >
+                                <Upload className="h-6 w-6" />
+                                <span className="text-xs">Subir Imagen</span>
+                             </button>
                             {avatarGallery.map(image => (
                                 <button
                                     key={image.id}
@@ -121,17 +120,19 @@ export default function SettingsPanel({
                                     />
                                 </button>
                             ))}
-                             <button
-                                className={cn(
-                                    'relative flex aspect-square flex-col items-center justify-center gap-2 rounded-md border-2 border-dashed border-muted-foreground/50 bg-muted/25 text-muted-foreground transition-colors',
-                                    'hover:bg-muted/50 hover:border-muted-foreground',
-                                    'ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-                                )}
-                                // onClick={() => { /* Handle image upload */ }}
-                            >
-                                <Upload className="h-6 w-6" />
-                                <span className="text-xs">Subir Imagen</span>
-                             </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 className="mb-4 text-lg font-medium text-foreground">Apariencia</h3>
+                    <div className="rounded-lg border p-4">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <Label htmlFor="dark-mode">Modo Oscuro</Label>
+                                <p className="text-sm text-muted-foreground">Disfruta de una interfaz más oscura.</p>
+                            </div>
+                            <Switch id="dark-mode" checked={isDarkMode} onCheckedChange={setIsDarkMode} />
                         </div>
                     </div>
                 </div>
