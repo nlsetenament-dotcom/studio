@@ -9,7 +9,6 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
-import {getCurrentTime} from './get-current-time';
 
 const ReactToUserBehaviorInputSchema = z.object({
   userMessage: z.string().describe('El mensaje enviado por el usuario.'),
@@ -73,7 +72,6 @@ Mensaje del Usuario: {{userMessage}}
 
 Genera solo la reacción emocional inmediata en una o dos frases, manteniendo un lenguaje humano y creíble.
 Reacción:`,
-  tools: [getCurrentTime],
 });
 
 const reactToUserBehaviorFlow = ai.defineFlow(
