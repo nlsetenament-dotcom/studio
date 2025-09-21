@@ -2,10 +2,14 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Companion } from '@/lib/types';
-import { MoreVertical, Settings } from 'lucide-react';
+import { MoreVertical, Settings, UserPlus } from 'lucide-react';
 import SettingsPanel from './settings-panel';
 import { useState } from 'react';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../ui/dropdown-menu';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '../ui/dropdown-menu';
+import { useRouter } from 'next/navigation';
+import { useCompanion } from '@/hooks/use-companion';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '../ui/alert-dialog';
+
 
 interface ChatHeaderProps {
   companion: Companion;
@@ -15,6 +19,16 @@ interface ChatHeaderProps {
 
 export default function ChatHeader({ companion, onDifficultyChange, onAvatarChange }: ChatHeaderProps) {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const router = useRouter();
+  const { saveCompanion, resetChat } = useCompanion();
+
+  const handleCreateNew = () => {
+    localStorage.removeItem('altered-self-companion');
+    localStorage.removeItem('altered-self-messages');
+    saveCompanion(null);
+    resetChat();
+    router.push('/create');
+  };
 
   return (
     <>
@@ -39,6 +53,29 @@ export default function ChatHeader({ companion, onDifficultyChange, onAvatarChan
             <Settings className="mr-2 h-4 w-4" />
             <span>Ajustes</span>
           </DropdownMenuItem>
+          <DropdownMenuSeparator />
+           <AlertDialog>
+            <AlertDialogTrigger asChild>
+                <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                    <UserPlus className="mr-2 h-4 w-4 text-destructive/70" />
+                    <span className='text-destructive/70'>Crear Nuevo Compañero</span>
+                </DropdownMenuItem>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+                <AlertDialogHeader>
+                    <AlertDialogTitle>¿Estás seguro?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                        Esto borrará permanentemente a tu compañero actual y todo su historial de chat. Esta acción no se puede deshacer.
+                    </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                    <AlertDialogAction onClick={handleCreateNew} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                        Crear Nuevo
+                    </AlertDialogAction>
+                </AlertDialogFooter>
+            </AlertDialogContent>
+        </AlertDialog>
         </DropdownMenuContent>
       </DropdownMenu>
     </header>

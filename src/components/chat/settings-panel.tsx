@@ -11,7 +11,7 @@ import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
-import { BookUser, BrainCircuit, ShieldQuestion, Upload } from 'lucide-react';
+import { BookUser, BrainCircuit, ImageIcon, Palette, ShieldQuestion, Upload } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Badge } from '../ui/badge';
 
@@ -113,9 +113,8 @@ export default function SettingsPanel({
         </SheetHeader>
         <ScrollArea className="flex-1 px-6">
             <div className="space-y-8">
-
                  <div>
-                    <h3 className="mb-4 text-lg font-medium text-foreground">Galería de Avatares</h3>
+                    <h3 className="mb-4 text-lg font-medium text-foreground flex items-center gap-2"><ImageIcon className="h-5 w-5 text-primary" />Galería de Avatares</h3>
                      <div className="rounded-lg border p-4">
                         <div className="grid grid-cols-3 gap-4">
                              <input 
@@ -158,9 +157,8 @@ export default function SettingsPanel({
                         </div>
                     </div>
                 </div>
-
                 <div>
-                    <h3 className="mb-4 text-lg font-medium text-foreground">Apariencia</h3>
+                    <h3 className="mb-4 text-lg font-medium text-foreground flex items-center gap-2"><Palette className="h-5 w-5 text-primary" />Apariencia</h3>
                     <div className="rounded-lg border p-4">
                         <div className="flex items-center justify-between">
                             <div>
@@ -171,22 +169,14 @@ export default function SettingsPanel({
                         </div>
                     </div>
                 </div>
-                
                  <div>
-                    <h3 className="mb-4 text-lg font-medium text-foreground">Detalles del Compañer@</h3>
+                    <h3 className="mb-4 text-lg font-medium text-foreground flex items-center gap-2"><BrainCircuit className="h-5 w-5 text-primary" />Detalles del Compañer@</h3>
                     <div className="space-y-4 rounded-lg border p-4">
                         <div className="flex items-center gap-4">
                             <BookUser className="h-5 w-5 shrink-0 text-muted-foreground" />
                             <div className="flex w-full items-center justify-between">
                                 <span className="font-medium">Estado de la Relación</span>
                                 <Badge variant="secondary">{companion.relationshipStatus}</Badge>
-                            </div>
-                        </div>
-                        <div className="flex items-center gap-4">
-                            <ShieldQuestion className="h-5 w-5 shrink-0 text-muted-foreground" />
-                             <div className="flex w-full items-center justify-between">
-                                <span className="font-medium">Dificultad Actual</span>
-                                 <Badge variant="outline">{companion.difficulty}</Badge>
                             </div>
                         </div>
                         <div className="flex items-start gap-4">
@@ -198,10 +188,8 @@ export default function SettingsPanel({
                         </div>
                     </div>
                 </div>
-
-
                 <div>
-                    <h3 className="mb-4 text-lg font-medium text-foreground">Jugabilidad</h3>
+                    <h3 className="mb-4 text-lg font-medium text-foreground flex items-center gap-2"><ShieldQuestion className="h-5 w-5 text-primary" />Jugabilidad</h3>
                     <div className="rounded-lg border p-4">
                          <Label className="mb-2 block">Dificultad de Relación</Label>
                          <RadioGroup value={selectedDifficulty} onValueChange={(value: Companion['difficulty']) => setSelectedDifficulty(value)}>
@@ -217,6 +205,7 @@ export default function SettingsPanel({
                             ))}
                             </div>
                          </RadioGroup>
+                         <p className="mt-4 text-xs text-center text-muted-foreground">Al cambiar la dificultad se reiniciará la conversación y la relación.</p>
                     </div>
                 </div>
             </div>

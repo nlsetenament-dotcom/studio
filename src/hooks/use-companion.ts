@@ -29,10 +29,14 @@ export function useCompanion() {
     }
   }, []);
 
-  const saveCompanion = useCallback((newCompanion: Companion) => {
+  const saveCompanion = useCallback((newCompanion: Companion | null) => {
     setCompanion(newCompanion);
     try {
-      localStorage.setItem(COMPANION_KEY, JSON.stringify(newCompanion));
+        if (newCompanion) {
+            localStorage.setItem(COMPANION_KEY, JSON.stringify(newCompanion));
+        } else {
+            localStorage.removeItem(COMPANION_KEY);
+        }
     } catch (error) {
       console.error('Failed to save companion to localStorage', error);
     }
