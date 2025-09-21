@@ -35,7 +35,7 @@ export default function ChatMessage({ message, companion, isSelected, onSelect }
             : 'rounded-bl-none bg-card text-card-foreground',
           isSelected
             ? 'bg-primary/20'
-            : isUser ? 'hover:bg-accent/80' : 'hover:bg-card/80'
+            : isUser ? 'hover:bg-accent/80' : 'hover:bg-card/90'
         )}
       >
         <p className="text-sm" style={{ whiteSpace: 'pre-wrap' }}>{message.text}</p>
