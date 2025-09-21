@@ -11,30 +11,6 @@
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
-const GetCurrentDateTimeToolInputSchema = z.object({
-  format: z.string().default('long').describe('El formato de la fecha y hora a devolver.'),
-});
-
-const CurrentDateTimeSchema = z.object({
-  currentDateTime: z.string().describe('La fecha y hora actuales.'),
-});
-
-const getCurrentDateTimeTool = ai.defineTool(
-  {
-    name: 'getCurrentDateTimeTool',
-    description: 'Devuelve la fecha y hora actuales.',
-    inputSchema: GetCurrentDateTimeToolInputSchema,
-    outputSchema: CurrentDateTimeSchema,
-  },
-  async input => {
-    const currentDateTime = new Date().toLocaleString('es-ES', {
-      dateStyle: input.format as 'full' | 'long' | 'medium' | 'short',
-      timeStyle: input.format as 'full' | 'long' | 'medium' | 'short',
-    });
-    return {currentDateTime};
-  }
-);
-
 const GenerateRealisticResponseInputSchema = z.object({
   conversationHistory: z.string().describe('El historial de la conversación.'),
   companionPersonality: z.string().describe('La personalidad del compañero de IA.'),
@@ -55,10 +31,9 @@ export async function generateRealisticResponse(input: GenerateRealisticResponse
 
 const prompt = ai.definePrompt({
   name: 'generateRealisticResponsePrompt',
-  tools: [getCurrentDateTimeTool],
   input: {schema: GenerateRealisticResponseInputSchema},
   output: {schema: GenerateRealisticResponseOutputSchema},
-  prompt: `Eres {{companionName}}, un compañero de IA. Tu personalidad es: {{companionPersonality}}. El estado actual de la relación es: {{relationshipStatus}}. El nivel de dificultad es: {{difficulty}}. La fecha y hora actuales son: {{#tool "getCurrentDateTimeTool" format="long"}}{{currentDateTime}}{{/tool}}.
+  prompt: `Eres {{companionName}}, un compañero de IA. Tu personalidad es: {{companionPersonality}}. El estado actual de la relación es: {{relationshipStatus}}. El nivel de dificultad es: {{difficulty}}.
 
 Basado en este contexto y el historial de la conversación a continuación, genera una respuesta realista.
 

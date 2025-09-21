@@ -68,7 +68,7 @@ export async function createCompanionAction(formData: FormData) {
       description,
       difficulty,
       personality: personalityResult.personalityDescription,
-      relationshipStatus: 'Desconocido',
+      relationshipStatus: 'Conocido',
       avatarUrl: companionAvatar?.imageUrl || 'https://picsum.photos/seed/companion/200/200',
     };
 
