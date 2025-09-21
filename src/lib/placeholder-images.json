@@ -1,3 +1,10 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "companion-avatar",
+      "description": "Default avatar for the AI companion",
+      "imageUrl": "https://picsum.photos/seed/companion/200/200",
+      "imageHint": "avatar person"
+    }
+  ]
 }
