@@ -5,10 +5,13 @@ import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetFo
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Companion } from '@/lib/types';
-import { Separator } from '../ui/separator';
 import { Label } from '../ui/label';
 import { Switch } from '../ui/switch';
 import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
+import Image from 'next/image';
+import { cn } from '@/lib/utils';
+import { Upload } from 'lucide-react';
 
 interface SettingsPanelProps {
   isOpen: boolean;
@@ -22,34 +25,35 @@ const difficultyLevels: { id: Companion['difficulty']; label: string; descriptio
     { id: 'Easy', label: 'Fácil', description: 'Progreso muy rápido (~70-90% prob.)' },
     { id: 'Hard', label: 'Normal', description: 'Progresión estándar (~40-60% prob.)' },
     { id: 'Expert', label: 'Difícil', description: 'Requiere esfuerzo (~20-35% prob.)' },
-    { id: 'Ultra Hard', label: 'Experto', description: 'Paciencia es clave (~10-15% prob.)' },
+    { id: 'Ultra Hard', label: 'Experto', description: 'Casi imposible (~1-5% prob.)' },
 ];
 
 export default function SettingsPanel({ 
     isOpen, 
     onOpenChange, 
     companion, 
+    onAvatarChange,
     onDifficultyChange 
 }: SettingsPanelProps) {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [selectedDifficulty, setSelectedDifficulty] = useState<Companion['difficulty']>(companion.difficulty);
+  const [selectedAvatar, setSelectedAvatar] = useState(companion.avatarUrl);
 
   useEffect(() => {
-    // Sync with system/browser theme
-    const darkModeMatcher = window.matchMedia('(prefers-color-scheme: dark)');
-    setIsDarkMode(darkModeMatcher.matches);
-    const
- 
-handleChange = (e: MediaQueryListEvent) => setIsDarkMode(e.matches);
-    darkModeMatcher.addEventListener('change', handleChange);
-    return () => darkModeMatcher.removeEventListener('change', handleChange);
+    // On mount, read the theme from localStorage or system preference
+    const storedTheme = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const initialDarkMode = storedTheme === 'dark' || (storedTheme === null && prefersDark);
+    setIsDarkMode(initialDarkMode);
   }, []);
 
   useEffect(() => {
     if (isDarkMode) {
       document.documentElement.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
     } else {
       document.documentElement.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
     }
   }, [isDarkMode]);
 
@@ -57,13 +61,20 @@ handleChange = (e: MediaQueryListEvent) => setIsDarkMode(e.matches);
     if (selectedDifficulty !== companion.difficulty) {
         onDifficultyChange(selectedDifficulty);
     }
+    if (selectedAvatar !== companion.avatarUrl) {
+        onAvatarChange(selectedAvatar);
+    }
     onOpenChange(false);
   };
   
   const handleCancel = () => {
     setSelectedDifficulty(companion.difficulty);
+    setSelectedAvatar(companion.avatarUrl);
     onOpenChange(false);
   };
+
+  // Filter out the default companion avatar from the gallery
+  const avatarGallery = PlaceHolderImages.filter(img => img.id !== 'companion-avatar');
 
   return (
     <Sheet open={isOpen} onOpenChange={onOpenChange}>
@@ -75,7 +86,7 @@ handleChange = (e: MediaQueryListEvent) => setIsDarkMode(e.matches);
         <ScrollArea className="flex-1 px-6">
             <div className="space-y-8">
                 <div>
-                    <h3 className="mb-4 text-lg font-medium text-foreground">General</h3>
+                    <h3 className="mb-4 text-lg font-medium text-foreground">Apariencia</h3>
                     <div className="rounded-lg border p-4">
                         <div className="flex items-center justify-between">
                             <div>
@@ -83,6 +94,44 @@ handleChange = (e: MediaQueryListEvent) => setIsDarkMode(e.matches);
                                 <p className="text-sm text-muted-foreground">Disfruta de una interfaz más oscura.</p>
                             </div>
                             <Switch id="dark-mode" checked={isDarkMode} onCheckedChange={setIsDarkMode} />
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 className="mb-4 text-lg font-medium text-foreground">Galería de Avatares</h3>
+                     <div className="rounded-lg border p-4">
+                        <div className="grid grid-cols-3 gap-4">
+                            {avatarGallery.map(image => (
+                                <button
+                                    key={image.id}
+                                    className={cn(
+                                        'relative aspect-square overflow-hidden rounded-md transition-all duration-200',
+                                        'ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+                                        selectedAvatar === image.imageUrl && 'ring-2 ring-primary ring-offset-2'
+                                    )}
+                                    onClick={() => setSelectedAvatar(image.imageUrl)}
+                                >
+                                    <Image 
+                                        src={image.imageUrl} 
+                                        alt={image.description} 
+                                        fill
+                                        className="object-cover"
+                                        data-ai-hint={image.imageHint}
+                                    />
+                                </button>
+                            ))}
+                             <button
+                                className={cn(
+                                    'relative flex aspect-square flex-col items-center justify-center gap-2 rounded-md border-2 border-dashed border-muted-foreground/50 bg-muted/25 text-muted-foreground transition-colors',
+                                    'hover:bg-muted/50 hover:border-muted-foreground',
+                                    'ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+                                )}
+                                // onClick={() => { /* Handle image upload */ }}
+                            >
+                                <Upload className="h-6 w-6" />
+                                <span className="text-xs">Subir Imagen</span>
+                             </button>
                         </div>
                     </div>
                 </div>
@@ -102,13 +151,6 @@ handleChange = (e: MediaQueryListEvent) => setIsDarkMode(e.matches);
                                     </div>
                                 </div>
                             ))}
-                             <div className="flex items-start gap-3">
-                                <RadioGroupItem value={'Ultra Hard'} id={'Ultra Hard'} className="mt-1" />
-                                <div className='grid gap-0.5'>
-                                    <Label htmlFor={'Ultra Hard'} className="font-normal">Ultra Difícil</Label>
-                                    <p className="text-xs text-muted-foreground">Casi imposible (~1-5% prob.)</p>
-                                </div>
-                            </div>
                             </div>
                          </RadioGroup>
                     </div>
