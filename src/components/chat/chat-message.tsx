@@ -1,3 +1,5 @@
+'use client';
+
 import { Companion, Message } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
@@ -44,7 +46,7 @@ export default function ChatMessage({ message, companion, isSelected, onSelect }
         >
           <p className="text-sm" style={{ whiteSpace: 'pre-wrap' }}>{message.text}</p>
         </div>
-        <span className="mt-1.5 text-xs text-muted-foreground transition-opacity duration-300 opacity-0 group-hover:opacity-100 px-1">
+        <span className="mt-1.5 text-xs text-muted-foreground px-1">
           {formattedTime}
         </span>
       </div>
