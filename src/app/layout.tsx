@@ -2,6 +2,14 @@ import type { Metadata } from 'next';
 import { Toaster } from '@/components/ui/toaster';
 import './globals.css';
 import { cn } from '@/lib/utils';
+import { Alegreya } from 'next/font/google';
+
+const alegreya = Alegreya({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-alegreya',
+});
+
 
 export const metadata: Metadata = {
   title: 'NLS Entertainment',
@@ -15,12 +23,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es" suppressHydrationWarning>
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Alegreya&display=swap" rel="stylesheet" />
-      </head>
-      <body className={cn('font-body antialiased')}>
+      <body className={cn('font-body antialiased', alegreya.variable)}>
         {children}
         <Toaster />
       </body>
