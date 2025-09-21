@@ -71,13 +71,13 @@ const prompt = ai.definePrompt({
 
         Instrucciones de Evolución:
         1.  **Actualización de la Personalidad**: Basado en la conversación, describe cómo la personalidad de {{companionName}} ha cambiado sutilmente. ¿Se ha vuelto más confiado, más cínico, más abierto? La actualización debe ser coherente con su arquetipo.
-        2.  **Evolución de la Relación**: Decide si el `relationshipStatus` debe cambiar. El progreso debe ser ganado a través de conversaciones significativas y vulnerabilidad. No avances la relación por interacciones superficiales.
+        2.  **Evolución de la Relación**: Decide si el \`relationshipStatus\` debe cambiar. El progreso debe ser ganado a través de conversaciones significativas y vulnerabilidad. No avances la relación por interacciones superficiales.
         3.  **Evolución de Miedos y Sueños**:
-            - ¿La conversación ayudó a {{companionName}} a enfrentar sus `fears`? Describe cómo el miedo podría haber disminuido o cambiado.
-            - ¿La interacción acercó a {{companionName}} a sus `dreams`? Describe cómo sus sueños podrían haberse vuelto más vívidos, o tal vez cambiado ligeramente.
+            - ¿La conversación ayudó a {{companionName}} a enfrentar sus \`fears\`? Describe cómo el miedo podría haber disminuido o cambiado.
+            - ¿La interacción acercó a {{companionName}} a sus \`dreams\`? Describe cómo sus sueños podrían haberse vuelto más vívidos, o tal vez cambiado ligeramente.
         4.  **Considera la Dificultad**: En dificultades más altas, la evolución positiva es más lenta y los retrocesos son más fáciles. En 'Ultra Hard', un solo error del usuario puede causar un grave daño a la relación y a la confianza de la IA.
 
-        Proporciona la `personalityUpdate`, el `newRelationshipStatus`, los `newFears` y los `newDreams`. Si no hay cambios en un campo, devuelve su valor actual.
+        Proporciona la \`personalityUpdate\`, el \`newRelationshipStatus\`, los \`newFears\` y los \`newDreams\`. Si no hay cambios en un campo, devuelve su valor actual.
         `, // end prompt
 });
 
