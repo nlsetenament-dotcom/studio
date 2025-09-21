@@ -13,7 +13,6 @@ const createCompanionSchema = z.object({
   birthDate: z.string().datetime(),
   hobbies: z.string().min(3).max(200),
   description: z.string().min(10).max(500),
-  difficulty: z.enum(['Easy', 'Hard', 'Expert', 'Ultra Hard']),
 });
 
 function calculateTypingDelay(text: string): number {
@@ -41,7 +40,7 @@ export async function createCompanionAction(formData: FormData) {
     return { error: 'Datos de formulario inválidos. Asegúrate de que la fecha de nacimiento sea válida.' };
   }
   
-  const { name, gender, birthDate, hobbies, description, difficulty } = validatedFields.data;
+  const { name, gender, birthDate, hobbies, description } = validatedFields.data;
 
   try {
     const birthDateObj = new Date(birthDate);
@@ -66,7 +65,7 @@ export async function createCompanionAction(formData: FormData) {
       birthDate: birthDate,
       hobbies,
       description,
-      difficulty,
+      difficulty: 'Hard', // Default difficulty
       personality: personalityResult.personalityDescription,
       relationshipStatus: 'Conocido',
       avatarUrl: companionAvatar?.imageUrl || 'https://picsum.photos/seed/companion/200/200',

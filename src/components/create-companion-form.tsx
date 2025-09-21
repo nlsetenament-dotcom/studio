@@ -25,7 +25,6 @@ const formSchema = z.object({
   birthYear: z.string().min(4, 'Año debe tener 4 dígitos.').max(4),
   hobbies: z.string().min(3, 'Los pasatiempos deben tener al menos 3 caracteres.').max(200, 'Los pasatiempos no pueden exceder los 200 caracteres.'),
   description: z.string().min(10, 'La descripción debe tener al menos 10 caracteres.').max(500, 'La descripción no puede exceder los 500 caracteres.'),
-  difficulty: z.enum(['Easy', 'Hard', 'Expert', 'Ultra Hard'], { required_error: 'Por favor selecciona una dificultad.' }),
 }).refine(data => {
     const day = parseInt(data.birthDay, 10);
     const month = parseInt(data.birthMonth, 10);
@@ -221,30 +220,6 @@ export default function CreateCompanionForm() {
                   <FormControl>
                     <Textarea placeholder="Describe su personalidad, qué los hace únicos..." className="min-h-[100px]" {...field} />
                   </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="difficulty"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Dificultad</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Selecciona un nivel de dificultad" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="Easy">Fácil - Permisivo y abierto.</SelectItem>
-                      <SelectItem value="Hard">Difícil - Cauteloso y requiere esfuerzo.</SelectItem>
-                      <SelectItem value="Expert">Experto - Un verdadero desafío para conectar.</SelectItem>
-                      <SelectItem value="Ultra Hard">Ultra Difícil - Escéptico y distante.</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormDescription>Esto determinará cómo evoluciona la relación.</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
