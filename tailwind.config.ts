@@ -89,20 +89,15 @@ export default {
           },
         },
         'text-gradient': {
-          '0%, 100%': {
-              'background-size': '200% 200%',
-              'background-position': 'left center',
-          },
-          '50%': {
-              'background-size': '200% 200%',
-              'background-position': 'right center',
+          to: {
+            'background-position': '200% center',
           },
         },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
-        'text-gradient': 'text-gradient 5s ease-in-out infinite',
+        'text-gradient': 'text-gradient 5s linear infinite',
       },
     },
   },

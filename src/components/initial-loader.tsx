@@ -13,7 +13,7 @@ export default function InitialLoader() {
   useEffect(() => {
     setAnimationStarted(true);
     const timer = setInterval(() => {
-      setProgress((prev) => (prev >= 100 ? 100 : prev + 2));
+      setProgress((prev) => (prev >= 100 ? 100 : prev + 4));
     }, 50);
 
     const checkCompanion = () => {
@@ -47,10 +47,10 @@ export default function InitialLoader() {
               : 'opacity-0 scale-95'
           )}
         >
-          <h1 className="font-headline text-8xl font-bold tracking-tighter animate-text-gradient bg-gradient-to-r from-primary via-destructive to-primary bg-clip-text text-transparent">
+          <h1 className="font-headline text-8xl font-bold tracking-tighter animate-text-gradient">
             NLS
           </h1>
-          <p className="text-sm tracking-[0.4em] text-muted-foreground animate-text-gradient bg-gradient-to-r from-muted-foreground/80 via-foreground to-muted-foreground/80 bg-clip-text text-transparent">
+          <p className="text-sm tracking-[0.4em] animate-text-gradient">
             ENTERTAINMENT
           </p>
         </div>
