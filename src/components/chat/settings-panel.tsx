@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetFooter } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -12,6 +12,7 @@ import { PlaceHolderImages } from '@/lib/placeholder-images';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import { Upload } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
 interface SettingsPanelProps {
   isOpen: boolean;
@@ -38,6 +39,8 @@ export default function SettingsPanel({
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [selectedDifficulty, setSelectedDifficulty] = useState<Companion['difficulty']>(companion.difficulty);
   const [selectedAvatar, setSelectedAvatar] = useState(companion.avatarUrl);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const { toast } = useToast();
 
   useEffect(() => {
     // On mount, read the theme from localStorage or system preference
@@ -73,6 +76,32 @@ export default function SettingsPanel({
     onOpenChange(false);
   };
 
+  const handleUploadClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      if (file.size > 2 * 1024 * 1024) { // 2MB limit
+        toast({
+            variant: 'destructive',
+            title: 'Archivo Demasiado Grande',
+            description: 'Por favor, selecciona una imagen de menos de 2MB.',
+        });
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const result = e.target?.result;
+        if (typeof result === 'string') {
+          setSelectedAvatar(result);
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   // Filter out the default companion avatar from the gallery
   const avatarGallery = PlaceHolderImages.filter(img => img.id !== 'companion-avatar');
 
@@ -90,13 +119,20 @@ export default function SettingsPanel({
                     <h3 className="mb-4 text-lg font-medium text-foreground">Galería de Avatares</h3>
                      <div className="rounded-lg border p-4">
                         <div className="grid grid-cols-3 gap-4">
+                             <input 
+                                type="file"
+                                ref={fileInputRef}
+                                onChange={handleFileChange}
+                                className="hidden"
+                                accept="image/png, image/jpeg, image/gif"
+                             />
                              <button
                                 className={cn(
                                     'relative flex aspect-square flex-col items-center justify-center gap-2 rounded-md border-2 border-dashed border-muted-foreground/50 bg-muted/25 text-muted-foreground transition-colors',
                                     'hover:bg-muted/50 hover:border-muted-foreground',
                                     'ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
                                 )}
-                                // onClick={() => { /* Handle image upload */ }}
+                                onClick={handleUploadClick}
                             >
                                 <Upload className="h-6 w-6" />
                                 <span className="text-xs">Subir Imagen</span>
