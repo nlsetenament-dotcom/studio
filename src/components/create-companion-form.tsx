@@ -5,6 +5,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useRouter } from 'next/navigation';
 import { useTransition } from 'react';
+import { format } from "date-fns";
+import { es } from "date-fns/locale";
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -15,12 +17,17 @@ import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { createCompanionAction } from '@/lib/actions';
 import { useCompanion } from '@/hooks/use-companion';
-import { Loader2 } from 'lucide-react';
+import { CalendarIcon, Loader2 } from 'lucide-react';
+import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
+import { cn } from '@/lib/utils';
+import { Calendar } from './ui/calendar';
 
 const formSchema = z.object({
   name: z.string().min(2, 'El nombre debe tener al menos 2 caracteres.').max(50, 'El nombre no puede exceder los 50 caracteres.'),
   gender: z.enum(['Masculino', 'Femenino'], { required_error: 'Por favor selecciona un género.' }),
-  age: z.coerce.number({ required_error: 'La edad es requerida.' }).int().min(18, 'Debe tener al menos 18 años.').max(100, 'La edad no puede exceder los 100 años.'),
+  birthDate: z.date({
+    required_error: "Se requiere una fecha de nacimiento.",
+  }),
   hobbies: z.string().min(3, 'Los pasatiempos deben tener al menos 3 caracteres.').max(200, 'Los pasatiempos no pueden exceder los 200 caracteres.'),
   description: z.string().min(10, 'La descripción debe tener al menos 10 caracteres.').max(500, 'La descripción no puede exceder los 500 caracteres.'),
   difficulty: z.enum(['Easy', 'Hard', 'Expert', 'Ultra Hard'], { required_error: 'Por favor selecciona una dificultad.' }),
@@ -45,7 +52,11 @@ export default function CreateCompanionForm() {
     startTransition(async () => {
       const formData = new FormData();
       Object.entries(values).forEach(([key, value]) => {
-        formData.append(key, String(value));
+        if (key === 'birthDate' && value instanceof Date) {
+            formData.append(key, value.toISOString());
+        } else {
+            formData.append(key, String(value));
+        }
       });
 
       const result = await createCompanionAction(formData);
@@ -92,13 +103,42 @@ export default function CreateCompanionForm() {
               />
               <FormField
                 control={form.control}
-                name="age"
+                name="birthDate"
                 render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Edad</FormLabel>
-                    <FormControl>
-                      <Input type="number" placeholder="p. ej., 25" {...field} />
-                    </FormControl>
+                  <FormItem className="flex flex-col">
+                    <FormLabel>Fecha de Nacimiento</FormLabel>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <FormControl>
+                          <Button
+                            variant={"outline"}
+                            className={cn(
+                              "w-full pl-3 text-left font-normal",
+                              !field.value && "text-muted-foreground"
+                            )}
+                          >
+                            {field.value ? (
+                              format(field.value, "PPP", { locale: es })
+                            ) : (
+                              <span>Elige una fecha</span>
+                            )}
+                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                          </Button>
+                        </FormControl>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          mode="single"
+                          selected={field.value}
+                          onSelect={field.onChange}
+                          disabled={(date) =>
+                            date > new Date() || date < new Date("1900-01-01")
+                          }
+                          initialFocus
+                          locale={es}
+                        />
+                      </PopoverContent>
+                    </Popover>
                     <FormMessage />
                   </FormItem>
                 )}

@@ -10,7 +10,7 @@ import { PlaceHolderImages } from './placeholder-images';
 const createCompanionSchema = z.object({
   name: z.string().min(2).max(50),
   gender: z.enum(['Masculino', 'Femenino']),
-  age: z.coerce.number().int().min(18).max(100),
+  birthDate: z.string().datetime(),
   hobbies: z.string().min(3).max(200),
   description: z.string().min(10).max(500),
   difficulty: z.enum(['Easy', 'Hard', 'Expert', 'Ultra Hard']),
@@ -23,16 +23,37 @@ function calculateTypingDelay(text: string): number {
   return Math.max(500, Math.min(delay, 5000)); // Ensure delay is between 0.5s and 5s
 }
 
+function calculateAge(birthDate: Date): number {
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+    }
+    return age;
+}
+
 export async function createCompanionAction(formData: FormData) {
   const validatedFields = createCompanionSchema.safeParse(Object.fromEntries(formData.entries()));
 
   if (!validatedFields.success) {
-    return { error: 'Datos de formulario inválidos.' };
+    console.error(validatedFields.error.flatten().fieldErrors);
+    return { error: 'Datos de formulario inválidos. Asegúrate de que la fecha de nacimiento sea válida.' };
   }
   
-  const { name, gender, age, hobbies, description, difficulty } = validatedFields.data;
+  const { name, gender, birthDate, hobbies, description, difficulty } = validatedFields.data;
 
   try {
+    const birthDateObj = new Date(birthDate);
+    const age = calculateAge(birthDateObj);
+
+    if (age < 18) {
+        return { error: 'Debes tener al menos 18 años.' };
+    }
+    if (age > 100) {
+        return { error: 'La edad no puede exceder los 100 años.' };
+    }
+
     const personalityResult = await generateCompanionPersonality({ name, gender, age, hobbies, description });
     
     const companionAvatar = PlaceHolderImages.find(img => img.id === 'companion-avatar');
@@ -42,6 +63,7 @@ export async function createCompanionAction(formData: FormData) {
       name,
       gender,
       age,
+      birthDate: birthDate,
       hobbies,
       description,
       difficulty,
