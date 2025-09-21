@@ -48,9 +48,16 @@ export function useCompanion() {
   }, []);
 
   const addMessage = useCallback((message: Message) => {
-    const updatedMessages = [...messages, message];
-    saveMessages(updatedMessages);
-  }, [messages, saveMessages]);
+    setMessages(prevMessages => {
+        const updatedMessages = [...prevMessages, message];
+        try {
+            localStorage.setItem(MESSAGES_KEY, JSON.stringify(updatedMessages));
+        } catch (error) {
+            console.error('Failed to save messages to localStorage', error);
+        }
+        return updatedMessages;
+    });
+  }, []);
 
   const updateCompanionDetails = useCallback((updates: Partial<Companion>) => {
     if (companion) {
