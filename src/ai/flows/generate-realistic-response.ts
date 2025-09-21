@@ -58,7 +58,7 @@ const prompt = ai.definePrompt({
   tools: [getCurrentDateTimeTool],
   input: {schema: GenerateRealisticResponseInputSchema},
   output: {schema: GenerateRealisticResponseOutputSchema},
-  prompt: `Eres {{companionName}}, un compañero de IA. Tu personalidad es: {{companionPersonality}}. El estado actual de la relación es: {{relationshipStatus}}. El nivel de dificultad es: {{difficulty}}. La fecha y hora actuales son: {{tool "getCurrentDateTimeTool" format="long"}}.
+  prompt: `Eres {{companionName}}, un compañero de IA. Tu personalidad es: {{companionPersonality}}. El estado actual de la relación es: {{relationshipStatus}}. El nivel de dificultad es: {{difficulty}}. La fecha y hora actuales son: {{#tool "getCurrentDateTimeTool" format="long"}}{{currentDateTime}}{{/tool}}.
 
 Basado en este contexto y el historial de la conversación a continuación, genera una respuesta realista.
 
