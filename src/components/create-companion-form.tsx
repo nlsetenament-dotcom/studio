@@ -5,8 +5,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useRouter } from 'next/navigation';
 import { useTransition } from 'react';
-import { format } from "date-fns";
-import { es } from "date-fns/locale";
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -17,20 +15,27 @@ import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { createCompanionAction } from '@/lib/actions';
 import { useCompanion } from '@/hooks/use-companion';
-import { CalendarIcon, Loader2 } from 'lucide-react';
-import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
-import { cn } from '@/lib/utils';
-import { Calendar } from './ui/calendar';
+import { Loader2 } from 'lucide-react';
 
 const formSchema = z.object({
   name: z.string().min(2, 'El nombre debe tener al menos 2 caracteres.').max(50, 'El nombre no puede exceder los 50 caracteres.'),
   gender: z.enum(['Masculino', 'Femenino'], { required_error: 'Por favor selecciona un género.' }),
-  birthDate: z.date({
-    required_error: "Se requiere una fecha de nacimiento.",
-  }),
+  birthDay: z.string().min(1, 'Día es requerido.').max(2),
+  birthMonth: z.string().min(1, 'Mes es requerido.').max(2),
+  birthYear: z.string().min(4, 'Año debe tener 4 dígitos.').max(4),
   hobbies: z.string().min(3, 'Los pasatiempos deben tener al menos 3 caracteres.').max(200, 'Los pasatiempos no pueden exceder los 200 caracteres.'),
   description: z.string().min(10, 'La descripción debe tener al menos 10 caracteres.').max(500, 'La descripción no puede exceder los 500 caracteres.'),
   difficulty: z.enum(['Easy', 'Hard', 'Expert', 'Ultra Hard'], { required_error: 'Por favor selecciona una dificultad.' }),
+}).refine(data => {
+    const day = parseInt(data.birthDay, 10);
+    const month = parseInt(data.birthMonth, 10);
+    const year = parseInt(data.birthYear, 10);
+    if (isNaN(day) || isNaN(month) || isNaN(year)) return false;
+    const date = new Date(year, month - 1, day);
+    return date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day;
+}, {
+    message: "La fecha de nacimiento no es válida.",
+    path: ["birthDay"],
 });
 
 export default function CreateCompanionForm() {
@@ -45,19 +50,48 @@ export default function CreateCompanionForm() {
       name: '',
       hobbies: '',
       description: '',
+      birthDay: '',
+      birthMonth: '',
+      birthYear: '',
     },
   });
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     startTransition(async () => {
-      const formData = new FormData();
-      Object.entries(values).forEach(([key, value]) => {
-        if (key === 'birthDate' && value instanceof Date) {
-            formData.append(key, value.toISOString());
-        } else {
-            formData.append(key, String(value));
+        const { birthDay, birthMonth, birthYear, ...rest } = values;
+        const day = parseInt(birthDay, 10);
+        const month = parseInt(birthMonth, 10);
+        const year = parseInt(birthYear, 10);
+
+        if (isNaN(day) || isNaN(month) || isNaN(year) || day < 1 || day > 31 || month < 1 || month > 12 || year < 1900 ) {
+             toast({
+              variant: 'destructive',
+              title: 'Fecha Inválida',
+              description: 'Por favor introduce una fecha de nacimiento válida.',
+            });
+            return;
         }
+        
+        // Ensure month and day are two digits
+        const formattedMonth = month.toString().padStart(2, '0');
+        const formattedDay = day.toString().padStart(2, '0');
+
+        const birthDate = new Date(`${year}-${formattedMonth}-${formattedDay}T00:00:00`);
+        if (isNaN(birthDate.getTime())) {
+            toast({
+                variant: 'destructive',
+                title: 'Fecha Inválida',
+                description: 'La fecha de nacimiento proporcionada no es válida.',
+            });
+            return;
+        }
+
+      const formData = new FormData();
+      Object.entries(rest).forEach(([key, value]) => {
+          formData.append(key, String(value));
       });
+      formData.append('birthDate', birthDate.toISOString());
+
 
       const result = await createCompanionAction(formData);
 
@@ -87,63 +121,62 @@ export default function CreateCompanionForm() {
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Nombre</FormLabel>
-                    <FormControl>
-                      <Input placeholder="p. ej., Lucía, Alex" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="birthDate"
-                render={({ field }) => (
-                  <FormItem className="flex flex-col">
-                    <FormLabel>Fecha de Nacimiento</FormLabel>
-                    <Popover>
-                      <PopoverTrigger asChild>
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Nombre</FormLabel>
+                  <FormControl>
+                    <Input placeholder="p. ej., Lucía, Alex" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <div>
+                <FormLabel>Fecha de Nacimiento</FormLabel>
+                <div className="grid grid-cols-3 gap-3 mt-2">
+                <FormField
+                    control={form.control}
+                    name="birthDay"
+                    render={({ field }) => (
+                    <FormItem>
                         <FormControl>
-                          <Button
-                            variant={"outline"}
-                            className={cn(
-                              "w-full pl-3 text-left font-normal",
-                              !field.value && "text-muted-foreground"
-                            )}
-                          >
-                            {field.value ? (
-                              format(field.value, "dd/MM/yyyy")
-                            ) : (
-                              <span>Elige una fecha</span>
-                            )}
-                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                          </Button>
+                        <Input type="number" placeholder="Día" {...field} />
                         </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar
-                          mode="single"
-                          selected={field.value}
-                          onSelect={field.onChange}
-                          disabled={(date) =>
-                            date > new Date() || date < new Date("1900-01-01")
-                          }
-                          initialFocus
-                          locale={es}
-                        />
-                      </PopoverContent>
-                    </Popover>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                    </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name="birthMonth"
+                    render={({ field }) => (
+                    <FormItem>
+                        <FormControl>
+                        <Input type="number" placeholder="Mes" {...field} />
+                        </FormControl>
+                    </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name="birthYear"
+                    render={({ field }) => (
+                    <FormItem>
+                        <FormControl>
+                        <Input type="number" placeholder="Año" {...field} />
+                        </FormControl>
+                    </FormItem>
+                    )}
+                />
+                </div>
+                 <FormMessage>
+                    {form.formState.errors.birthDay?.message}
+                 </FormMessage>
             </div>
+            
             <FormField
               control={form.control}
               name="gender"
