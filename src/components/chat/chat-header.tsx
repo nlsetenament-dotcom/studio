@@ -65,7 +65,7 @@ export default function ChatHeader({ companion, onDifficultyChange, onAvatarChan
      <SettingsPanel
         isOpen={isSettingsOpen}
         onOpenChange={setIsSettingsOpen}
-        currentAvatar={companion.avatarUrl}
+        companion={companion}
         onAvatarChange={onAvatarChange}
       />
     </>
