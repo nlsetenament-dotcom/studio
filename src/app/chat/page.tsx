@@ -14,9 +14,9 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 export default function ChatPage() {
   const router = useRouter();
-  const { companion, messages, addMessage, updateCompanionDetails, isLoading: isCompanionLoading, resetChat, removeMessage } = useCompanion();
+  const { companion, messages, addMessage, updateCompanionDetails, isLoading: isCompanionLoading, resetChat, removeMessages } = useCompanion();
   const [isTyping, setIsTyping] = useState(false);
-  const [selectedMessageId, setSelectedMessageId] = useState<string | null>(null);
+  const [selectedMessageIds, setSelectedMessageIds] = useState<string[]>([]);
   const { toast } = useToast();
   const [_, startPersonalityUpdate] = useTransition();
 
@@ -28,7 +28,7 @@ export default function ChatPage() {
 
   const handleSendMessage = async (text: string) => {
     if (!companion || isTyping) return;
-    setSelectedMessageId(null);
+    setSelectedMessageIds([]);
 
     const userMessage: Message = {
       id: crypto.randomUUID(),
@@ -97,16 +97,20 @@ export default function ChatPage() {
   };
 
   const handleMessageSelect = (messageId: string) => {
-    setSelectedMessageId(prev => prev === messageId ? null : messageId);
+    setSelectedMessageIds(prev =>
+      prev.includes(messageId)
+        ? prev.filter(id => id !== messageId)
+        : [...prev, messageId]
+    );
   };
   
-  const handleDeleteMessage = () => {
-    if (selectedMessageId) {
-        removeMessage(selectedMessageId);
-        setSelectedMessageId(null);
+  const handleDeleteMessages = () => {
+    if (selectedMessageIds.length > 0) {
+        removeMessages(selectedMessageIds);
+        setSelectedMessageIds([]);
         toast({
-            title: "Mensaje Eliminado",
-            description: "El mensaje ha sido eliminado de la conversación.",
+            title: `Mensaje${selectedMessageIds.length > 1 ? 's' : ''} Eliminado${selectedMessageIds.length > 1 ? 's' : ''}`,
+            description: `Se ha${selectedMessageIds.length > 1 ? 'n' : ''} eliminado ${selectedMessageIds.length} mensaje${selectedMessageIds.length > 1 ? 's' : ''} de la conversación.`,
         });
     }
   };
@@ -136,15 +140,15 @@ export default function ChatPage() {
         companion={companion} 
         onDifficultyChange={handleDifficultyChange}
         onAvatarChange={handleAvatarChange}
-        selectedMessageId={selectedMessageId}
-        onClearSelection={() => setSelectedMessageId(null)}
-        onDeleteMessage={handleDeleteMessage}
+        selectedMessageIds={selectedMessageIds}
+        onClearSelection={() => setSelectedMessageIds([])}
+        onDeleteMessages={handleDeleteMessages}
       />
       <ChatMessages 
         messages={messages} 
         companion={companion} 
         isTyping={isTyping} 
-        selectedMessageId={selectedMessageId}
+        selectedMessageIds={selectedMessageIds}
         onMessageSelect={handleMessageSelect}
       />
       <ChatInput onSendMessage={handleSendMessage} disabled={isTyping} />

@@ -15,18 +15,18 @@ interface ChatHeaderProps {
   companion: Companion;
   onDifficultyChange: (difficulty: Companion['difficulty']) => void;
   onAvatarChange: (newAvatarUrl: string) => void;
-  selectedMessageId: string | null;
+  selectedMessageIds: string[];
   onClearSelection: () => void;
-  onDeleteMessage: () => void;
+  onDeleteMessages: () => void;
 }
 
 export default function ChatHeader({ 
   companion, 
   onDifficultyChange, 
   onAvatarChange, 
-  selectedMessageId, 
+  selectedMessageIds, 
   onClearSelection, 
-  onDeleteMessage 
+  onDeleteMessages 
 }: ChatHeaderProps) {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const router = useRouter();
@@ -40,7 +40,8 @@ export default function ChatHeader({
     router.push('/create');
   };
 
-  const isSelectionMode = selectedMessageId !== null;
+  const isSelectionMode = selectedMessageIds.length > 0;
+  const selectionCount = selectedMessageIds.length;
 
   return (
     <>
@@ -59,8 +60,8 @@ export default function ChatHeader({
                         <X className="h-5 w-5" />
                         <span className="sr-only">Cancelar Selección</span>
                     </Button>
-                    <span className="text-sm font-medium">1 seleccionado</span>
-                    <Button variant="ghost" size="icon" onClick={onDeleteMessage} className="text-destructive/80 hover:text-destructive">
+                    <span className="text-sm font-medium">{selectionCount} seleccionado{selectionCount > 1 ? 's' : ''}</span>
+                    <Button variant="ghost" size="icon" onClick={onDeleteMessages} className="text-destructive/80 hover:text-destructive">
                         <Trash2 className="h-5 w-5" />
                         <span className="sr-only">Borrar Mensaje</span>
                     </Button>

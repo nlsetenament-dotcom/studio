@@ -10,11 +10,11 @@ interface ChatMessagesProps {
   messages: Message[];
   companion: Companion;
   isTyping: boolean;
-  selectedMessageId: string | null;
+  selectedMessageIds: string[];
   onMessageSelect: (messageId: string) => void;
 }
 
-export default function ChatMessages({ messages, companion, isTyping, selectedMessageId, onMessageSelect }: ChatMessagesProps) {
+export default function ChatMessages({ messages, companion, isTyping, selectedMessageIds, onMessageSelect }: ChatMessagesProps) {
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -34,7 +34,7 @@ export default function ChatMessages({ messages, companion, isTyping, selectedMe
                     key={message.id} 
                     message={message} 
                     companion={companion}
-                    isSelected={selectedMessageId === message.id}
+                    isSelected={selectedMessageIds.includes(message.id)}
                     onSelect={onMessageSelect}
                 />
             ))}

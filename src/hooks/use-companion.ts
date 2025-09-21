@@ -63,9 +63,9 @@ export function useCompanion() {
     });
   }, []);
   
-  const removeMessage = useCallback((messageId: string) => {
+  const removeMessages = useCallback((messageIds: string[]) => {
     setMessages(prevMessages => {
-        const updatedMessages = prevMessages.filter(msg => msg.id !== messageId);
+        const updatedMessages = prevMessages.filter(msg => !messageIds.includes(msg.id));
         try {
             localStorage.setItem(MESSAGES_KEY, JSON.stringify(updatedMessages));
         } catch (error) {
@@ -95,7 +95,7 @@ export function useCompanion() {
     isLoading,
     saveCompanion,
     addMessage,
-    removeMessage,
+    removeMessages,
     updateCompanionDetails,
     resetChat,
   };
