@@ -26,7 +26,7 @@ interface SettingsPanelProps {
 
 const difficultyLevels: { id: Companion['difficulty']; label: string; description: string }[] = [
     { id: 'Easy', label: 'Fácil', description: 'Progresión rápida (70% - 90% prob. de éxito).' },
-    { id: 'Hard', label: 'Normal', description: 'Progresión estándar (30% - 50% prob. de éxito).' },
+    { id: 'Hard', label: 'Normal', description: 'Progresión estándar (40% - 60% prob. de éxito).' },
     { id: 'Expert', label: 'Difícil', description: 'Progreso lento y requiere esfuerzo (5% - 15% prob. de éxito).' },
     { id: 'Ultra Hard', label: 'Experto', description: 'Casi imposible de progresar (0.1% - 1% prob. de éxito).' },
 ];

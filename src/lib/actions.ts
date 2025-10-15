@@ -107,7 +107,7 @@ export async function getAIResponseAction(companion: Companion, messages: Messag
 
 const difficultyProbabilityRanges: Record<Difficulty, { min: number; max: number }> = {
   'Easy': { min: 0.7, max: 0.9 },     // 70% - 90%
-  'Hard': { min: 0.3, max: 0.5 },     // 30% - 50%
+  'Hard': { min: 0.4, max: 0.6 },     // 40% - 60%
   'Expert': { min: 0.05, max: 0.15 },    // 5% - 15%
   'Ultra Hard': { min: 0.001, max: 0.01 }, // 0.1% - 1%
 };
