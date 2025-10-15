@@ -22,9 +22,9 @@ export default function InitialLoader() {
   const handleExitComplete = () => {
     const companion = localStorage.getItem('altered-self-companion');
     if (companion) {
-        router.replace('/chat');
+        router.push('/chat');
     } else {
-        router.replace('/create');
+        router.push('/create');
     }
   };
 
@@ -41,7 +41,7 @@ export default function InitialLoader() {
         >
           <div className="flex w-full max-w-md flex-col items-center gap-6">
             <div className="text-center">
-              <h1 className="font-headline text-8xl font-bold tracking-tighter animate-text-glow">
+              <h1 className="font-headline text-8xl font-bold tracking-tighter text-foreground">
                 NLS
               </h1>
               <p className="text-sm tracking-[0.4em] text-muted-foreground animate-pulse-subtle">
@@ -53,10 +53,10 @@ export default function InitialLoader() {
                 <div className="h-2 w-2 rounded-full bg-muted-foreground animate-jump-2"></div>
                 <div className="h-2 w-2 rounded-full bg-muted-foreground animate-jump-3"></div>
             </div>
-            <div className="mt-4 text-center text-xs text-muted-foreground">
-                <p className="animate-text-glow">luis bravo, diego romero, Carlos ramires</p>
-            </div>
           </div>
+           <div className="absolute bottom-4 text-center text-xs text-muted-foreground">
+                <p className="animate-color-cycle">Luis Bravo, Diego Romero, Carlos Ramires</p>
+            </div>
         </motion.main>
       )}
     </AnimatePresence>

@@ -320,11 +320,8 @@ export default function SettingsPanel({
                     <h3 className="mb-4 text-lg font-medium text-foreground flex items-center gap-2"><Code className="h-5 w-5 text-primary" />Créditos</h3>
                     <div className="rounded-lg border p-4 text-center">
                         <div className="space-y-2 text-sm text-muted-foreground">
-                            <p className="animate-text-glow">luis bravo</p>
-                            <p className="animate-text-glow">diego romero</p>
-                            <p className="animate-text-glow">Carlos ramires</p>
-                            <p className="animate-text-glow">jesus Manuel</p>
-                            <p className="animate-text-glow">Mario arcia</p>
+                            <p className="animate-color-cycle">Luis Bravo, Diego Romero, Carlos Ramires</p>
+                            <p className="animate-color-cycle">Jesus Manuel, Mario Arcia</p>
                         </div>
                     </div>
                 </div>
