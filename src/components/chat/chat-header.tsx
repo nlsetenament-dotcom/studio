@@ -12,7 +12,6 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { AnimatePresence, motion } from 'framer-motion';
 
 interface ChatHeaderProps {
-  companion: Companion;
   onDifficultyChange: (difficulty: Companion['difficulty']) => void;
   onAvatarChange: (newAvatarUrl: string) => void;
   selectedMessageIds: string[];
@@ -21,7 +20,6 @@ interface ChatHeaderProps {
 }
 
 export default function ChatHeader({ 
-  companion, 
   onDifficultyChange, 
   onAvatarChange, 
   selectedMessageIds, 
@@ -30,7 +28,7 @@ export default function ChatHeader({
 }: ChatHeaderProps) {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const router = useRouter();
-  const { saveCompanion, resetChat } = useCompanion();
+  const { companion, saveCompanion, resetChat } = useCompanion();
 
   const handleCreateNew = () => {
     localStorage.removeItem('altered-self-companion');
@@ -42,6 +40,8 @@ export default function ChatHeader({
 
   const isSelectionMode = selectedMessageIds.length > 0;
   const selectionCount = selectedMessageIds.length;
+
+  if (!companion) return null;
 
   return (
     <>

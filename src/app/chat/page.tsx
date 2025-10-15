@@ -59,6 +59,12 @@ export default function ChatPage() {
         const personalityResult = await updatePersonalityAction(companion, [...currentMessages, aiMessage]);
         if (personalityResult.success && personalityResult.updates) {
             updateCompanionDetails(personalityResult.updates);
+            if (personalityResult.updates.relationshipStatus && personalityResult.updates.relationshipStatus !== companion.relationshipStatus) {
+                 toast({
+                    title: '¡Relación Mejorada!',
+                    description: `Tu relación con ${companion.name} ha avanzado a: ${personalityResult.updates.relationshipStatus}.`,
+                });
+            }
         } else if (personalityResult.error) {
             console.error(personalityResult.error);
         }
@@ -138,7 +144,6 @@ export default function ChatPage() {
   return (
     <ChatLayout>
       <ChatHeader 
-        companion={companion} 
         onDifficultyChange={handleDifficultyChange}
         onAvatarChange={handleAvatarChange}
         selectedMessageIds={selectedMessageIds}
