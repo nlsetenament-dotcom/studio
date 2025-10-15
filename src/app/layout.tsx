@@ -26,6 +26,18 @@ export default function RootLayout({
   return (
     <html lang="es" suppressHydrationWarning>
       <body className={cn('font-body antialiased', alegreya.variable)}>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                const appearance = localStorage.getItem('altered-self-appearance');
+                if (appearance === 'dark' || (!appearance && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                  document.documentElement.classList.add('dark');
+                }
+              })();
+            `,
+          }}
+        />
         <CompanionProvider>
           {children}
           <Toaster />

@@ -10,14 +10,6 @@ export default function InitialLoader() {
   const [isExiting, setIsExiting] = useState(false);
 
   useEffect(() => {
-    // Apply appearance from localStorage on initial load
-    const storedAppearance = localStorage.getItem('altered-self-appearance');
-    if (storedAppearance === 'dark' || (!storedAppearance && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-
     const randomDelay = Math.floor(Math.random() * (10000 - 5000 + 1)) + 5000;
 
     const timer = setTimeout(() => {
