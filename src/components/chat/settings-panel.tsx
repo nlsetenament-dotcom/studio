@@ -15,11 +15,11 @@ import { cn } from '@/lib/utils';
 import { BookUser, BrainCircuit, ImageIcon, MapPin, Palette, ShieldQuestion, Upload, RotateCcw } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Badge } from '../ui/badge';
+import { useCompanion } from '@/hooks/use-companion';
 
 interface SettingsPanelProps {
   isOpen: boolean;
   onOpenChange: (isOpen: boolean) => void;
-  companion: Companion;
   onAvatarChange: (newAvatarUrl: string) => void;
   onDifficultyChange: (difficulty: Companion['difficulty']) => void;
 }
@@ -34,17 +34,24 @@ const difficultyLevels: { id: Companion['difficulty']; label: string; descriptio
 export default function SettingsPanel({ 
     isOpen, 
     onOpenChange, 
-    companion, 
     onAvatarChange,
     onDifficultyChange 
 }: SettingsPanelProps) {
+  const { companion } = useCompanion();
   const [isDarkMode, setIsDarkMode] = useState(false);
-  const [selectedDifficulty, setSelectedDifficulty] = useState<Companion['difficulty']>(companion.difficulty);
-  const [selectedAvatar, setSelectedAvatar] = useState(companion.avatarUrl);
+  const [selectedDifficulty, setSelectedDifficulty] = useState<Companion['difficulty']>(companion?.difficulty || 'Hard');
+  const [selectedAvatar, setSelectedAvatar] = useState(companion?.avatarUrl || '');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
   const originalAvatar = PlaceHolderImages.find(img => img.id === 'companion-avatar')?.imageUrl || 'https://picsum.photos/seed/companion/200/200';
+
+  useEffect(() => {
+    if (companion) {
+        setSelectedDifficulty(companion.difficulty);
+        setSelectedAvatar(companion.avatarUrl);
+    }
+  }, [companion]);
 
   useEffect(() => {
     const storedTheme = localStorage.getItem('theme');
@@ -64,6 +71,7 @@ export default function SettingsPanel({
   }, [isDarkMode]);
 
   const handleSave = () => {
+    if (!companion) return;
     if (selectedDifficulty !== companion.difficulty) {
         onDifficultyChange(selectedDifficulty);
     }
@@ -74,8 +82,10 @@ export default function SettingsPanel({
   };
   
   const handleCancel = () => {
-    setSelectedDifficulty(companion.difficulty);
-    setSelectedAvatar(companion.avatarUrl);
+    if (companion) {
+        setSelectedDifficulty(companion.difficulty);
+        setSelectedAvatar(companion.avatarUrl);
+    }
     onOpenChange(false);
   };
 
@@ -114,6 +124,10 @@ export default function SettingsPanel({
   };
 
   const avatarGallery = PlaceHolderImages.filter(img => img.id !== 'companion-avatar');
+
+  if (!companion) {
+      return null;
+  }
 
   return (
     <Sheet open={isOpen} onOpenChange={onOpenChange}>
