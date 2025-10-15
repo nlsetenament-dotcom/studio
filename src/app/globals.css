@@ -86,17 +86,19 @@
 }
 
 @layer utilities {
-  .animate-text-gradient {
-    background: linear-gradient(
-      -45deg,
-      hsl(var(--foreground)),
-      hsl(var(--muted-foreground)),
-      hsl(var(--foreground))
-    );
-    background-size: 400% 400%;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    animation: text-gradient 8s ease infinite;
+  @keyframes text-glow {
+    0%, 100% {
+      text-shadow: 0 0 5px hsl(var(--foreground) / 0.5), 0 0 10px hsl(var(--foreground) / 0.3), 0 0 15px hsl(var(--foreground) / 0.2);
+    }
+    50% {
+      text-shadow: 0 0 10px hsl(var(--foreground) / 0.7), 0 0 20px hsl(var(--foreground) / 0.5), 0 0 30px hsl(var(--foreground) / 0.3);
+    }
+  }
+
+  .animate-text-glow {
+    color: transparent;
+    -webkit-text-stroke: 1px hsl(var(--foreground));
+    animation: text-glow 4s ease-in-out infinite;
   }
 
   @keyframes pulse-subtle {
@@ -106,18 +108,6 @@
     }
     50% {
       opacity: 0.3;
-    }
-  }
-  
-  @keyframes text-gradient {
-    0% {
-      background-position: 0% 50%;
-    }
-    50% {
-      background-position: 100% 50%;
-    }
-    100% {
-      background-position: 0% 50%;
     }
   }
 
