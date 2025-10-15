@@ -19,6 +19,9 @@ export default function InitialLoader() {
 
     setAnimationStarted(true);
     
+    // Random delay between 5 and 10 seconds
+    const randomDelay = Math.floor(Math.random() * (10000 - 5000 + 1)) + 5000;
+
     const timer = setTimeout(() => {
         const companion = localStorage.getItem('altered-self-companion');
         if (companion) {
@@ -26,7 +29,7 @@ export default function InitialLoader() {
         } else {
         router.replace('/create');
         }
-    }, 3000); // 3-second delay before redirecting
+    }, randomDelay);
 
     return () => clearTimeout(timer);
   }, [router]);
