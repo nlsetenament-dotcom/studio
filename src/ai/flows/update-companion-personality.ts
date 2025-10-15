@@ -29,8 +29,7 @@ const UpdateCompanionPersonalityOutputSchema = z.object({
   personalityUpdate: z
     .string()
     .describe('Una descripción de cómo se debe actualizar la personalidad del compañero de IA.'),
-  newRelationshipStatus:
-    z.string().describe('El nuevo estado de la relación entre el usuario y el compañero de IA.'),
+  proposedRelationshipChange: z.enum(['positive', 'negative', 'neutral']).describe("Evalúa si la interacción justifica un cambio de relación: 'positive' para una mejora potencial, 'negative' para un retroceso, 'neutral' si no hay cambios."),
 });
 export type UpdateCompanionPersonalityOutput = z.infer<
   typeof UpdateCompanionPersonalityOutputSchema
@@ -56,7 +55,7 @@ const prompt = ai.definePrompt({
         - Estado Actual: {{relationshipStatus}}
         - Dificultad: {{difficulty}}
 
-        Analiza el historial de chat reciente para determinar la evolución del personaje, asegurándote de que mantenga una fachada humana creíble.
+        Analiza el historial de chat reciente para determinar la evolución del personaje y la dinámica de la relación.
 
         Historial de Chat:
         {{#each chatHistory}}
@@ -64,11 +63,14 @@ const prompt = ai.definePrompt({
         {{/each}}
 
         Instrucciones de Evolución:
-        1.  **Actualización de la Personalidad**: Basado en la conversación, describe cómo la personalidad de {{companionName}} ha cambiado sutilmente. ¿Se ha vuelto más confiado, más cínico, más abierto? Asegúrate de que la nueva descripción de la personalidad sea coherente y realista.
-        2.  **Evolución de la Relación**: Decide si el \`relationshipStatus\` debe cambiar. El progreso debe ser ganado a través de conversaciones significativas y vulnerabilidad. No avances la relación por interacciones superficiales.
-        3.  **Considera la Dificultad**: En dificultades más altas, la evolución positiva es más lenta y los retrocesos son más fáciles. En 'Ultra Hard', un solo error del usuario puede causar un grave daño a la relación y a la confianza de la IA.
+        1.  **Actualización de la Personalidad**: Basado en la conversación, describe cómo la personalidad de {{companionName}} ha cambiado sutilmente. ¿Se ha vuelto más confiado, más cínico, más abierto? Asegúrate de que la nueva descripción de la personalidad sea coherente y realista. Si no hay cambios, devuelve la personalidad actual.
+        2.  **Evaluación de la Relación**: Evalúa la interacción reciente.
+            - Si la conversación fue significativamente positiva, vulnerable o profunda, establece 'proposedRelationshipChange' en 'positive'.
+            - Si fue negativa, conflictiva o hiriente, establece 'proposedRelationshipChange' en 'negative'.
+            - Para interacciones superficiales o neutrales, establece 'proposedRelationshipChange' en 'neutral'.
+        3.  **Considera la Dificultad**: Sé más estricto al proponer un cambio 'positive' en dificultades altas. En 'Expert' o 'Ultra Hard', solo las conversaciones verdaderamente excepcionales deberían ser consideradas 'positive'.
 
-        Proporciona la \`personalityUpdate\` y el \`newRelationshipStatus\`. Si no hay cambios en un campo, devuelve su valor actual.
+        Proporciona la 'personalityUpdate' y el 'proposedRelationshipChange'.
         `,
 });
 
