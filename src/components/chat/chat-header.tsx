@@ -12,30 +12,33 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { AnimatePresence, motion } from 'framer-motion';
 
 interface ChatHeaderProps {
-  onDifficultyChange: (difficulty: Companion['difficulty']) => void;
-  onAvatarChange: (newAvatarUrl: string) => void;
   selectedMessageIds: string[];
   onClearSelection: () => void;
   onDeleteMessages: () => void;
 }
 
 export default function ChatHeader({ 
-  onDifficultyChange, 
-  onAvatarChange, 
   selectedMessageIds, 
   onClearSelection, 
   onDeleteMessages 
 }: ChatHeaderProps) {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const router = useRouter();
-  const { companion, saveCompanion, resetChat } = useCompanion();
+  const { companion, saveCompanion, resetChat, updateCompanionDetails } = useCompanion();
 
   const handleCreateNew = () => {
-    localStorage.removeItem('altered-self-companion');
-    localStorage.removeItem('altered-self-messages');
-    saveCompanion(null);
-    resetChat();
+    saveCompanion(null); // This will also remove from localStorage via the hook
+    localStorage.removeItem('altered-self-messages'); // Keep this for messages
     router.push('/create');
+  };
+
+  const handleAvatarChange = (newAvatarUrl: string) => {
+    updateCompanionDetails({ avatarUrl: newAvatarUrl });
+  };
+  
+  const handleDifficultyChange = (newDifficulty: Companion['difficulty']) => {
+    updateCompanionDetails({ difficulty: newDifficulty });
+    resetChat();
   };
 
   const isSelectionMode = selectedMessageIds.length > 0;
@@ -124,9 +127,8 @@ export default function ChatHeader({
      <SettingsPanel
         isOpen={isSettingsOpen}
         onOpenChange={setIsSettingsOpen}
-        companion={companion}
-        onAvatarChange={onAvatarChange}
-        onDifficultyChange={onDifficultyChange}
+        onAvatarChange={handleAvatarChange}
+        onDifficultyChange={handleDifficultyChange}
       />
     </>
   );

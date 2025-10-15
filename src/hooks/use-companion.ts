@@ -1,12 +1,25 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
-import { Companion, Message, Difficulty } from '@/lib/types';
+import { useState, useEffect, useCallback, createContext, useContext, ReactNode } from 'react';
+import { Companion, Message } from '@/lib/types';
 
 const COMPANION_KEY = 'altered-self-companion';
 const MESSAGES_KEY = 'altered-self-messages';
 
-export function useCompanion() {
+interface CompanionContextType {
+  companion: Companion | null;
+  messages: Message[];
+  isLoading: boolean;
+  saveCompanion: (companion: Companion | null) => void;
+  addMessage: (message: Message) => void;
+  removeMessages: (messageIds: string[]) => void;
+  updateCompanionDetails: (updates: Partial<Companion>) => void;
+  resetChat: () => void;
+}
+
+const CompanionContext = createContext<CompanionContextType | undefined>(undefined);
+
+export function CompanionProvider({ children }: { children: ReactNode }) {
   const [companion, setCompanion] = useState<Companion | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -76,20 +89,24 @@ export function useCompanion() {
   }, []);
 
   const updateCompanionDetails = useCallback((updates: Partial<Companion>) => {
-    if (companion) {
-      const updatedCompanion = { ...companion, ...updates };
-      saveCompanion(updatedCompanion);
-    }
-  }, [companion, saveCompanion]);
+    setCompanion(prevCompanion => {
+        if (!prevCompanion) return null;
+        const updatedCompanion = { ...prevCompanion, ...updates };
+        try {
+            localStorage.setItem(COMPANION_KEY, JSON.stringify(updatedCompanion));
+        } catch (error) {
+            console.error('Failed to save companion to localStorage', error);
+        }
+        return updatedCompanion;
+    });
+  }, []);
   
   const resetChat = useCallback(() => {
       saveMessages([]);
-      if(companion){
-          updateCompanionDetails({relationshipStatus: 'Conocido'});
-      }
-  }, [saveMessages, companion, updateCompanionDetails]);
+      updateCompanionDetails({relationshipStatus: 'Conocido'});
+  }, [saveMessages, updateCompanionDetails]);
 
-  return {
+  const value = {
     companion,
     messages,
     isLoading,
@@ -99,4 +116,14 @@ export function useCompanion() {
     updateCompanionDetails,
     resetChat,
   };
+
+  return <CompanionContext.Provider value={value}>{children}</CompanionContext.Provider>;
+}
+
+export function useCompanion() {
+  const context = useContext(CompanionContext);
+  if (context === undefined) {
+    throw new Error('useCompanion must be used within a CompanionProvider');
+  }
+  return context;
 }

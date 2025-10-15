@@ -95,35 +95,6 @@ export default function ChatPage() {
     }
   };
 
-  const handleDifficultyChange = (newDifficulty: 'Easy' | 'Hard' | 'Expert' | 'Ultra Hard') => {
-      if (companion) {
-          updateCompanionDetails({ difficulty: newDifficulty });
-          resetChat();
-          toast({
-              title: "Un Nuevo Comienzo",
-              description: `Dificultad establecida a ${newDifficulty}. Tu relación se ha reiniciado a "Conocido".`
-          });
-      }
-  };
-
-  const handleAvatarChange = (newAvatarUrl: string) => {
-    if (companion) {
-      updateCompanionDetails({ avatarUrl: newAvatarUrl });
-       toast({
-          title: "Avatar Actualizado",
-          description: "La imagen de tu compañero ha sido cambiada.",
-      });
-    }
-  };
-
-  const handleMessageSelect = (messageId: string) => {
-    setSelectedMessageIds(prev =>
-      prev.includes(messageId)
-        ? prev.filter(id => id !== messageId)
-        : [...prev, messageId]
-    );
-  };
-  
   const handleDeleteMessages = () => {
     if (selectedMessageIds.length > 0) {
         removeMessages(selectedMessageIds);
@@ -134,6 +105,15 @@ export default function ChatPage() {
         });
     }
   };
+  
+  const handleMessageSelect = (messageId: string) => {
+    setSelectedMessageIds(prev =>
+      prev.includes(messageId)
+        ? prev.filter(id => id !== messageId)
+        : [...prev, messageId]
+    );
+  };
+
 
   if (isCompanionLoading || !companion) {
     return (
@@ -156,9 +136,7 @@ export default function ChatPage() {
 
   return (
     <ChatLayout>
-      <ChatHeader 
-        onDifficultyChange={handleDifficultyChange}
-        onAvatarChange={handleAvatarChange}
+      <ChatHeader
         selectedMessageIds={selectedMessageIds}
         onClearSelection={() => setSelectedMessageIds([])}
         onDeleteMessages={handleDeleteMessages}
