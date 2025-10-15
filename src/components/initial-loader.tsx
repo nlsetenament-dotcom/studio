@@ -9,7 +9,7 @@ export default function InitialLoader() {
   const [isExiting, setIsExiting] = useState(false);
 
   useEffect(() => {
-    const randomDelay = Math.floor(Math.random() * (10000 - 5000 + 1)) + 5000;
+    const randomDelay = Math.floor(Math.random() * (8000 - 5000 + 1)) + 5000;
 
     const timer = setTimeout(() => {
         setIsExiting(true);
@@ -40,14 +40,14 @@ export default function InitialLoader() {
         >
           <div className="flex w-full max-w-md flex-col items-center gap-6">
             <div className="text-center">
-              <h1 className="font-headline text-8xl font-bold tracking-tighter text-foreground animate-text-glow">
+              <h1 className="animate-text-glow font-headline text-8xl font-bold tracking-tighter text-foreground">
                 NLS
               </h1>
               <p className="text-sm tracking-[0.4em] text-muted-foreground animate-pulse-subtle">
                 ENTERTAINMENT
               </p>
             </div>
-            <div className="w-full h-12 flex justify-center items-center gap-2">
+            <div className="flex h-12 w-full justify-center items-center gap-2">
                 <div className="h-2 w-2 rounded-full bg-muted-foreground animate-jump-1"></div>
                 <div className="h-2 w-2 rounded-full bg-muted-foreground animate-jump-2"></div>
                 <div className="h-2 w-2 rounded-full bg-muted-foreground animate-jump-3"></div>
