@@ -94,12 +94,16 @@ export function CompanionProvider({ children }: { children: ReactNode }) {
   const updateCompanionDetails = useCallback((updates: Partial<Companion>) => {
     setCompanion(prevCompanion => {
         if (!prevCompanion) return null;
+        
         const updatedCompanion = { ...prevCompanion, ...updates };
+
         try {
+            // Force save to localStorage immediately
             localStorage.setItem(COMPANION_KEY, JSON.stringify(updatedCompanion));
         } catch (error) {
-            console.error('Failed to save companion to localStorage', error);
+            console.error('Failed to save updated companion to localStorage', error);
         }
+        
         return updatedCompanion;
     });
   }, []);
