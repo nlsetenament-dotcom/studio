@@ -40,6 +40,7 @@ export default function ChatPage() {
 
     // --- Nueva Lógica de Reacción Inmediata ---
     startTransition(async () => {
+      if (!companion) return; // <-- FIX: Add a guard for the transition
       const reactionResult = await reactToUserBehaviorAction(companion, userMessage.text);
       if (reactionResult.success && reactionResult.updates) {
         const oldRelationshipStatus = companion.relationshipStatus;
@@ -75,6 +76,7 @@ export default function ChatPage() {
 
       // --- Actualización de Personalidad en Segundo Plano (sin cambios) ---
       startTransition(async () => {
+        if (!companion) return; // <-- FIX: Add a guard for the transition as well
         const personalityResult = await updatePersonalityAction(companion, [...currentMessages, aiMessage]);
         if (personalityResult.success && personalityResult.updates) {
             updateCompanionDetails(personalityResult.updates);
