@@ -87,27 +87,41 @@
 
 @layer utilities {
   .animate-text-gradient {
-    color: hsl(var(--foreground));
-  }
-
-  .dark .animate-text-gradient {
-    color: hsl(var(--foreground));
+    background: linear-gradient(
+      -45deg,
+      hsl(var(--foreground)),
+      hsl(var(--muted-foreground)),
+      hsl(var(--foreground))
+    );
+    background-size: 400% 400%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: text-gradient 8s ease infinite;
   }
 
   @keyframes pulse-subtle {
-    0%, 100% {
+    0%,
+    100% {
       opacity: 1;
     }
     50% {
       opacity: 0.3;
     }
   }
-
-  .animate-pulse-subtle {
-    animation: pulse-subtle 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  
+  @keyframes text-gradient {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
   }
 
-  .animate-pulse-slow {
-     animation: pulse-subtle 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  .animate-pulse-subtle {
+    animation: pulse-subtle 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
 }

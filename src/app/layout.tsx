@@ -4,6 +4,7 @@ import './globals.css';
 import { cn } from '@/lib/utils';
 import { Alegreya } from 'next/font/google';
 import { CompanionProvider } from '@/hooks/use-companion';
+import PageTransition from '@/components/page-transition';
 
 const alegreya = Alegreya({
   subsets: ['latin'],
@@ -27,7 +28,9 @@ export default function RootLayout({
     <html lang="es" suppressHydrationWarning>
       <body className={cn('font-body antialiased', alegreya.variable)}>
         <CompanionProvider>
-          {children}
+          <PageTransition>
+            {children}
+          </PageTransition>
           <Toaster />
         </CompanionProvider>
       </body>
