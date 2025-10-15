@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -41,7 +40,7 @@ export default function InitialLoader() {
         >
           <div className="flex w-full max-w-md flex-col items-center gap-6">
             <div className="text-center">
-              <h1 className="font-headline text-8xl font-bold tracking-tighter text-foreground">
+              <h1 className="font-headline text-8xl font-bold tracking-tighter text-foreground animate-text-glow">
                 NLS
               </h1>
               <p className="text-sm tracking-[0.4em] text-muted-foreground animate-pulse-subtle">
