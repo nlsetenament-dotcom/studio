@@ -105,12 +105,17 @@ export async function getAIResponseAction(companion: Companion, messages: Messag
 
 // --- Lógica de Actualización de Relación ---
 
-const difficultyProbabilities: Record<Difficulty, number> = {
-  'Easy': 0.9,       // 90%
-  'Hard': 0.4,       // 40%
-  'Expert': 0.1,      // 10%
-  'Ultra Hard': 0.01,    // 1%
+const difficultyProbabilityRanges: Record<Difficulty, { min: number; max: number }> = {
+  'Easy': { min: 0.7, max: 0.9 },     // 70% - 90%
+  'Hard': { min: 0.3, max: 0.5 },     // 30% - 50%
+  'Expert': { min: 0.05, max: 0.15 },    // 5% - 15%
+  'Ultra Hard': { min: 0.001, max: 0.01 }, // 0.1% - 1%
 };
+
+function getSuccessChance(difficulty: Difficulty): number {
+    const range = difficultyProbabilityRanges[difficulty];
+    return Math.random() * (range.max - range.min) + range.min;
+}
 
 function getNextRelationshipLevel(currentStatus: string): string {
     const currentIndex = relationshipLevels.indexOf(currentStatus);
@@ -133,7 +138,7 @@ export async function reactToUserBehaviorAction(companion: Companion, userMessag
 
         if (reactionResult.proposedRelationshipChange === 'positive') {
             const roll = Math.random(); // Un número entre 0 y 1
-            const successChance = difficultyProbabilities[companion.difficulty];
+            const successChance = getSuccessChance(companion.difficulty);
 
             if (roll < successChance) { // Si la tirada es MENOR que la probabilidad, es un éxito
                 const newStatus = getNextRelationshipLevel(companion.relationshipStatus);
