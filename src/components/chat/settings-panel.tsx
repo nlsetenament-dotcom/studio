@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
@@ -26,8 +27,8 @@ interface SettingsPanelProps {
 const difficultyLevels: { id: Companion['difficulty']; label: string; description: string }[] = [
     { id: 'Easy', label: 'Fácil', description: 'Progreso muy rápido (~70-90% prob.)' },
     { id: 'Hard', label: 'Normal', description: 'Progresión estándar (~40-60% prob.)' },
-    { id: 'Expert', label: 'Difícil', description: 'Requiere esfuerzo (~20-35% prob.)' },
-    { id: 'Ultra Hard', label: 'Experto', description: 'Casi imposible (~1-5% prob.)' },
+    { id: 'Expert', label: 'Difícil', description: 'Progreso lento y requiere esfuerzo (~10-25% prob.)' },
+    { id: 'Ultra Hard', label: 'Experto', description: 'Casi imposible de progresar (0.1% - 1% prob.)' },
 ];
 
 export default function SettingsPanel({ 
