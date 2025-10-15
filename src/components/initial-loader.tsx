@@ -2,11 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Progress } from '@/components/ui/progress';
 import { cn } from '@/lib/utils';
 
 export default function InitialLoader() {
-  const [progress, setProgress] = useState(0);
   const router = useRouter();
   const [animationStarted, setAnimationStarted] = useState(false);
 
@@ -20,23 +18,17 @@ export default function InitialLoader() {
     }
 
     setAnimationStarted(true);
-    const timer = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= 100) {
-          clearInterval(timer);
-          const companion = localStorage.getItem('altered-self-companion');
-          if (companion) {
-            router.replace('/chat');
-          } else {
-            router.replace('/create');
-          }
-          return 100;
+    
+    const timer = setTimeout(() => {
+        const companion = localStorage.getItem('altered-self-companion');
+        if (companion) {
+        router.replace('/chat');
+        } else {
+        router.replace('/create');
         }
-        return prev + 4;
-      });
-    }, 50);
+    }, 3000); // 3-second delay before redirecting
 
-    return () => clearInterval(timer);
+    return () => clearTimeout(timer);
   }, [router]);
 
   return (
@@ -59,11 +51,11 @@ export default function InitialLoader() {
         </div>
         <div
           className={cn(
-            'w-full space-y-2 transition-all duration-500 delay-500',
+            'w-full h-12 flex justify-center items-center transition-all duration-500 delay-500',
             animationStarted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
           )}
         >
-          <Progress value={progress} className="h-1 w-full [&>div]:bg-primary" />
+          <div className="h-2 w-2 rounded-full bg-primary animate-pulse-subtle"></div>
         </div>
       </div>
     </main>
