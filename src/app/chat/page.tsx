@@ -14,7 +14,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 export default function ChatPage() {
   const router = useRouter();
-  const { companion, messages, addMessage, updateCompanionDetails, isLoading: isCompanionLoading, resetChat, removeMessages } = useCompanion();
+  const { companion, messages, addMessage, updateCompanionDetails, isLoading: isCompanionLoading, removeMessages } = useCompanion();
   const [isTyping, setIsTyping] = useState(false);
   const [selectedMessageIds, setSelectedMessageIds] = useState<string[]>([]);
   const { toast } = useToast();

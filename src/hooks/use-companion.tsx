@@ -49,6 +49,9 @@ export function CompanionProvider({ children }: { children: ReactNode }) {
             localStorage.setItem(COMPANION_KEY, JSON.stringify(newCompanion));
         } else {
             localStorage.removeItem(COMPANION_KEY);
+            // Also clear messages when companion is removed
+            localStorage.removeItem(MESSAGES_KEY);
+            setMessages([]);
         }
     } catch (error) {
       console.error('Failed to save companion to localStorage', error);
@@ -103,8 +106,10 @@ export function CompanionProvider({ children }: { children: ReactNode }) {
   
   const resetChat = useCallback(() => {
       saveMessages([]);
-      updateCompanionDetails({relationshipStatus: 'Conocido'});
-  }, [saveMessages, updateCompanionDetails]);
+      if(companion) {
+        updateCompanionDetails({relationshipStatus: 'Conocido'});
+      }
+  }, [saveMessages, updateCompanionDetails, companion]);
 
   const value = {
     companion,

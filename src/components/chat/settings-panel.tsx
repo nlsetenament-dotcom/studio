@@ -39,8 +39,8 @@ export default function SettingsPanel({
 }: SettingsPanelProps) {
   const { companion } = useCompanion();
   const [isDarkMode, setIsDarkMode] = useState(false);
-  const [selectedDifficulty, setSelectedDifficulty] = useState<Companion['difficulty']>(companion?.difficulty || 'Hard');
-  const [selectedAvatar, setSelectedAvatar] = useState(companion?.avatarUrl || '');
+  const [selectedDifficulty, setSelectedDifficulty] = useState<Companion['difficulty']>('Hard');
+  const [selectedAvatar, setSelectedAvatar] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
@@ -51,13 +51,16 @@ export default function SettingsPanel({
         setSelectedDifficulty(companion.difficulty);
         setSelectedAvatar(companion.avatarUrl);
     }
-  }, [companion]);
+  }, [companion, isOpen]);
 
   useEffect(() => {
     const storedTheme = localStorage.getItem('theme');
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     const initialDarkMode = storedTheme === 'dark' || (storedTheme === null && prefersDark);
     setIsDarkMode(initialDarkMode);
+    if (initialDarkMode) {
+      document.documentElement.classList.add('dark');
+    }
   }, []);
 
   useEffect(() => {

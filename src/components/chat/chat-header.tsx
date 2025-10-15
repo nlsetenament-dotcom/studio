@@ -27,18 +27,21 @@ export default function ChatHeader({
   const { companion, saveCompanion, resetChat, updateCompanionDetails } = useCompanion();
 
   const handleCreateNew = () => {
-    saveCompanion(null); // This will also remove from localStorage via the hook
-    localStorage.removeItem('altered-self-messages'); // Keep this for messages
+    saveCompanion(null);
     router.push('/create');
   };
 
   const handleAvatarChange = (newAvatarUrl: string) => {
-    updateCompanionDetails({ avatarUrl: newAvatarUrl });
+    if (companion) {
+      updateCompanionDetails({ avatarUrl: newAvatarUrl });
+    }
   };
   
   const handleDifficultyChange = (newDifficulty: Companion['difficulty']) => {
-    updateCompanionDetails({ difficulty: newDifficulty });
-    resetChat();
+    if (companion) {
+      updateCompanionDetails({ difficulty: newDifficulty });
+      resetChat();
+    }
   };
 
   const isSelectionMode = selectedMessageIds.length > 0;
