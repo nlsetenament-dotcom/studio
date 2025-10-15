@@ -4,7 +4,7 @@ import { generateCompanionPersonality } from '@/ai/flows/generate-companion-pers
 import { generateRealisticResponse } from '@/ai/flows/generate-realistic-response';
 import { updateCompanionPersonality } from '@/ai/flows/update-companion-personality';
 import { reactToUserBehavior } from '@/ai/flows/react-to-user-behavior';
-import { Companion, Message, Difficulty } from './types';
+import { Companion, Message, Difficulty, relationshipLevels } from './types';
 import { z } from 'zod';
 import { PlaceHolderImages } from './placeholder-images';
 
@@ -90,7 +90,7 @@ export async function getAIResponseAction(companion: Companion, messages: Messag
       companionPersonality: companion.personality,
       relationshipStatus: companion.relationshipStatus,
       difficulty: companion.difficulty,
-      conversationHistory: conversationHistory,
+      conversationHistory: conversationHistory.length > 0 ? conversationHistory : '[La conversación acaba de comenzar. Preséntate y saluda amablemente según tu personalidad.]',
       userLocalTime: userLocalTime,
     });
 
@@ -111,19 +111,6 @@ const difficultyProbabilities: Record<Difficulty, number> = {
   'Expert': 0.15,      // 15%
   'Ultra Hard': 0.02,    // 2%
 };
-
-const relationshipLevels = [
-    'Conocido', 
-    'Amistad Incipiente', 
-    'Amigo', 
-    'Buen Amigo', 
-    'Mejor Amigo', 
-    'Confidente', 
-    'Interés Romántico', 
-    'Atracción Mutua',
-    'Pareja',
-    'Alma Gemela'
-];
 
 function getNextRelationshipLevel(currentStatus: string): string {
     const currentIndex = relationshipLevels.indexOf(currentStatus);

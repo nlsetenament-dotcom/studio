@@ -5,14 +5,14 @@ import { useState, useEffect, useRef } from 'react';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetFooter } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Companion } from '@/lib/types';
+import { Companion, relationshipLevels } from '@/lib/types';
 import { Label } from '../ui/label';
 import { Switch } from '../ui/switch';
 import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
-import { BookUser, BrainCircuit, ImageIcon, MapPin, Palette, ShieldQuestion, Upload, RotateCcw } from 'lucide-react';
+import { BookUser, BrainCircuit, ImageIcon, MapPin, Palette, ShieldQuestion, Upload, RotateCcw, Heart, CheckCircle2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Badge } from '../ui/badge';
 import { useCompanion } from '@/hooks/use-companion';
@@ -47,7 +47,6 @@ export default function SettingsPanel({
   const originalAvatar = PlaceHolderImages.find(img => img.id === 'companion-avatar')?.imageUrl || 'https://picsum.photos/seed/companion/200/200';
 
   useEffect(() => {
-    // Sincronizar el estado del panel cuando el compañero cambie o el panel se abra
     if (companion) {
         setSelectedDifficulty(companion.difficulty);
         setSelectedAvatar(companion.avatarUrl);
@@ -55,14 +54,12 @@ export default function SettingsPanel({
   }, [companion, isOpen]);
 
   useEffect(() => {
-    // Cargar la preferencia de tema del localStorage al montar el componente
     const storedTheme = localStorage.getItem('theme');
     if (storedTheme) {
         const darkMode = storedTheme === 'dark';
         setIsDarkMode(darkMode);
         document.documentElement.classList.toggle('dark', darkMode);
     } else {
-        // Si no hay nada guardado, usar la preferencia del sistema
         const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
         setIsDarkMode(prefersDark);
         document.documentElement.classList.toggle('dark', prefersDark);
@@ -71,7 +68,6 @@ export default function SettingsPanel({
 
   const handleThemeChange = (darkMode: boolean) => {
     setIsDarkMode(darkMode);
-    // Guardar la preferencia en localStorage y actualizar la clase en el HTML
     localStorage.setItem('theme', darkMode ? 'dark' : 'light');
     document.documentElement.classList.toggle('dark', darkMode);
   };
@@ -89,7 +85,6 @@ export default function SettingsPanel({
   
   const handleCancel = () => {
     if (companion) {
-        // Resetear a los valores actuales del compañero, no a los guardados en el estado del panel
         setSelectedDifficulty(companion.difficulty);
         setSelectedAvatar(companion.avatarUrl);
     }
@@ -138,7 +133,7 @@ export default function SettingsPanel({
 
   return (
     <Sheet open={isOpen} onOpenChange={oncha => {
-      if (!oncha) handleCancel(); // Reset changes if closing without saving
+      if (!oncha) handleCancel();
       else onOpenChange(true);
     }}>
       <SheetContent className="flex w-full flex-col p-0 sm:max-w-md">
@@ -242,6 +237,29 @@ export default function SettingsPanel({
                                 <p className="text-sm text-muted-foreground">{companion.personality}</p>
                             </div>
                         </div>
+                    </div>
+                </div>
+                 <div>
+                    <h3 className="mb-4 text-lg font-medium text-foreground flex items-center gap-2"><Heart className="h-5 w-5 text-primary" />Progresión de la Relación</h3>
+                    <div className="space-y-2 rounded-lg border p-4">
+                        <ul className="space-y-3">
+                            {relationshipLevels.map((level, index) => {
+                                const currentIndex = relationshipLevels.indexOf(companion.relationshipStatus);
+                                const isAchieved = index <= currentIndex;
+                                return (
+                                    <li key={level} className={cn(
+                                        "flex items-center gap-3 text-sm",
+                                        isAchieved ? "text-foreground font-medium" : "text-muted-foreground/70"
+                                    )}>
+                                        <CheckCircle2 className={cn(
+                                            "h-5 w-5 shrink-0",
+                                            isAchieved ? "text-green-500" : "text-muted-foreground/30"
+                                        )} />
+                                        <span>{level}</span>
+                                    </li>
+                                );
+                            })}
+                        </ul>
                     </div>
                 </div>
                 <div>

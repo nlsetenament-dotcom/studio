@@ -1,6 +1,19 @@
 export type Difficulty = 'Easy' | 'Hard' | 'Expert' | 'Ultra Hard';
 export type Gender = 'Masculino' | 'Femenino';
 
+export const relationshipLevels = [
+    'Conocido', 
+    'Amistad Incipiente', 
+    'Amigo', 
+    'Buen Amigo', 
+    'Mejor Amigo', 
+    'Confidente', 
+    'Interés Romántico', 
+    'Atracción Mutua',
+    'Pareja',
+    'Alma Gemela'
+];
+
 export interface Companion {
   id: string;
   name: string;
