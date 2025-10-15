@@ -58,8 +58,9 @@ export default function ChatPage() {
       startPersonalityUpdate(async () => {
         const personalityResult = await updatePersonalityAction(companion, [...currentMessages, aiMessage]);
         if (personalityResult.success && personalityResult.updates) {
+            const oldRelationshipStatus = companion.relationshipStatus;
             updateCompanionDetails(personalityResult.updates);
-            if (personalityResult.updates.relationshipStatus && personalityResult.updates.relationshipStatus !== companion.relationshipStatus) {
+            if (personalityResult.updates.relationshipStatus && personalityResult.updates.relationshipStatus !== oldRelationshipStatus) {
                  toast({
                     title: '¡Relación Mejorada!',
                     description: `Tu relación con ${companion.name} ha avanzado a: ${personalityResult.updates.relationshipStatus}.`,
