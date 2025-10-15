@@ -2,9 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function InitialLoader() {
   const router = useRouter();
+  const [isExiting, setIsExiting] = useState(false);
 
   useEffect(() => {
     // Apply theme from localStorage on initial load
@@ -19,32 +21,47 @@ export default function InitialLoader() {
     const randomDelay = Math.floor(Math.random() * (10000 - 5000 + 1)) + 5000;
 
     const timer = setTimeout(() => {
-        const companion = localStorage.getItem('altered-self-companion');
-        if (companion) {
-            router.push('/chat');
-        } else {
-            router.push('/create');
-        }
+        setIsExiting(true); // Start exit animation
     }, randomDelay);
 
     return () => clearTimeout(timer);
   }, [router]);
+  
+  const handleExitComplete = () => {
+    const companion = localStorage.getItem('altered-self-companion');
+    if (companion) {
+        router.push('/chat');
+    } else {
+        router.push('/create');
+    }
+  };
+
 
   return (
-    <main className="flex h-screen w-full flex-col items-center justify-center bg-background p-4">
-      <div className="flex w-full max-w-md flex-col items-center gap-6">
-        <div className="text-center">
-          <h1 className="font-headline text-8xl font-bold tracking-tighter animate-text-glow">
-            NLS
-          </h1>
-          <p className="text-sm tracking-[0.4em] text-muted-foreground animate-pulse-subtle">
-            ENTERTAINMENT
-          </p>
-        </div>
-        <div className="w-full h-12 flex justify-center items-center">
-          <div className="h-2 w-2 rounded-full bg-primary animate-pulse-subtle"></div>
-        </div>
-      </div>
-    </main>
+    <AnimatePresence onExitComplete={handleExitComplete}>
+      {!isExiting && (
+         <motion.main
+            key="loader"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1, transition: { duration: 1, ease: 'easeOut' } }}
+            exit={{ opacity: 0, transition: { duration: 1, ease: 'easeIn' } }}
+            className="flex h-screen w-full flex-col items-center justify-center bg-background p-4"
+        >
+          <div className="flex w-full max-w-md flex-col items-center gap-6">
+            <div className="text-center">
+              <h1 className="font-headline text-8xl font-bold tracking-tighter animate-text-glow">
+                NLS
+              </h1>
+              <p className="text-sm tracking-[0.4em] text-muted-foreground animate-pulse-subtle">
+                ENTERTAINMENT
+              </p>
+            </div>
+            <div className="w-full h-12 flex justify-center items-center">
+              <div className="h-2 w-2 rounded-full bg-primary animate-pulse-subtle"></div>
+            </div>
+          </div>
+        </motion.main>
+      )}
+    </AnimatePresence>
   );
 }
