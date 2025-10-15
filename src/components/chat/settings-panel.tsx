@@ -137,7 +137,7 @@ export default function SettingsPanel({
   }
 
   return (
-    <Sheet open={isOpen} onOpenChange={onOpencha => {
+    <Sheet open={isOpen} onOpenChange={oncha => {
       if (!oncha) handleCancel(); // Reset changes if closing without saving
       else onOpenChange(true);
     }}>
