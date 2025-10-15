@@ -106,10 +106,10 @@ export async function getAIResponseAction(companion: Companion, messages: Messag
 // --- Lógica de Actualización de Relación ---
 
 const difficultyProbabilities: Record<Difficulty, number> = {
-  'Easy': 0.7,       // 70% de probabilidad de éxito en un mensaje positivo
+  'Easy': 0.9,       // 90%
   'Hard': 0.4,       // 40%
-  'Expert': 0.15,      // 15%
-  'Ultra Hard': 0.02,    // 2%
+  'Expert': 0.1,      // 10%
+  'Ultra Hard': 0.01,    // 1%
 };
 
 function getNextRelationshipLevel(currentStatus: string): string {

@@ -25,10 +25,10 @@ interface SettingsPanelProps {
 }
 
 const difficultyLevels: { id: Companion['difficulty']; label: string; description: string }[] = [
-    { id: 'Easy', label: 'Fácil', description: 'Progreso muy rápido (~70% prob.)' },
-    { id: 'Hard', label: 'Normal', description: 'Progresión estándar (~40% prob.)' },
-    { id: 'Expert', label: 'Difícil', description: 'Progreso lento y requiere esfuerzo (~15% prob.)' },
-    { id: 'Ultra Hard', label: 'Experto', description: 'Casi imposible de progresar (~2% prob.)' },
+    { id: 'Easy', label: 'Fácil', description: 'Progreso muy rápido (90% prob. de éxito).' },
+    { id: 'Hard', label: 'Normal', description: 'Progresión estándar (40% prob. de éxito).' },
+    { id: 'Expert', label: 'Difícil', description: 'Progreso lento y requiere esfuerzo (10% prob. de éxito).' },
+    { id: 'Ultra Hard', label: 'Experto', description: 'Casi imposible de progresar (1% prob. de éxito).' },
 ];
 
 export default function SettingsPanel({ 
@@ -37,7 +37,7 @@ export default function SettingsPanel({
     onAvatarChange,
     onDifficultyChange 
 }: SettingsPanelProps) {
-  const { companion } = useCompanion();
+  const { companion, updateCompanionDetails } = useCompanion();
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [selectedDifficulty, setSelectedDifficulty] = useState<Companion['difficulty']>('Hard');
   const [selectedAvatar, setSelectedAvatar] = useState('');
@@ -47,7 +47,7 @@ export default function SettingsPanel({
   const originalAvatar = PlaceHolderImages.find(img => img.id === 'companion-avatar')?.imageUrl || 'https://picsum.photos/seed/companion/200/200';
 
   useEffect(() => {
-    if (companion) {
+    if (isOpen && companion) {
         setSelectedDifficulty(companion.difficulty);
         setSelectedAvatar(companion.avatarUrl);
     }
@@ -74,20 +74,28 @@ export default function SettingsPanel({
 
   const handleSave = () => {
     if (!companion) return;
+    let hasChanges = false;
+    
     if (selectedDifficulty !== companion.difficulty) {
         onDifficultyChange(selectedDifficulty);
+        hasChanges = true;
     }
     if (selectedAvatar !== companion.avatarUrl) {
         onAvatarChange(selectedAvatar);
+        hasChanges = true;
     }
+
+    if (hasChanges) {
+       toast({
+         title: 'Ajustes Guardados',
+         description: 'Tus cambios han sido aplicados.',
+       });
+    }
+
     onOpenChange(false);
   };
   
   const handleCancel = () => {
-    if (companion) {
-        setSelectedDifficulty(companion.difficulty);
-        setSelectedAvatar(companion.avatarUrl);
-    }
     onOpenChange(false);
   };
 
