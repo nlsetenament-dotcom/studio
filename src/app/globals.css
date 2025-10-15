@@ -89,10 +89,10 @@
   .animate-text-gradient {
     background-image: linear-gradient(
       -225deg,
-      #ffffff 0%,
-      #a9a9a9 29%,
-      #333333 67%,
-      #000000 100%
+      #000000 0%,
+      #333333 29%,
+      #a9a9a9 67%,
+      #ffffff 100%
     );
     background-size: 200% auto;
     color: #fff;
@@ -105,10 +105,10 @@
   .dark .animate-text-gradient {
      background-image: linear-gradient(
       -225deg,
-      #000000 0%,
-      #333333 29%,
-      #a9a9a9 67%,
-      #ffffff 100%
+      #ffffff 0%,
+      #a9a9a9 29%,
+      #333333 67%,
+      #000000 100%
     );
   }
 
