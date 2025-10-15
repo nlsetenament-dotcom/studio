@@ -39,23 +39,23 @@ export default function InitialLoader() {
       <div className="flex w-full max-w-md flex-col items-center gap-6">
         <div
           className={cn(
-            'text-center transition-all duration-1000',
+            'text-center transition-all ease-in-out duration-2000 delay-500',
             animationStarted
               ? 'opacity-100 scale-100'
               : 'opacity-0 scale-95'
           )}
         >
-          <h1 className="font-headline text-8xl font-bold tracking-tighter animate-text-gradient">
+          <h1 className="font-headline text-8xl font-bold tracking-tighter animate-text-gradient animate-pulse-slow">
             NLS
           </h1>
-          <p className="text-sm tracking-[0.4em] animate-text-gradient">
+          <p className="text-sm tracking-[0.4em] animate-text-gradient animate-pulse-slow">
             ENTERTAINMENT
           </p>
         </div>
         <div
           className={cn(
-            'w-full h-12 flex justify-center items-center transition-all duration-500 delay-500',
-            animationStarted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+            'w-full h-12 flex justify-center items-center transition-opacity ease-in-out duration-1000 delay-2000',
+            animationStarted ? 'opacity-100' : 'opacity-0'
           )}
         >
           <div className="h-2 w-2 rounded-full bg-primary animate-pulse-subtle"></div>
