@@ -112,7 +112,18 @@ const difficultyProbabilities: Record<Difficulty, number> = {
     'Ultra Hard': 0.01,
 };
 
-const relationshipLevels = ['Conocido', 'Amigo', 'Buen Amigo', 'Mejor Amigo', 'Confidente', 'Alma Gemela'];
+const relationshipLevels = [
+    'Conocido', 
+    'Amistad Incipiente', 
+    'Amigo', 
+    'Buen Amigo', 
+    'Mejor Amigo', 
+    'Confidente', 
+    'Interés Romántico', 
+    'Atracción Mutua',
+    'Pareja',
+    'Alma Gemela'
+];
 
 function getNextRelationshipLevel(currentStatus: string): string {
     const currentIndex = relationshipLevels.indexOf(currentStatus);
