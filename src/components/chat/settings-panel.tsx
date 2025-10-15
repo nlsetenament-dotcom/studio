@@ -38,7 +38,7 @@ export default function SettingsPanel({
     onAvatarChange,
     onDifficultyChange 
 }: SettingsPanelProps) {
-  const { companion, updateCompanionDetails } = useCompanion();
+  const { companion, updateCompanionDetails, appearance, setAppearance } = useCompanion();
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [selectedDifficulty, setSelectedDifficulty] = useState<Companion['difficulty']>('Hard');
   const [selectedAvatar, setSelectedAvatar] = useState('');
@@ -57,23 +57,12 @@ export default function SettingsPanel({
   }, [companion, isOpen]);
 
   useEffect(() => {
-    const storedTheme = localStorage.getItem('theme');
-    if (storedTheme) {
-        const darkMode = storedTheme === 'dark';
-        setIsDarkMode(darkMode);
-    } else if (companion?.theme) {
-        const darkMode = companion.theme === 'night-sky';
-        setIsDarkMode(darkMode);
-    } else {
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        setIsDarkMode(prefersDark);
-    }
-  }, [companion]);
+    setIsDarkMode(appearance === 'dark');
+  }, [appearance]);
 
-  const handleThemeChange = (themeKey: AppTheme) => {
-    setSelectedTheme(themeKey);
-    const isDark = themeKey === 'night-sky';
+  const handleDarkModeToggle = (isDark: boolean) => {
     setIsDarkMode(isDark);
+    setAppearance(isDark ? 'dark' : 'light');
   };
 
   const handleSave = () => {
@@ -104,6 +93,11 @@ export default function SettingsPanel({
   };
   
   const handleCancel = () => {
+    // Restore visual state without saving
+    if (companion?.theme) {
+        updateCompanionDetails({ theme: companion.theme });
+    }
+    setAppearance(localStorage.getItem('appearance') as 'dark' | 'light' || 'light');
     onOpenChange(false);
   };
 
@@ -225,11 +219,18 @@ export default function SettingsPanel({
                                 <Label htmlFor="dark-mode">Modo Oscuro</Label>
                                 <p className="text-sm text-muted-foreground">Disfruta de una interfaz más oscura.</p>
                             </div>
-                            <Switch id="dark-mode" checked={isDarkMode} disabled />
+                            <Switch 
+                              id="dark-mode" 
+                              checked={isDarkMode} 
+                              onCheckedChange={handleDarkModeToggle}
+                            />
                         </div>
                         <div>
                           <Label htmlFor="app-theme">Tema de Color</Label>
-                           <Select value={selectedTheme} onValueChange={(value: AppTheme) => handleThemeChange(value)}>
+                           <Select value={selectedTheme} onValueChange={(value: AppTheme) => {
+                               setSelectedTheme(value);
+                               if (companion) updateCompanionDetails({ theme: value }, true);
+                           }}>
                               <SelectTrigger id="app-theme">
                                 <SelectValue placeholder="Selecciona un tema visual" />
                               </SelectTrigger>
@@ -239,7 +240,7 @@ export default function SettingsPanel({
                               ))}
                             </SelectContent>
                           </Select>
-                          <p className="text-sm text-muted-foreground mt-2">El modo oscuro se activa automáticamente con el tema "Cielo Nocturno".</p>
+                          <p className="text-sm text-muted-foreground mt-2">Elige la paleta de colores principal de la app.</p>
                         </div>
                     </div>
                 </div>

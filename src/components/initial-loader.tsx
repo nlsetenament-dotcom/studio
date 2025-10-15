@@ -1,28 +1,27 @@
+
 'use client';
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { cn } from '@/lib/utils';
 
 export default function InitialLoader() {
   const router = useRouter();
   const [isExiting, setIsExiting] = useState(false);
 
   useEffect(() => {
-    // Apply theme from localStorage on initial load
-    const storedTheme = localStorage.getItem('theme');
-    if (storedTheme === 'dark' || (!storedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+    // Apply appearance from localStorage on initial load
+    const storedAppearance = localStorage.getItem('altered-self-appearance');
+    if (storedAppearance === 'dark' || (!storedAppearance && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
       document.documentElement.classList.add('dark');
     } else {
       document.documentElement.classList.remove('dark');
     }
 
-    // Random delay between 5 and 10 seconds
     const randomDelay = Math.floor(Math.random() * (10000 - 5000 + 1)) + 5000;
 
     const timer = setTimeout(() => {
-        setIsExiting(true); // Start exit animation
+        setIsExiting(true);
     }, randomDelay);
 
     return () => clearTimeout(timer);
@@ -43,9 +42,9 @@ export default function InitialLoader() {
       {!isExiting && (
          <motion.main
             key="loader"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1, transition: { duration: 1, ease: 'easeOut' } }}
-            exit={{ opacity: 0, transition: { duration: 1, ease: 'easeIn' } }}
+            initial={{ opacity: 1 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0, transition: { duration: 0.5, ease: 'easeIn' } }}
             className="flex h-screen w-full flex-col items-center justify-center bg-background p-4"
         >
           <div className="flex w-full max-w-md flex-col items-center gap-6">
