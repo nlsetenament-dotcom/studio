@@ -37,28 +37,32 @@ export default function ChatPage() {
       timestamp: Date.now(),
     };
     addMessage(userMessage);
-
-    // --- Nueva Lógica de Reacción Inmediata ---
+    
+    // --- New Immediate Reaction Logic ---
     startTransition(async () => {
-      if (!companion) return; // <-- FIX: Add a guard for the transition
+      if (!companion) return; // Guard against null companion
+      const oldRelationshipStatus = companion.relationshipStatus;
       const reactionResult = await reactToUserBehaviorAction(companion, userMessage.text);
+
       if (reactionResult.success && reactionResult.updates) {
-        const oldRelationshipStatus = companion.relationshipStatus;
+        // This function will update the state AND localStorage
         updateCompanionDetails(reactionResult.updates);
+
+        // Manually trigger the toast with the new status
         if (reactionResult.updates.relationshipStatus && reactionResult.updates.relationshipStatus !== oldRelationshipStatus) {
-             toast({
-                title: '¡Relación Actualizada!',
-                description: `Tu relación con ${companion.name} es ahora: ${reactionResult.updates.relationshipStatus}.`,
-            });
+          toast({
+            title: '¡Relación Actualizada!',
+            description: `Tu relación con ${companion.name} es ahora: ${reactionResult.updates.relationshipStatus}.`,
+          });
         }
       } else if (reactionResult.error) {
-          console.error("Error en la reacción del comportamiento:", reactionResult.error);
+        console.error("Error in behavior reaction:", reactionResult.error);
       }
     });
 
     setIsTyping(true);
 
-    // --- Generación de Respuesta Principal (sin cambios) ---
+    // --- Main Response Generation ---
     const currentMessages = [...messages, userMessage];
     const userLocalTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     const result = await getAIResponseAction(companion, currentMessages, userLocalTime);
@@ -74,40 +78,40 @@ export default function ChatPage() {
       };
       addMessage(aiMessage);
 
-      // --- Actualización de Personalidad en Segundo Plano (sin cambios) ---
+      // --- Background Personality Update ---
       startTransition(async () => {
-        if (!companion) return; // <-- FIX: Add a guard for the transition as well
+        if (!companion) return; // Guard here as well
         const personalityResult = await updatePersonalityAction(companion, [...currentMessages, aiMessage]);
         if (personalityResult.success && personalityResult.updates) {
-            updateCompanionDetails(personalityResult.updates);
+          updateCompanionDetails(personalityResult.updates);
         } else if (personalityResult.error) {
-            console.error(personalityResult.error);
+          console.error(personalityResult.error);
         }
       });
 
     } else if (result.error) {
-        toast({ variant: 'destructive', title: 'Error de Respuesta', description: result.error });
-        const errorMessage: Message = {
-            id: crypto.randomUUID(),
-            text: result.error,
-            sender: 'ai',
-            timestamp: Date.now(),
-        };
-        addMessage(errorMessage);
+      toast({ variant: 'destructive', title: 'Error de Respuesta', description: result.error });
+      const errorMessage: Message = {
+        id: crypto.randomUUID(),
+        text: result.error,
+        sender: 'ai',
+        timestamp: Date.now(),
+      };
+      addMessage(errorMessage);
     }
   };
 
   const handleDeleteMessages = () => {
     if (selectedMessageIds.length > 0) {
-        removeMessages(selectedMessageIds);
-        setSelectedMessageIds([]);
-        toast({
-            title: `Mensaje${selectedMessageIds.length > 1 ? 's' : ''} Eliminado${selectedMessageIds.length > 1 ? 's' : ''}`,
-            description: `Se ha${selectedMessageIds.length > 1 ? 'n' : ''} eliminado ${selectedMessageIds.length} mensaje${selectedMessageIds.length > 1 ? 's' : ''} de la conversación.`,
-        });
+      removeMessages(selectedMessageIds);
+      setSelectedMessageIds([]);
+      toast({
+        title: `Mensaje${selectedMessageIds.length > 1 ? 's' : ''} Eliminado${selectedMessageIds.length > 1 ? 's' : ''}`,
+        description: `Se ha${selectedMessageIds.length > 1 ? 'n' : ''} eliminado ${selectedMessageIds.length} mensaje${selectedMessageIds.length > 1 ? 's' : ''} de la conversación.`,
+      });
     }
   };
-  
+
   const handleMessageSelect = (messageId: string) => {
     setSelectedMessageIds(prev =>
       prev.includes(messageId)
@@ -119,20 +123,20 @@ export default function ChatPage() {
 
   if (isCompanionLoading || !companion) {
     return (
-        <div className="flex h-screen w-full flex-col">
-            <div className="flex items-center gap-4 border-b p-4">
-                <Skeleton className="h-12 w-12 rounded-full" />
-                <div className="flex-1 space-y-2">
-                    <Skeleton className="h-4 w-32" />
-                    <Skeleton className="h-3 w-48" />
-                </div>
-            </div>
-            <div className="flex-1 p-4 space-y-4">
-                <Skeleton className="h-16 w-3/4 rounded-lg" />
-                <Skeleton className="h-16 w-3/4 rounded-lg self-end ml-auto" />
-                <Skeleton className="h-24 w-4/5 rounded-lg" />
-            </div>
+      <div className="flex h-screen w-full flex-col">
+        <div className="flex items-center gap-4 border-b p-4">
+          <Skeleton className="h-12 w-12 rounded-full" />
+          <div className="flex-1 space-y-2">
+            <Skeleton className="h-4 w-32" />
+            <Skeleton className="h-3 w-48" />
+          </div>
         </div>
+        <div className="flex-1 p-4 space-y-4">
+          <Skeleton className="h-16 w-3/4 rounded-lg" />
+          <Skeleton className="h-16 w-3/4 rounded-lg self-end ml-auto" />
+          <Skeleton className="h-24 w-4/5 rounded-lg" />
+        </div>
+      </div>
     );
   }
 
@@ -143,9 +147,9 @@ export default function ChatPage() {
         onClearSelection={() => setSelectedMessageIds([])}
         onDeleteMessages={handleDeleteMessages}
       />
-      <ChatMessages 
-        messages={messages} 
-        isTyping={isTyping} 
+      <ChatMessages
+        messages={messages}
+        isTyping={isTyping}
         selectedMessageIds={selectedMessageIds}
         onMessageSelect={handleMessageSelect}
       />
