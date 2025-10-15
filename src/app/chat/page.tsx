@@ -38,28 +38,23 @@ export default function ChatPage() {
     };
     addMessage(userMessage);
     
-    // --- New Immediate Reaction Logic ---
-    startTransition(async () => {
-      if (!companion) return; // Guard against null companion
-      const oldRelationshipStatus = companion.relationshipStatus;
-      const reactionResult = await reactToUserBehaviorAction(companion, userMessage.text);
-
-      if (reactionResult.success && reactionResult.updates) {
-        // This function will update the state AND localStorage
-        updateCompanionDetails(reactionResult.updates);
-
-        // Manually trigger the toast with the new status
-        if (reactionResult.updates.relationshipStatus && reactionResult.updates.relationshipStatus !== oldRelationshipStatus) {
-          toast({
-            title: '¡Relación Actualizada!',
-            description: `Tu relación con ${companion.name} es ahora: ${reactionResult.updates.relationshipStatus}.`,
-          });
-        }
-      } else if (reactionResult.error) {
-        console.error("Error in behavior reaction:", reactionResult.error);
+    // --- New Immediate Reaction Logic (Synchronous) ---
+    const currentCompanion = companion; // Capture current state
+    const reactionResult = await reactToUserBehaviorAction(currentCompanion, userMessage.text);
+    
+    if (reactionResult.success && reactionResult.updates) {
+      const newStatus = reactionResult.updates.relationshipStatus;
+      if (newStatus && newStatus !== currentCompanion.relationshipStatus) {
+        updateCompanionDetails({ relationshipStatus: newStatus });
+        toast({
+          title: '¡Relación Actualizada!',
+          description: `Tu relación con ${currentCompanion.name} es ahora: ${newStatus}.`,
+        });
       }
-    });
-
+    } else if (reactionResult.error) {
+      console.error("Error in behavior reaction:", reactionResult.error);
+    }
+    
     setIsTyping(true);
 
     // --- Main Response Generation ---
