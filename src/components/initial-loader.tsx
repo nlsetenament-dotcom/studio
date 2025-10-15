@@ -13,28 +13,23 @@ export default function InitialLoader() {
   useEffect(() => {
     setAnimationStarted(true);
     const timer = setInterval(() => {
-      setProgress((prev) => (prev >= 100 ? 100 : prev + 4));
+      setProgress((prev) => {
+        if (prev >= 100) {
+          clearInterval(timer);
+          const companion = localStorage.getItem('altered-self-companion');
+          if (companion) {
+            router.replace('/chat');
+          } else {
+            router.replace('/create');
+          }
+          return 100;
+        }
+        return prev + 4;
+      });
     }, 50);
 
-    const checkCompanion = () => {
-      if (progress >= 100) {
-        clearInterval(timer);
-        const companion = localStorage.getItem('altered-self-companion');
-        if (companion) {
-          router.replace('/chat');
-        } else {
-          router.replace('/create');
-        }
-      }
-    };
-
-    if (progress >= 100) {
-        checkCompanion();
-    }
-
-
     return () => clearInterval(timer);
-  }, [progress, router]);
+  }, [router]);
 
   return (
     <main className="flex h-screen w-full flex-col items-center justify-center bg-background p-4">
