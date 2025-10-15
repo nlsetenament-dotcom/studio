@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback, createContext, useContext, ReactNode } from 'react';
-import { Companion, Message } from '@/lib/types';
+import { Companion, Message, appThemes } from '@/lib/types';
 
 const COMPANION_KEY = 'altered-self-companion';
 const MESSAGES_KEY = 'altered-self-messages';
@@ -19,6 +19,24 @@ interface CompanionContextType {
 
 const CompanionContext = createContext<CompanionContextType | undefined>(undefined);
 
+function applyTheme(themeName: keyof typeof appThemes) {
+    const theme = appThemes[themeName];
+    const root = document.documentElement;
+
+    if (theme) {
+        root.style.setProperty('--primary', theme.primary);
+        root.style.setProperty('--ring', theme.primary);
+        
+        if (themeName === 'night-sky') {
+            document.documentElement.classList.add('dark');
+            localStorage.setItem('theme', 'dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+            localStorage.setItem('theme', 'light');
+        }
+    }
+}
+
 export function CompanionProvider({ children }: { children: ReactNode }) {
   const [companion, setCompanion] = useState<Companion | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -30,7 +48,11 @@ export function CompanionProvider({ children }: { children: ReactNode }) {
       const storedMessages = localStorage.getItem(MESSAGES_KEY);
 
       if (storedCompanion) {
-        setCompanion(JSON.parse(storedCompanion));
+        const parsedCompanion = JSON.parse(storedCompanion);
+        setCompanion(parsedCompanion);
+        if (parsedCompanion.theme) {
+            applyTheme(parsedCompanion.theme);
+        }
       }
       if (storedMessages) {
         setMessages(JSON.parse(storedMessages));
@@ -47,6 +69,9 @@ export function CompanionProvider({ children }: { children: ReactNode }) {
     try {
         if (newCompanion) {
             localStorage.setItem(COMPANION_KEY, JSON.stringify(newCompanion));
+            if (newCompanion.theme) {
+                applyTheme(newCompanion.theme);
+            }
         } else {
             localStorage.removeItem(COMPANION_KEY);
             // Also clear messages when companion is removed
@@ -100,6 +125,9 @@ export function CompanionProvider({ children }: { children: ReactNode }) {
         try {
             // Force save to localStorage immediately
             localStorage.setItem(COMPANION_KEY, JSON.stringify(updatedCompanion));
+            if (updates.theme) {
+              applyTheme(updates.theme);
+            }
         } catch (error) {
             console.error('Failed to save updated companion to localStorage', error);
         }

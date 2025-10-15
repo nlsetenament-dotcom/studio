@@ -16,6 +16,7 @@ import { useToast } from '@/hooks/use-toast';
 import { createCompanionAction } from '@/lib/actions';
 import { useCompanion } from '@/hooks/use-companion';
 import { Loader2 } from 'lucide-react';
+import { AppTheme, appThemes } from '@/lib/types';
 
 const formSchema = z.object({
   name: z.string().min(2, 'El nombre debe tener al menos 2 caracteres.').max(50, 'El nombre no puede exceder los 50 caracteres.'),
@@ -26,6 +27,9 @@ const formSchema = z.object({
   birthYear: z.string().min(4, 'Año debe tener 4 dígitos.').max(4),
   hobbies: z.string().min(3, 'Los pasatiempos deben tener al menos 3 caracteres.').max(200, 'Los pasatiempos no pueden exceder los 200 caracteres.'),
   description: z.string().min(10, 'La descripción debe tener al menos 10 caracteres.').max(500, 'La descripción no puede exceder los 500 caracteres.'),
+  theme: z.custom<AppTheme>(value => Object.keys(appThemes).includes(value as string), {
+    message: 'Por favor selecciona un tema válido.',
+  }),
 }).refine(data => {
     const day = parseInt(data.birthDay, 10);
     const month = parseInt(data.birthMonth, 10);
@@ -54,6 +58,7 @@ export default function CreateCompanionForm() {
       birthDay: '',
       birthMonth: '',
       birthYear: '',
+      theme: 'sunset-orange',
     },
   });
 
@@ -235,6 +240,29 @@ export default function CreateCompanionForm() {
                   <FormControl>
                     <Textarea placeholder="Describe su personalidad, qué los hace únicos..." className="min-h-[100px]" {...field} />
                   </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="theme"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Tema de la Aplicación</FormLabel>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Selecciona un tema visual" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {Object.entries(appThemes).map(([key, theme]) => (
+                        <SelectItem key={key} value={key}>{theme.name}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormDescription>Elige la paleta de colores para tu experiencia.</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}

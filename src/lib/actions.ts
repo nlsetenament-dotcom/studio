@@ -4,7 +4,7 @@ import { generateCompanionPersonality } from '@/ai/flows/generate-companion-pers
 import { generateRealisticResponse } from '@/ai/flows/generate-realistic-response';
 import { updateCompanionPersonality } from '@/ai/flows/update-companion-personality';
 import { reactToUserBehavior } from '@/ai/flows/react-to-user-behavior';
-import { Companion, Message, Difficulty, relationshipLevels } from './types';
+import { Companion, Message, Difficulty, relationshipLevels, AppTheme, appThemes } from './types';
 import { z } from 'zod';
 import { PlaceHolderImages } from './placeholder-images';
 
@@ -15,6 +15,7 @@ const createCompanionSchema = z.object({
   birthDate: z.string().datetime(),
   hobbies: z.string().min(3).max(200),
   description: z.string().min(10).max(500),
+  theme: z.custom<AppTheme>(value => Object.keys(appThemes).includes(value as string)),
 });
 
 function calculateTypingDelay(text: string): number {
@@ -42,7 +43,7 @@ export async function createCompanionAction(formData: FormData) {
     return { error: 'Datos de formulario inválidos. Asegúrate de que todos los campos son correctos.' };
   }
   
-  const { name, gender, birthDate, hobbies, description, residence } = validatedFields.data;
+  const { name, gender, birthDate, hobbies, description, residence, theme } = validatedFields.data;
 
   try {
     const birthDateObj = new Date(birthDate);
@@ -72,6 +73,7 @@ export async function createCompanionAction(formData: FormData) {
       personality: personalityResult.personalityDescription,
       relationshipStatus: 'Conocido',
       avatarUrl: companionAvatar?.imageUrl || 'https://picsum.photos/seed/companion/200/200',
+      theme,
     };
 
     return { success: true, companion: newCompanion };

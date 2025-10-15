@@ -11,6 +11,7 @@ import { getAIResponseAction, reactToUserBehaviorAction, updatePersonalityAction
 import { Message } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
 import { Skeleton } from '@/components/ui/skeleton';
+import { motion } from 'framer-motion';
 
 export default function ChatPage() {
   const router = useRouter();
@@ -136,19 +137,26 @@ export default function ChatPage() {
   }
 
   return (
-    <ChatLayout>
-      <ChatHeader
-        selectedMessageIds={selectedMessageIds}
-        onClearSelection={() => setSelectedMessageIds([])}
-        onDeleteMessages={handleDeleteMessages}
-      />
-      <ChatMessages
-        messages={messages}
-        isTyping={isTyping}
-        selectedMessageIds={selectedMessageIds}
-        onMessageSelect={handleMessageSelect}
-      />
-      <ChatInput onSendMessage={handleSendMessage} disabled={isTyping} />
-    </ChatLayout>
+    <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -20 }}
+        transition={{ duration: 0.5 }}
+    >
+        <ChatLayout>
+        <ChatHeader
+            selectedMessageIds={selectedMessageIds}
+            onClearSelection={() => setSelectedMessageIds([])}
+            onDeleteMessages={handleDeleteMessages}
+        />
+        <ChatMessages
+            messages={messages}
+            isTyping={isTyping}
+            selectedMessageIds={selectedMessageIds}
+            onMessageSelect={handleMessageSelect}
+        />
+        <ChatInput onSendMessage={handleSendMessage} disabled={isTyping} />
+        </ChatLayout>
+    </motion.div>
   );
 }
