@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
+import { cn } from '@/lib/utils';
 
 export default function InitialLoader() {
   const router = useRouter();
@@ -25,14 +26,14 @@ export default function InitialLoader() {
     }, randomDelay);
 
     return () => clearTimeout(timer);
-  }, [router]);
+  }, []);
   
   const handleExitComplete = () => {
     const companion = localStorage.getItem('altered-self-companion');
     if (companion) {
-        router.push('/chat');
+        router.replace('/chat');
     } else {
-        router.push('/create');
+        router.replace('/create');
     }
   };
 
@@ -56,8 +57,10 @@ export default function InitialLoader() {
                 ENTERTAINMENT
               </p>
             </div>
-            <div className="w-full h-12 flex justify-center items-center">
-              <div className="h-2 w-2 rounded-full bg-primary animate-pulse-subtle"></div>
+            <div className="w-full h-12 flex justify-center items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-muted-foreground animate-jump-1"></div>
+                <div className="h-2 w-2 rounded-full bg-muted-foreground animate-jump-2"></div>
+                <div className="h-2 w-2 rounded-full bg-muted-foreground animate-jump-3"></div>
             </div>
           </div>
         </motion.main>

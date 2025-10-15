@@ -98,7 +98,27 @@
   .animate-text-glow {
     color: transparent;
     -webkit-text-stroke: 1px hsl(var(--foreground));
+    text-shadow: 0 0 10px hsl(var(--foreground) / 0.5);
     animation: text-glow 4s ease-in-out infinite;
+  }
+  
+  @keyframes jump {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+
+  .animate-jump-1 {
+    animation: jump 1.5s infinite;
+  }
+  .animate-jump-2 {
+    animation: jump 1.5s infinite 0.2s;
+  }
+  .animate-jump-3 {
+    animation: jump 1.5s infinite 0.4s;
   }
 
   @keyframes pulse-subtle {
