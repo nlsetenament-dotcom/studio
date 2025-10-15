@@ -25,10 +25,10 @@ interface SettingsPanelProps {
 }
 
 const difficultyLevels: { id: Companion['difficulty']; label: string; description: string }[] = [
-    { id: 'Easy', label: 'Fácil', description: 'Progreso muy rápido (~70-90% prob.)' },
-    { id: 'Hard', label: 'Normal', description: 'Progresión estándar (~40-60% prob.)' },
-    { id: 'Expert', label: 'Difícil', description: 'Progreso lento y requiere esfuerzo (~10-25% prob.)' },
-    { id: 'Ultra Hard', label: 'Experto', description: 'Casi imposible de progresar (0.1% - 1% prob.)' },
+    { id: 'Easy', label: 'Fácil', description: 'Progreso muy rápido (~70% prob.)' },
+    { id: 'Hard', label: 'Normal', description: 'Progresión estándar (~40% prob.)' },
+    { id: 'Expert', label: 'Difícil', description: 'Progreso lento y requiere esfuerzo (~15% prob.)' },
+    { id: 'Ultra Hard', label: 'Experto', description: 'Casi imposible de progresar (~2% prob.)' },
 ];
 
 export default function SettingsPanel({ 
@@ -47,6 +47,7 @@ export default function SettingsPanel({
   const originalAvatar = PlaceHolderImages.find(img => img.id === 'companion-avatar')?.imageUrl || 'https://picsum.photos/seed/companion/200/200';
 
   useEffect(() => {
+    // Sincronizar el estado del panel cuando el compañero cambie o el panel se abra
     if (companion) {
         setSelectedDifficulty(companion.difficulty);
         setSelectedAvatar(companion.avatarUrl);
@@ -54,24 +55,26 @@ export default function SettingsPanel({
   }, [companion, isOpen]);
 
   useEffect(() => {
+    // Cargar la preferencia de tema del localStorage al montar el componente
     const storedTheme = localStorage.getItem('theme');
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const initialDarkMode = storedTheme === 'dark' || (storedTheme === null && prefersDark);
-    setIsDarkMode(initialDarkMode);
-    if (initialDarkMode) {
-      document.documentElement.classList.add('dark');
+    if (storedTheme) {
+        const darkMode = storedTheme === 'dark';
+        setIsDarkMode(darkMode);
+        document.documentElement.classList.toggle('dark', darkMode);
+    } else {
+        // Si no hay nada guardado, usar la preferencia del sistema
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        setIsDarkMode(prefersDark);
+        document.documentElement.classList.toggle('dark', prefersDark);
     }
   }, []);
 
-  useEffect(() => {
-    if (isDarkMode) {
-      document.documentElement.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-      localStorage.setItem('theme', 'light');
-    }
-  }, [isDarkMode]);
+  const handleThemeChange = (darkMode: boolean) => {
+    setIsDarkMode(darkMode);
+    // Guardar la preferencia en localStorage y actualizar la clase en el HTML
+    localStorage.setItem('theme', darkMode ? 'dark' : 'light');
+    document.documentElement.classList.toggle('dark', darkMode);
+  };
 
   const handleSave = () => {
     if (!companion) return;
@@ -86,6 +89,7 @@ export default function SettingsPanel({
   
   const handleCancel = () => {
     if (companion) {
+        // Resetear a los valores actuales del compañero, no a los guardados en el estado del panel
         setSelectedDifficulty(companion.difficulty);
         setSelectedAvatar(companion.avatarUrl);
     }
@@ -133,7 +137,10 @@ export default function SettingsPanel({
   }
 
   return (
-    <Sheet open={isOpen} onOpenChange={onOpenChange}>
+    <Sheet open={isOpen} onOpenChange={onOpencha => {
+      if (!oncha) handleCancel(); // Reset changes if closing without saving
+      else onOpenChange(true);
+    }}>
       <SheetContent className="flex w-full flex-col p-0 sm:max-w-md">
         <SheetHeader className="p-6">
           <SheetTitle className="font-headline text-2xl">Panel de Ajustes</SheetTitle>
@@ -207,7 +214,7 @@ export default function SettingsPanel({
                                 <Label htmlFor="dark-mode">Modo Oscuro</Label>
                                 <p className="text-sm text-muted-foreground">Disfruta de una interfaz más oscura.</p>
                             </div>
-                            <Switch id="dark-mode" checked={isDarkMode} onCheckedChange={setIsDarkMode} />
+                            <Switch id="dark-mode" checked={isDarkMode} onCheckedChange={handleThemeChange} />
                         </div>
                     </div>
                 </div>
