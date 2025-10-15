@@ -7,7 +7,7 @@ import ChatLayout from '@/components/chat/chat-layout';
 import ChatHeader from '@/components/chat/chat-header';
 import ChatMessages from '@/components/chat/chat-messages';
 import ChatInput from '@/components/chat/chat-input';
-import { getAIResponseAction, updatePersonalityAction } from '@/lib/actions';
+import { getAIResponseAction, reactToUserBehaviorAction, updatePersonalityAction } from '@/lib/actions';
 import { Message } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -18,7 +18,7 @@ export default function ChatPage() {
   const [isTyping, setIsTyping] = useState(false);
   const [selectedMessageIds, setSelectedMessageIds] = useState<string[]>([]);
   const { toast } = useToast();
-  const [_, startPersonalityUpdate] = useTransition();
+  const [_, startTransition] = useTransition();
 
   useEffect(() => {
     if (!isCompanionLoading && !companion) {
@@ -37,8 +37,27 @@ export default function ChatPage() {
       timestamp: Date.now(),
     };
     addMessage(userMessage);
+
+    // --- Nueva Lógica de Reacción Inmediata ---
+    startTransition(async () => {
+      const reactionResult = await reactToUserBehaviorAction(companion, userMessage.text);
+      if (reactionResult.success && reactionResult.updates) {
+        const oldRelationshipStatus = companion.relationshipStatus;
+        updateCompanionDetails(reactionResult.updates);
+        if (reactionResult.updates.relationshipStatus && reactionResult.updates.relationshipStatus !== oldRelationshipStatus) {
+             toast({
+                title: '¡Relación Actualizada!',
+                description: `Tu relación con ${companion.name} es ahora: ${reactionResult.updates.relationshipStatus}.`,
+            });
+        }
+      } else if (reactionResult.error) {
+          console.error("Error en la reacción del comportamiento:", reactionResult.error);
+      }
+    });
+
     setIsTyping(true);
 
+    // --- Generación de Respuesta Principal (sin cambios) ---
     const currentMessages = [...messages, userMessage];
     const userLocalTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     const result = await getAIResponseAction(companion, currentMessages, userLocalTime);
@@ -54,18 +73,11 @@ export default function ChatPage() {
       };
       addMessage(aiMessage);
 
-      // Fire-and-forget personality update
-      startPersonalityUpdate(async () => {
+      // --- Actualización de Personalidad en Segundo Plano (sin cambios) ---
+      startTransition(async () => {
         const personalityResult = await updatePersonalityAction(companion, [...currentMessages, aiMessage]);
         if (personalityResult.success && personalityResult.updates) {
-            const oldRelationshipStatus = companion.relationshipStatus;
             updateCompanionDetails(personalityResult.updates);
-            if (personalityResult.updates.relationshipStatus && personalityResult.updates.relationshipStatus !== oldRelationshipStatus) {
-                 toast({
-                    title: '¡Relación Mejorada!',
-                    description: `Tu relación con ${companion.name} ha avanzado a: ${personalityResult.updates.relationshipStatus}.`,
-                });
-            }
         } else if (personalityResult.error) {
             console.error(personalityResult.error);
         }
@@ -153,7 +165,6 @@ export default function ChatPage() {
       />
       <ChatMessages 
         messages={messages} 
-        companion={companion} 
         isTyping={isTyping} 
         selectedMessageIds={selectedMessageIds}
         onMessageSelect={handleMessageSelect}

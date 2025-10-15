@@ -3,6 +3,7 @@
 import { generateCompanionPersonality } from '@/ai/flows/generate-companion-personality';
 import { generateRealisticResponse } from '@/ai/flows/generate-realistic-response';
 import { updateCompanionPersonality } from '@/ai/flows/update-companion-personality';
+import { reactToUserBehavior } from '@/ai/flows/react-to-user-behavior';
 import { Companion, Message, Difficulty } from './types';
 import { z } from 'zod';
 import { PlaceHolderImages } from './placeholder-images';
@@ -102,13 +103,13 @@ export async function getAIResponseAction(companion: Companion, messages: Messag
   }
 }
 
-// --- Nueva Lógica de Actualización de Relación ---
+// --- Lógica de Actualización de Relación ---
 
 const difficultyProbabilities: Record<Difficulty, number> = {
-    'Easy': 0.8,       // 80%
-    'Hard': 0.5,       // 50%
-    'Expert': 0.175,   // 17.5%
-    'Ultra Hard': 0.01, // 1%
+    'Easy': 0.8,
+    'Hard': 0.5,
+    'Expert': 0.175,
+    'Ultra Hard': 0.01,
 };
 
 const relationshipLevels = ['Conocido', 'Amigo', 'Buen Amigo', 'Mejor Amigo', 'Confidente', 'Alma Gemela'];
@@ -118,8 +119,40 @@ function getNextRelationshipLevel(currentStatus: string): string {
     if (currentIndex < relationshipLevels.length - 1) {
         return relationshipLevels[currentIndex + 1];
     }
-    return currentStatus; // Ya está en el nivel máximo
+    return currentStatus;
 }
+
+
+export async function reactToUserBehaviorAction(companion: Companion, userMessage: string) {
+    try {
+        const reactionResult = await reactToUserBehavior({
+            userMessage,
+            relationshipStatus: companion.relationshipStatus,
+            companionName: companion.name,
+            difficulty: companion.difficulty,
+            companionPersonality: companion.personality,
+        });
+
+        if (reactionResult.proposedRelationshipChange === 'positive') {
+            const roll = Math.random();
+            const requiredRoll = 1 - difficultyProbabilities[companion.difficulty];
+
+            if (roll > requiredRoll) {
+                const newStatus = getNextRelationshipLevel(companion.relationshipStatus);
+                if (newStatus !== companion.relationshipStatus) {
+                    return { success: true, updates: { relationshipStatus: newStatus }};
+                }
+            }
+        }
+        
+        return { success: true, updates: null };
+
+    } catch (error) {
+        console.error('Error en la reacción al comportamiento del usuario:', error);
+        return { error: 'No se pudo procesar la reacción del compañero.' };
+    }
+}
+
 
 export async function updatePersonalityAction(companion: Companion, messages: Message[]) {
     try {
@@ -133,26 +166,14 @@ export async function updatePersonalityAction(companion: Companion, messages: Me
             chatHistory: recentHistory,
             companionPersonality: companion.personality,
         });
-
-        const updatedCompanion: Partial<Companion> = {
-            personality: updateResult.personalityUpdate,
-        };
-
-        // Lógica de "Tirada de Dados"
-        if (updateResult.proposedRelationshipChange === 'positive') {
-            const roll = Math.random(); // Genera un número entre 0 y 1
-            const requiredRoll = 1 - difficultyProbabilities[companion.difficulty]; // Invertimos: para 80% prob, necesita ser > 0.2
-
-            if (roll > requiredRoll) {
-                updatedCompanion.relationshipStatus = getNextRelationshipLevel(companion.relationshipStatus);
-            }
-        }
         
-        // Aquí se podría añadir lógica para 'negative', por ejemplo, bajar de nivel. Por ahora lo mantenemos simple.
+        const hasChanged = updateResult.personalityUpdate !== companion.personality;
 
-        const hasChanged = updatedCompanion.personality !== companion.personality || (updatedCompanion.relationshipStatus && updatedCompanion.relationshipStatus !== companion.relationshipStatus);
+        if (hasChanged) {
+            return { success: true, updates: { personality: updateResult.personalityUpdate } };
+        }
 
-        return { success: true, updates: hasChanged ? updatedCompanion : null };
+        return { success: true, updates: null };
     } catch (error) {
         console.error('Error actualizando la personalidad:', error);
         return { error: 'No se pudo actualizar la personalidad del compañero.' };

@@ -1,22 +1,23 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import { Companion, Message } from '@/lib/types';
+import { Message } from '@/lib/types';
 import ChatMessage from './chat-message';
 import TypingIndicator from './typing-indicator';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { useCompanion } from '@/hooks/use-companion';
 
 interface ChatMessagesProps {
   messages: Message[];
-  companion: Companion;
   isTyping: boolean;
   selectedMessageIds: string[];
   onMessageSelect: (messageId: string) => void;
 }
 
-export default function ChatMessages({ messages, companion, isTyping, selectedMessageIds, onMessageSelect }: ChatMessagesProps) {
+export default function ChatMessages({ messages, isTyping, selectedMessageIds, onMessageSelect }: ChatMessagesProps) {
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const { companion } = useCompanion();
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -25,6 +26,10 @@ export default function ChatMessages({ messages, companion, isTyping, selectedMe
   useEffect(() => {
     scrollToBottom();
   }, [messages, isTyping]);
+
+  if (!companion) {
+    return null;
+  }
   
   return (
     <ScrollArea className="flex-1" ref={scrollAreaRef}>

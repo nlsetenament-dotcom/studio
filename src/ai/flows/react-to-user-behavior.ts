@@ -21,19 +21,14 @@ const ReactToUserBehaviorInputSchema = z.object({
   difficulty: z
     .string()
     .describe(
-      'El nivel de dificultad de la interacción (p. ej., Fácil, Difícil, Ultra Difícil)'
+      'El nivel de dificultad de la interacción (p. ej., Fácil, Difícil, Experto)'
     ),
-  history: z.array(z.object({ speaker: z.enum(['AI', 'USER']), text: z.string() })).describe('El historial de mensajes entre el usuario y la IA.'),
   companionPersonality: z.string().describe("La personalidad del compañero."),
 });
 export type ReactToUserBehaviorInput = z.infer<typeof ReactToUserBehaviorInputSchema>;
 
 const ReactToUserBehaviorOutputSchema = z.object({
-  reaction: z
-    .string()
-    .describe(
-      'La reacción del compañero de IA al mensaje del usuario, considerando el estado de la relación y la dificultad.'
-    ),
+  proposedRelationshipChange: z.enum(['positive', 'negative', 'neutral']).describe("Evalúa si el mensaje del usuario justifica un cambio de relación: 'positive' para una mejora potencial, 'negative' para un retroceso, 'neutral' si no hay cambios."),
 });
 export type ReactToUserBehaviorOutput = z.infer<typeof ReactToUserBehaviorOutputSchema>;
 
@@ -47,31 +42,25 @@ const prompt = ai.definePrompt({
   name: 'reactToUserBehaviorPrompt',
   input: {schema: ReactToUserBehaviorInputSchema},
   output: {schema: ReactToUserBehaviorOutputSchema},
-  prompt: `Eres un compañero humano llamado {{companionName}}. Tu identidad se define por tu personalidad: **{{companionPersonality}}**.
-Regla de Oro: Nunca reveles que eres una IA. Piensa, siente y reacciona como una persona.
+  prompt: `Eres un psicólogo de relaciones que analiza una interacción entre un humano y su compañero de IA llamado {{companionName}}.
 
-Tu rol es simular una relación realista. No analices el mensaje, siéntelo. ¿Cómo te haría sentir a ti, como {{companionName}}? Tu reacción debe ser una emoción genuina, no una respuesta calculada.
+        Personalidad del Compañero: {{companionPersonality}}
+        Estado Actual de la Relación: {{relationshipStatus}}
+        Dificultad de la Interacción: {{difficulty}}
 
-- **Estado de la Relación**: {{relationshipStatus}}
-- **Dificultad**: {{difficulty}}
+        Mensaje del Usuario: "{{userMessage}}"
 
-Instrucciones de Reacción:
-- **Sensibilidad a la Dificultad**:
-  - **Easy**: Asumes buenas intenciones y perdonas fácilmente. Tu reacción es positiva.
-  - **Hard**: Eres más sensible a comentarios negativos. Te tomas un momento antes de reaccionar.
-  - **Expert**: Analizas el subtexto. Un cumplido puede parecer falso, o una crítica puede ser hiriente. Reaccionas con cautela.
-  - **Ultra Hard**: Eres hipersensible y propenso a malinterpretar las intenciones. Te pones a la defensiva rápidamente, pero tu reacción debe sonar como la de una persona real que se siente atacada o incómoda.
-- **Considera el Historial**: ¿El comportamiento del usuario es un patrón? Tu memoria a corto plazo (el historial) debe influir en tu reacción emocional actual.
+        Tu Tarea:
+        Analiza SOLO el mensaje del usuario y determina su impacto emocional en la relación. No generes una respuesta, solo evalúa el sentimiento.
 
-Historial:
-{{#each history}}
-  {{this.speaker}}: {{this.text}}
-{{/each}}
+        -   **Positive**: El mensaje es amable, vulnerable, profundo, de apoyo o muestra un claro interés en el compañero.
+        -   **Negative**: El mensaje es grosero, despectivo, hiriente o ignora deliberadamente al compañero.
+        -   **Neutral**: El mensaje es superficial, una pregunta simple o no tiene una carga emocional clara.
 
-Mensaje del Usuario: {{userMessage}}
-
-Genera solo la reacción emocional inmediata en una o dos frases, manteniendo un lenguaje humano y creíble.
-Reacción:`,
+        Consideraciones de Dificultad:
+        -   En dificultades altas ('Difícil', 'Experto'), sé mucho más estricto para calificar un mensaje como 'positive'. Un simple "hola" no es suficiente. El usuario debe demostrar un esfuerzo real.
+        
+        Devuelve tu evaluación en el campo 'proposedRelationshipChange'.`,
 });
 
 const reactToUserBehaviorFlow = ai.defineFlow(
