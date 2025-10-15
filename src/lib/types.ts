@@ -45,6 +45,18 @@ export const appThemes = {
     background: '240 10% 3.9%',
     accent: '217.2 91.2% 40%',
   },
+  'monochrome-light': {
+    name: 'Monocromático Claro',
+    primary: '240 10% 3.9%', // Black
+    background: '0 0% 100%',   // White
+    accent: '240 5% 64.9%', // Mid-gray
+  },
+  'monochrome-dark': {
+    name: 'Monocromático Oscuro',
+    primary: '0 0% 98%', // Almost white
+    background: '240 10% 3.9%', // Black
+    accent: '240 3.7% 15.9%',// Dark gray
+  },
 };
 export type AppTheme = keyof typeof appThemes;
 

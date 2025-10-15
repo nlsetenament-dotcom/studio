@@ -12,7 +12,7 @@ import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
-import { BookUser, BrainCircuit, ImageIcon, MapPin, Palette, ShieldQuestion, Upload, RotateCcw, Heart, CheckCircle2 } from 'lucide-react';
+import { BookUser, BrainCircuit, ImageIcon, MapPin, Palette, ShieldQuestion, Upload, RotateCcw, Heart, CheckCircle2, Code } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Badge } from '../ui/badge';
 import { useCompanion } from '@/hooks/use-companion';
@@ -95,9 +95,12 @@ export default function SettingsPanel({
   const handleCancel = () => {
     // Restore visual state without saving
     if (companion?.theme) {
-        updateCompanionDetails({ theme: companion.theme });
+        updateCompanionDetails({ theme: companion.theme }, true); // isVolatile = true
     }
-    setAppearance(localStorage.getItem('appearance') as 'dark' | 'light' || 'light');
+    const storedAppearance = localStorage.getItem('altered-self-appearance') as 'dark' | 'light' | null;
+    if (storedAppearance) {
+        setAppearance(storedAppearance);
+    }
     onOpenChange(false);
   };
 
@@ -152,7 +155,7 @@ export default function SettingsPanel({
           <SheetDescription>Personaliza la apariencia, el tema y otros aspectos de tu experiencia.</SheetDescription>
         </SheetHeader>
         <ScrollArea className="flex-1 px-6">
-            <div className="space-y-8">
+            <div className="space-y-8 pb-8">
                  <div>
                     <h3 className="mb-4 text-lg font-medium text-foreground flex items-center gap-2"><ImageIcon className="h-5 w-5 text-primary" />Galería de Avatares</h3>
                      <div className="rounded-lg border p-4">
@@ -311,6 +314,18 @@ export default function SettingsPanel({
                             </div>
                          </RadioGroup>
                          <p className="mt-4 text-xs text-center text-muted-foreground">Al cambiar la dificultad se reiniciará la conversación y la relación.</p>
+                    </div>
+                </div>
+                 <div>
+                    <h3 className="mb-4 text-lg font-medium text-foreground flex items-center gap-2"><Code className="h-5 w-5 text-primary" />Créditos</h3>
+                    <div className="rounded-lg border p-4 text-center">
+                        <div className="space-y-2 text-sm text-muted-foreground">
+                            <p className="animate-text-glow">luis bravo</p>
+                            <p className="animate-text-glow">diego romero</p>
+                            <p className="animate-text-glow">Carlos ramires</p>
+                            <p className="animate-text-glow">jesus Manuel</p>
+                            <p className="animate-text-glow">Mario arcia</p>
+                        </div>
                     </div>
                 </div>
             </div>

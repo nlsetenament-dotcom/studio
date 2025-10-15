@@ -61,6 +61,9 @@ export default function InitialLoader() {
                 <div className="h-2 w-2 rounded-full bg-muted-foreground animate-jump-2"></div>
                 <div className="h-2 w-2 rounded-full bg-muted-foreground animate-jump-3"></div>
             </div>
+            <div className="mt-4 text-center text-xs text-muted-foreground">
+                <p className="animate-text-glow">luis bravo, diego romero, Carlos ramires</p>
+            </div>
           </div>
         </motion.main>
       )}
