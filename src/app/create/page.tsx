@@ -187,7 +187,7 @@ export default function CreateCompanionForm() {
                     <FormItem>
                       <FormLabel>Fecha de Nacimiento</FormLabel>
                       <FormControl>
-                        <Input type="date" {...field} />
+                        <Input type="text" placeholder="DD/MM/AAAA" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
