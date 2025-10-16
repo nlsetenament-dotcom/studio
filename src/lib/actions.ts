@@ -139,17 +139,17 @@ export async function reactToUserBehaviorAction(companion: Companion, userMessag
         });
 
         if (reactionResult.proposedRelationshipChange === 'positive') {
-            const roll = Math.random(); // Un número entre 0 y 1
+            const roll = Math.random();
             const successChance = getSuccessChance(companion.difficulty);
 
-            if (roll < successChance) { // Si la tirada es MENOR que la probabilidad, es un éxito
+            if (roll < successChance) {
                 const newStatus = getNextRelationshipLevel(companion.relationshipStatus);
-                // Siempre devolver el nuevo estado, incluso si es el mismo (para notificar el éxito).
+                // ALWAYS return the new status, even if it's the same, to notify of success.
                 return { success: true, updates: { relationshipStatus: newStatus }};
             }
         }
         
-        // Si no es positivo, o si falla la tirada, no hay cambios.
+        // If not positive, or if the roll fails, no change.
         return { success: true, updates: null };
 
     } catch (error) {
