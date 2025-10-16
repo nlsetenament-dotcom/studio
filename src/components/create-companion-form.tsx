@@ -157,6 +157,7 @@ export default function CreateCompanionForm() {
                   <FormControl>
                     <Input placeholder="p. ej., Madrid, España o Buenos Aires, Argentina" {...field} />
                   </FormControl>
+                  <FormDescription>Esto influirá en sus experiencias y su forma de hablar.</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -248,6 +249,7 @@ export default function CreateCompanionForm() {
                   <FormControl>
                     <Textarea placeholder="Describe su personalidad, qué los hace únicos..." className="min-h-[100px]" {...field} />
                   </FormControl>
+                  <FormDescription>Esta es la base sobre la que la IA construirá su personalidad completa.</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
