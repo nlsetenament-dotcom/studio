@@ -247,7 +247,7 @@ export default function CreateCompanionForm() {
                 <FormItem>
                   <FormLabel>Historia / Descripción</FormLabel>
                   <FormControl>
-                    <Textarea placeholder="Describe su personalidad, qué los hace únicos..." className="min-h-[100px] rounded-xl" {...field} />
+                    <Textarea placeholder="Describe su personalidad, qué los hace únicos..." className="min-h-[100px]" {...field} />
                   </FormControl>
                   <FormDescription>Esta es la base sobre la que la IA construirá su personalidad completa.</FormDescription>
                   <FormMessage />
