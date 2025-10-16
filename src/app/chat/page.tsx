@@ -38,29 +38,45 @@ export default function ChatPage() {
       timestamp: Date.now(),
     };
     addMessage(userMessage);
-    
-    // --- New Immediate Reaction Logic (Synchronous) ---
-    const currentCompanion = companion; // Capture current state
-    const reactionResult = await reactToUserBehaviorAction(currentCompanion, userMessage.text);
-    
-    if (reactionResult.success && reactionResult.updates) {
-      const newStatus = reactionResult.updates.relationshipStatus;
-      if (newStatus && newStatus !== currentCompanion.relationshipStatus) {
-        updateCompanionDetails({ relationshipStatus: newStatus });
-        toast({
-          title: '¡Relación Actualizada!',
-          description: `Tu relación con ${currentCompanion.name} es ahora: ${newStatus}.`,
-        });
-      }
-    } else if (reactionResult.error) {
-      console.error("Error in behavior reaction:", reactionResult.error);
-    }
-    
+
     setIsTyping(true);
+
+    // --- New Immediate Reaction Logic ---
+    startTransition(async () => {
+      // We need to get the most up-to-date companion state for the reaction
+      const currentCompanion = await new Promise<typeof companion>((resolve) => {
+        // use-companion's setState is async, we need to wait for it to be updated
+        // before we can get the latest state.
+        // A bit of a hack, but it works for now.
+        setTimeout(() => {
+          const storedCompanion = localStorage.getItem('altered-self-companion');
+          resolve(storedCompanion ? JSON.parse(storedCompanion) : null);
+        }, 100);
+      });
+
+      if (!currentCompanion) return;
+      
+      const reactionResult = await reactToUserBehaviorAction(currentCompanion, userMessage.text);
+      
+      if (reactionResult.success && reactionResult.updates) {
+        const newStatus = reactionResult.updates.relationshipStatus;
+        if (newStatus && newStatus !== currentCompanion.relationshipStatus) {
+          updateCompanionDetails({ relationshipStatus: newStatus });
+          toast({
+            title: '¡Relación Actualizada!',
+            description: `Tu relación con ${currentCompanion.name} es ahora: ${newStatus}.`,
+          });
+        }
+      } else if (reactionResult.error) {
+        console.error("Error in behavior reaction:", reactionResult.error);
+      }
+    });
 
     // --- Main Response Generation ---
     const currentMessages = [...messages, userMessage];
     const userLocalTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+    // Pass the companion state as it was when the message was sent
     const result = await getAIResponseAction(companion, currentMessages, userLocalTime);
 
     setIsTyping(false);

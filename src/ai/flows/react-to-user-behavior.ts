@@ -58,7 +58,7 @@ const prompt = ai.definePrompt({
         -   **Neutral**: El mensaje es superficial, una pregunta simple o no tiene una carga emocional clara.
 
         Consideraciones de Dificultad:
-        -   En dificultades altas ('Difícil', 'Experto'), sé mucho más estricto para calificar un mensaje como 'positive'. Un simple "hola" no es suficiente. El usuario debe demostrar un esfuerzo real.
+        -   En dificultades altas ('Hard', 'Expert', 'Ultra Hard'), sé mucho más estricto para calificar un mensaje como 'positive'. Un simple "¿quieres ser mi amiga?" no es suficiente si no hay una conexión previa. El usuario debe demostrar un esfuerzo real y sostenido.
         
         Devuelve tu evaluación en el campo 'proposedRelationshipChange'.`,
 });
