@@ -11,13 +11,25 @@ import { ScrollArea } from './ui/scroll-area';
 interface WelcomeGuideProps {
     isOpen: boolean;
     onOpenChange: (isOpen: boolean) => void;
+    onClose: () => void;
 }
 
-export default function WelcomeGuide({ isOpen, onOpenChange }: WelcomeGuideProps) {
+export default function WelcomeGuide({ isOpen, onOpenChange, onClose }: WelcomeGuideProps) {
     const welcomeImage = PlaceHolderImages.find(img => img.id === 'welcome-guide');
 
+    const handleClose = () => {
+        onClose();
+        onOpenChange(false);
+    };
+
     return (
-        <Dialog open={isOpen} onOpenChange={onOpenChange}>
+        <Dialog open={isOpen} onOpenChange={(open) => {
+            if (!open) {
+                handleClose();
+            } else {
+                onOpenChange(true);
+            }
+        }}>
             <DialogContent className="sm:max-w-md p-0 flex flex-col h-full sm:h-auto">
                 <DialogHeader className="p-6 pb-0">
                     {welcomeImage && (
@@ -56,7 +68,7 @@ export default function WelcomeGuide({ isOpen, onOpenChange }: WelcomeGuideProps
                     </div>
                 </ScrollArea>
                 <DialogFooter className="p-6 pt-0 mt-auto">
-                    <Button onClick={() => onOpenChange(false)} className="w-full">
+                    <Button onClick={handleClose} className="w-full">
                         Comenzar
                     </Button>
                 </DialogFooter>

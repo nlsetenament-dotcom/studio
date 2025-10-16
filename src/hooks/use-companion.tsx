@@ -7,6 +7,7 @@ import { Companion, Message, appThemes, AppTheme } from '@/lib/types';
 const COMPANION_KEY = 'altered-self-companion';
 const MESSAGES_KEY = 'altered-self-messages';
 const APPEARANCE_KEY = 'altered-self-appearance';
+const GUIDE_KEY = 'hasSeenWelcomeGuide';
 
 type Appearance = 'light' | 'dark';
 
@@ -93,8 +94,6 @@ export function CompanionProvider({ children }: { children: ReactNode }) {
     try {
         if (newCompanion) {
             localStorage.setItem(COMPANION_KEY, JSON.stringify(newCompanion));
-            // Set that the user has seen the guide when a companion is created/saved.
-            localStorage.setItem('hasSeenWelcomeGuide', 'true');
             if (newCompanion.theme) {
                 applyThemeColors(newCompanion.theme);
             }
@@ -102,7 +101,7 @@ export function CompanionProvider({ children }: { children: ReactNode }) {
             localStorage.removeItem(COMPANION_KEY);
             localStorage.removeItem(MESSAGES_KEY);
             // When companion is deleted, reset the guide flag so it shows up next time.
-            localStorage.removeItem('hasSeenWelcomeGuide');
+            localStorage.removeItem(GUIDE_KEY);
             setMessages([]);
         }
     } catch (error) {
