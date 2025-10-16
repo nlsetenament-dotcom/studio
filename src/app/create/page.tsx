@@ -28,15 +28,18 @@ export default function CreateCompanionPage() {
     return (
         <>
             <WelcomeGuide isOpen={isGuideOpen} onClose={handleGuideClose} />
-            <motion.main 
-                className="container mx-auto flex min-h-screen flex-col items-center justify-center p-4"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.5 }}
-            >
-                <CreateCompanionForm />
-            </motion.main>
+            
+            {!isGuideOpen && (
+                <motion.main 
+                    className="container mx-auto flex min-h-screen flex-col items-center justify-center p-4"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    transition={{ duration: 0.5 }}
+                >
+                    <CreateCompanionForm />
+                </motion.main>
+            )}
         </>
     );
 }
