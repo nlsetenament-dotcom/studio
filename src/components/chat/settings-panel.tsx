@@ -5,7 +5,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetFooter } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Companion, relationshipLevels, appThemes, AppTheme } from '@/lib/types';
+import { Companion, relationshipLevels, appThemes, AppTheme, Difficulty } from '@/lib/types';
 import { Label } from '../ui/label';
 import { Switch } from '../ui/switch';
 import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
@@ -25,11 +25,10 @@ interface SettingsPanelProps {
   onDifficultyChange: (difficulty: Companion['difficulty']) => void;
 }
 
-const difficultyLevels: { id: Companion['difficulty']; label: string; description: string }[] = [
+const difficultyLevels: { id: Difficulty; label: string; description: string }[] = [
     { id: 'Easy', label: 'Fácil', description: 'Progresión rápida (70% - 90% prob. de éxito).' },
     { id: 'Hard', label: 'Normal', description: 'Progresión estándar (40% - 60% prob. de éxito).' },
     { id: 'Expert', label: 'Difícil', description: 'Progreso lento y requiere esfuerzo (5% - 15% prob. de éxito).' },
-    { id: 'Ultra Hard', label: 'Ultra Difícil', description: 'Casi imposible, solo para expertos (0.1% - 1% prob. de éxito).' },
 ];
 
 export default function SettingsPanel({ 
