@@ -215,7 +215,7 @@ export default function CreateCompanionForm() {
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Selecciona un género" />
-                      </SelectTrigger>
+                      </Trigger>
                     </FormControl>
                     <SelectContent>
                       <SelectItem value="Femenino">Femenino</SelectItem>
