@@ -12,10 +12,9 @@ const createCompanionSchema = z.object({
   name: z.string().min(2).max(50),
   residence: z.string().min(2).max(100),
   gender: z.enum(['Masculino', 'Femenino']),
-  birthDate: z.string().refine((val) => !isNaN(Date.parse(val)), { message: "Invalid date" }),
-  birthDay: z.string(),
-  birthMonth: z.string(),
-  birthYear: z.string(),
+  birthDay: z.string().min(1).max(2),
+  birthMonth: z.string().min(1).max(2),
+  birthYear: z.string().min(4).max(4),
   hobbies: z.string().min(3).max(200),
   description: z.string().min(10).max(500),
   theme: z.custom<AppTheme>(value => Object.keys(appThemes).includes(value as string)),
@@ -47,10 +46,16 @@ export async function createCompanionAction(formData: FormData) {
     return { error: 'Datos de formulario inválidos. Asegúrate de que todos los campos son correctos.' };
   }
   
-  const { name, gender, birthDate, hobbies, description, residence, theme, birthDay, birthMonth, birthYear } = validatedFields.data;
+  const { name, gender, hobbies, description, residence, theme, birthDay, birthMonth, birthYear } = validatedFields.data;
 
   try {
-    const birthDateObj = new Date(birthDate);
+    const birthDateISO = `${birthYear}-${birthMonth.padStart(2, '0')}-${birthDay.padStart(2, '0')}`;
+    const birthDateObj = new Date(birthDateISO);
+
+    if (isNaN(birthDateObj.getTime())) {
+        return { error: 'La fecha de nacimiento no es válida.' };
+    }
+
     const age = calculateAge(birthDateObj);
 
     if (age < 18) {
@@ -69,7 +74,7 @@ export async function createCompanionAction(formData: FormData) {
       name,
       gender,
       age,
-      birthDate: birthDate,
+      birthDate: birthDateISO,
       birthDay: parseInt(birthDay,10),
       birthMonth: parseInt(birthMonth,10),
       birthYear: parseInt(birthYear,10),

@@ -65,7 +65,7 @@ const formSchema = z.object({
   return date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day;
 }, {
   message: "La fecha de nacimiento no es válida.",
-  path: ["birthDay"], // Or birthMonth, birthYear
+  path: ["birthDay"],
 });
 
 export default function CreateCompanionForm() {
@@ -101,22 +101,12 @@ export default function CreateCompanionForm() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const formData = new FormData();
-    const { birthDay, birthMonth, birthYear, ...restOfValues } = values;
-
-    // Build birthDate string
-    const birthDate = `${birthMonth}/${birthDay}/${birthYear}`;
-
-    // Append all values to formData, including the constructed birthDate
-    Object.entries(restOfValues).forEach(([key, value]) => {
-      // Skip appearance as it's handled by the context
+    
+    Object.entries(values).forEach(([key, value]) => {
       if (key !== 'appearance' && value !== undefined) {
         formData.append(key, value.toString());
       }
     });
-    formData.append('birthDay', birthDay);
-    formData.append('birthMonth', birthMonth);
-    formData.append('birthYear', birthYear);
-    formData.append('birthDate', birthDate); // Ensure birthDate is appended
 
     const result = await createCompanionAction(formData);
 
@@ -127,7 +117,6 @@ export default function CreateCompanionForm() {
         description: result.error,
       });
     } else if (result.success && result.companion) {
-      // Set the final appearance from the form switch
       setAppearance(values.appearance ? 'dark' : 'light');
       saveCompanion({ ...result.companion, theme: values.theme });
       toast({
@@ -350,5 +339,3 @@ export default function CreateCompanionForm() {
     </motion.main>
   );
 }
-
-    
