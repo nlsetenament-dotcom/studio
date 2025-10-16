@@ -34,7 +34,7 @@ export default function InitialLoader() {
 
   // Muestra un esqueleto de carga mientras se determina a dónde redirigir o el temporizador está activo.
   return (
-    <div className="flex h-screen w-full flex-col items-center justify-center bg-black">
+    <div className="flex h-screen w-full flex-col items-center bg-black pt-48">
         <div className="text-center">
             <h1 className="text-8xl font-bold tracking-tighter text-white animate-text-glow" style={{ fontFamily: 'serif' }}>
                 NLS
