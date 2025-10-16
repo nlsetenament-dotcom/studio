@@ -123,7 +123,7 @@ export default function CreateCompanionForm() {
         router.push('/chat');
       }
     });
-  }
+  };
 
   return (
     <Card className="w-full max-w-2xl shadow-lg">
