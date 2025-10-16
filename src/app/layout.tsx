@@ -14,7 +14,7 @@ const alegreya = Alegreya({
 
 export const metadata: Metadata = {
   manifest: '/manifest.json',
-  title: 'NLS Entertainment',
+  title: 'Tu Alter Ego',
   description: 'Una relación inmersiva y evolutiva con un compañero de IA.',
 };
 
