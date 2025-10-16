@@ -34,7 +34,7 @@ export default function ChatMessage({ message, companion, isSelected, onSelect }
       <div className={cn('flex flex-col', isUser ? 'items-end' : 'items-start')}>
         <div
           className={cn(
-            'max-w-xs rounded-lg px-4 py-3 md:max-w-md cursor-pointer transition-colors duration-200',
+            'max-w-xs rounded-2xl px-4 py-3 md:max-w-md cursor-pointer transition-colors duration-200',
             'animate-in fade-in-25 slide-in-from-bottom-4',
             isUser
               ? 'rounded-br-none bg-accent text-accent-foreground'

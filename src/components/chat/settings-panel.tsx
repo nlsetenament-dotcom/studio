@@ -318,6 +318,9 @@ export default function SettingsPanel({
                 </div>
                  <div>
                     <h3 className="mb-4 text-lg font-medium text-foreground flex items-center gap-2"><Code className="h-5 w-5 text-primary" />Créditos</h3>
+                    <p className="mb-2 text-sm text-muted-foreground">
+                        Versión de la Aplicación: 1
+                    </p>
                     <div className="rounded-lg border p-4 text-center">
                         <h4 className="text-4xl font-bold tracking-tighter text-foreground/80 animate-text-glow" style={{ fontFamily: 'serif' }}>
                             NLS
@@ -329,9 +332,6 @@ export default function SettingsPanel({
                             <p className="animate-color-cycle">Luis Bravo, Diego Romero, Carlos Ramires</p>
                             <p className="animate-color-cycle">Jesus Manuel, Mario Arcia</p>
                         </div>
-                        <p className="mt-6 text-xs text-muted-foreground/50">
-                            Versión 1
-                        </p>
                     </div>
                 </div>
             </div>
