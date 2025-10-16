@@ -1,4 +1,4 @@
-import InitialLoader from '@/components/initial-loader';
+
 import {Button} from '@/components/ui/button';
 import Link from 'next/link';
 
@@ -12,7 +12,6 @@ export default function Home() {
           prefetch={false}>
           <span className="text-xl font-bold">NLS Entertainment</span>
         </Link>
-        {/* Los botones se han movido a la sección main */}
       </header>
       <main className="flex flex-1 flex-col items-center justify-center bg-background p-4 text-center md:p-6">
         <div className="max-w-2xl space-y-6">
@@ -24,10 +23,10 @@ export default function Home() {
             evoluciona con cada conversación y se siente increíblemente real.
           </p>
           <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
-            <Link href="/create" passHref>
+            <Link href="/create">
               <Button size="lg">Comienza tu Viaje</Button>
             </Link>
-            <Link href="/chat" passHref>
+            <Link href="/chat">
               <Button size="lg" variant="outline">Chatear Ahora</Button>
             </Link>
           </div>
