@@ -46,6 +46,9 @@ export interface Companion {
   gender: Gender;
   age: number;
   birthDate: string; // ISO 8601 date string
+  birthDay: number;
+  birthMonth: number;
+  birthYear: number;
   residence: string;
   hobbies: string;
   description: string;

@@ -13,6 +13,9 @@ const createCompanionSchema = z.object({
   residence: z.string().min(2).max(100),
   gender: z.enum(['Masculino', 'Femenino']),
   birthDate: z.string().refine((val) => !isNaN(Date.parse(val)), { message: "Invalid date" }),
+  birthDay: z.string(),
+  birthMonth: z.string(),
+  birthYear: z.string(),
   hobbies: z.string().min(3).max(200),
   description: z.string().min(10).max(500),
   theme: z.custom<AppTheme>(value => Object.keys(appThemes).includes(value as string)),
@@ -44,7 +47,7 @@ export async function createCompanionAction(formData: FormData) {
     return { error: 'Datos de formulario inválidos. Asegúrate de que todos los campos son correctos.' };
   }
   
-  const { name, gender, birthDate, hobbies, description, residence, theme } = validatedFields.data;
+  const { name, gender, birthDate, hobbies, description, residence, theme, birthDay, birthMonth, birthYear } = validatedFields.data;
 
   try {
     const birthDateObj = new Date(birthDate);
@@ -67,6 +70,9 @@ export async function createCompanionAction(formData: FormData) {
       gender,
       age,
       birthDate: birthDate,
+      birthDay: parseInt(birthDay,10),
+      birthMonth: parseInt(birthMonth,10),
+      birthYear: parseInt(birthYear,10),
       residence,
       hobbies,
       description,

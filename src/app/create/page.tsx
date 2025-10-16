@@ -45,15 +45,27 @@ const formSchema = z.object({
   gender: z.enum(['Masculino', 'Femenino'], {
     required_error: 'Por favor selecciona un género.',
   }),
-  birthDate: z.string().refine(val => !isNaN(Date.parse(val)), {
-    message: 'Por favor, introduce una fecha de nacimiento válida.',
-  }),
+  birthDay: z.string().min(1, 'Día es requerido.').max(2, 'Día inválido.'),
+  birthMonth: z.string().min(1, 'Mes es requerido.').max(2, 'Mes inválido.'),
+  birthYear: z.string().min(4, 'Año debe tener 4 dígitos.').max(4, 'Año debe tener 4 dígitos.'),
   hobbies: z.string().min(3, 'Los pasatiempos deben tener al menos 3 caracteres.').max(200, 'Los pasatiempos no pueden tener más de 200 caracteres.'),
   description: z.string().min(10, 'La descripción debe tener al menos 10 caracteres.').max(500, 'La descripción no puede tener más de 500 caracteres.'),
   theme: z.custom<AppTheme>(val => Object.keys(appThemes).includes(val as string), {
     message: 'Por favor selecciona un tema válido.',
   }),
   appearance: z.boolean().default(false), // false for light, true for dark
+}).refine(data => {
+  const day = parseInt(data.birthDay, 10);
+  const month = parseInt(data.birthMonth, 10);
+  const year = parseInt(data.birthYear, 10);
+  if (isNaN(day) || isNaN(month) || isNaN(year)) return false;
+  if (day < 1 || day > 31) return false;
+  if (month < 1 || month > 12) return false;
+  const date = new Date(year, month - 1, day);
+  return date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day;
+}, {
+  message: "La fecha de nacimiento no es válida.",
+  path: ["birthDay"], // Or birthMonth, birthYear
 });
 
 export default function CreateCompanionForm() {
@@ -67,7 +79,9 @@ export default function CreateCompanionForm() {
       name: '',
       residence: '',
       gender: undefined,
-      birthDate: '',
+      birthDay: '',
+      birthMonth: '',
+      birthYear: '',
       hobbies: '',
       description: '',
       theme: 'sunset-orange',
@@ -89,11 +103,19 @@ export default function CreateCompanionForm() {
     setAppearance(values.appearance ? 'dark' : 'light');
     
     const formData = new FormData();
-    Object.entries(values).forEach(([key, value]) => {
+
+    const { birthDay, birthMonth, birthYear, ...restOfValues } = values;
+    const birthDate = `${birthMonth}/${birthDay}/${birthYear}`;
+
+    Object.entries(restOfValues).forEach(([key, value]) => {
         if(key !== 'appearance' && value !== undefined) {
             formData.append(key, value.toString());
         }
     });
+    formData.append('birthDate', birthDate);
+    formData.append('birthDay', birthDay);
+    formData.append('birthMonth', birthMonth);
+    formData.append('birthYear', birthYear);
 
     const result = await createCompanionAction(formData);
 
@@ -180,19 +202,46 @@ export default function CreateCompanionForm() {
                     </FormItem>
                   )}
                 />
-                <FormField
-                  control={form.control}
-                  name="birthDate"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Fecha de Nacimiento</FormLabel>
-                      <FormControl>
-                        <Input type="text" placeholder="DD/MM/AAAA" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                
+                <FormItem>
+                  <FormLabel>Fecha de Nacimiento</FormLabel>
+                  <div className="grid grid-cols-3 gap-2">
+                    <FormField
+                      control={form.control}
+                      name="birthDay"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <Input type="number" placeholder="Día" {...field} />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="birthMonth"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <Input type="number" placeholder="Mes" {...field} />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="birthYear"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <Input type="number" placeholder="Año" {...field} />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                   <FormMessage>{form.formState.errors.birthDay?.message}</FormMessage>
+                </FormItem>
               </div>
 
               <FormField
