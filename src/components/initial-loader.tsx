@@ -1,63 +1,20 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
 
 export default function InitialLoader() {
   const router = useRouter();
-  const [isExiting, setIsExiting] = useState(false);
 
   useEffect(() => {
-    const randomDelay = Math.floor(Math.random() * (8000 - 5000 + 1)) + 5000;
-
-    const timer = setTimeout(() => {
-        setIsExiting(true);
-    }, randomDelay);
-
-    return () => clearTimeout(timer);
-  }, []);
-  
-  const handleExitComplete = () => {
     const companion = localStorage.getItem('altered-self-companion');
     if (companion) {
-        router.push('/chat');
+        router.replace('/chat');
     } else {
-        router.push('/create');
+        router.replace('/create');
     }
-  };
+  }, [router]);
 
-
-  return (
-    <AnimatePresence onExitComplete={handleExitComplete}>
-      {!isExiting && (
-         <motion.main
-            key="loader"
-            initial={{ opacity: 1 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0, transition: { duration: 0.5, ease: 'easeIn' } }}
-            className="flex h-screen w-full flex-col items-center justify-center bg-background p-4"
-        >
-          <div className="flex w-full max-w-md flex-col items-center gap-6">
-            <div className="text-center">
-              <h1 className="animate-text-glow font-headline text-8xl font-bold tracking-tighter text-foreground">
-                NLS
-              </h1>
-              <p className="text-sm tracking-[0.4em] text-muted-foreground animate-pulse-subtle">
-                ENTERTAINMENT
-              </p>
-            </div>
-            <div className="flex h-12 w-full justify-center items-center gap-2">
-                <div className="h-2 w-2 rounded-full bg-muted-foreground animate-jump-1"></div>
-                <div className="h-2 w-2 rounded-full bg-muted-foreground animate-jump-2"></div>
-                <div className="h-2 w-2 rounded-full bg-muted-foreground animate-jump-3"></div>
-            </div>
-          </div>
-           <div className="absolute bottom-4 text-center text-xs text-muted-foreground">
-                <p className="animate-color-cycle">Luis Bravo, Diego Romero, Carlos Ramires</p>
-            </div>
-        </motion.main>
-      )}
-    </AnimatePresence>
-  );
+  // Render nothing, just handle redirection
+  return null;
 }
