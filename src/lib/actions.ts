@@ -135,7 +135,7 @@ export async function getAIResponseAction(companion: Companion, messages: Messag
     return { response: responseResult.response };
   } catch (error) {
     console.error('Error generando respuesta de IA:', error);
-    return { error: 'Yo... no puedo pensar en este momento. ¿Quizás podamos hablar más tarde?' };
+    return { error: 'Tengo la mente en blanco ahora mismo. ¿Podemos hablar de otra cosa?' };
   }
 }
 
