@@ -319,7 +319,13 @@ export default function SettingsPanel({
                  <div>
                     <h3 className="mb-4 text-lg font-medium text-foreground flex items-center gap-2"><Code className="h-5 w-5 text-primary" />Créditos</h3>
                     <div className="rounded-lg border p-4 text-center">
-                        <div className="space-y-2 text-sm text-muted-foreground">
+                        <h4 className="text-4xl font-bold tracking-tighter text-foreground/80 animate-text-glow" style={{ fontFamily: 'serif' }}>
+                            NLS
+                        </h4>
+                        <p className="mt-1 text-xs font-light tracking-[0.3em] text-foreground/60 animate-pulse-subtle">
+                            ENTERTAINMENT
+                        </p>
+                        <div className="mt-6 space-y-2 text-sm text-muted-foreground">
                             <p className="animate-color-cycle">Luis Bravo, Diego Romero, Carlos Ramires</p>
                             <p className="animate-color-cycle">Jesus Manuel, Mario Arcia</p>
                         </div>
