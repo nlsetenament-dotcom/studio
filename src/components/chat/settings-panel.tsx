@@ -329,6 +329,9 @@ export default function SettingsPanel({
                             <p className="animate-color-cycle">Luis Bravo, Diego Romero, Carlos Ramires</p>
                             <p className="animate-color-cycle">Jesus Manuel, Mario Arcia</p>
                         </div>
+                        <p className="mt-6 text-xs text-muted-foreground/50">
+                            Versión 1
+                        </p>
                     </div>
                 </div>
             </div>
@@ -341,5 +344,3 @@ export default function SettingsPanel({
     </Sheet>
   );
 }
-
-    
