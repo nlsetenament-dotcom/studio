@@ -61,6 +61,7 @@ const formSchema = z.object({
   if (isNaN(day) || isNaN(month) || isNaN(year)) return false;
   if (day < 1 || day > 31) return false;
   if (month < 1 || month > 12) return false;
+  if (year < 1900) return false; // Prevent very old dates
   const date = new Date(year, month - 1, day);
   return date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day;
 }, {
@@ -103,7 +104,7 @@ export default function CreateCompanionForm() {
     const formData = new FormData();
     
     Object.entries(values).forEach(([key, value]) => {
-      if (key !== 'appearance' && value !== undefined) {
+      if (value !== undefined) { // Send appearance as well
         formData.append(key, value.toString());
       }
     });
