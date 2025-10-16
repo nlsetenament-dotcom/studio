@@ -78,10 +78,10 @@
 @layer base {
   * {
     @apply border-border;
+    transition: color 1s ease, background-color 1s ease, border-color 1s ease;
   }
   body {
     @apply bg-background text-foreground;
-    transition: background-color 0.3s ease, color 0.3s ease;
   }
 }
 
