@@ -10,19 +10,11 @@ export default function CreateCompanionPage() {
     const [isGuideOpen, setIsGuideOpen] = useState(false);
 
     useEffect(() => {
-        // Show the guide only if loading is complete and there's no companion
+        // Show the guide only if loading is complete and there's no companion.
+        // This covers both new users and users who have deleted their companion.
         if (!isLoading && !companion) {
-            const hasSeenGuide = localStorage.getItem('hasSeenWelcomeGuide');
-            if (!hasSeenGuide) {
-                setIsGuideOpen(true);
-                localStorage.setItem('hasSeenWelcomeGuide', 'true');
-            }
+            setIsGuideOpen(true);
         }
-        // If a companion is deleted, we need to reset the flag
-        if (!isLoading && companion === null) {
-             localStorage.removeItem('hasSeenWelcomeGuide');
-        }
-
     }, [isLoading, companion]);
 
 

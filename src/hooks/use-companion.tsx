@@ -93,13 +93,15 @@ export function CompanionProvider({ children }: { children: ReactNode }) {
     try {
         if (newCompanion) {
             localStorage.setItem(COMPANION_KEY, JSON.stringify(newCompanion));
+            // Set that the user has seen the guide when a companion is created/saved.
+            localStorage.setItem('hasSeenWelcomeGuide', 'true');
             if (newCompanion.theme) {
                 applyThemeColors(newCompanion.theme);
             }
         } else {
             localStorage.removeItem(COMPANION_KEY);
             localStorage.removeItem(MESSAGES_KEY);
-            // When companion is deleted, reset the guide flag so it shows up next time
+            // When companion is deleted, reset the guide flag so it shows up next time.
             localStorage.removeItem('hasSeenWelcomeGuide');
             setMessages([]);
         }
