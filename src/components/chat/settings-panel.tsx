@@ -29,6 +29,7 @@ const difficultyLevels: { id: Companion['difficulty']; label: string; descriptio
     { id: 'Easy', label: 'Fácil', description: 'Progresión rápida (70% - 90% prob. de éxito).' },
     { id: 'Hard', label: 'Normal', description: 'Progresión estándar (40% - 60% prob. de éxito).' },
     { id: 'Expert', label: 'Difícil', description: 'Progreso lento y requiere esfuerzo (5% - 15% prob. de éxito).' },
+    { id: 'Ultra Hard', label: 'Ultra Difícil', description: 'Casi imposible, solo para expertos (0.1% - 1% prob. de éxito).' },
 ];
 
 export default function SettingsPanel({ 

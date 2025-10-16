@@ -1,4 +1,4 @@
-export type Difficulty = 'Easy' | 'Hard' | 'Expert';
+export type Difficulty = 'Easy' | 'Hard' | 'Expert' | 'Ultra Hard';
 export type Gender = 'Masculino' | 'Femenino';
 
 export const relationshipLevels = [
