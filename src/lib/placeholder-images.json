@@ -71,12 +71,6 @@
       "description": "Avatar gallery image 11",
       "imageUrl": "https://picsum.photos/seed/gal11/200/200",
       "imageHint": "vintage car interior"
-    },
-    {
-      "id": "welcome-guide",
-      "description": "Image for the new user welcome guide",
-      "imageUrl": "https://picsum.photos/seed/welcome/600/400",
-      "imageHint": "path forest"
     }
   ]
 }
