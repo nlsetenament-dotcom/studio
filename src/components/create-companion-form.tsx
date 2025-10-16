@@ -247,7 +247,7 @@ export default function CreateCompanionForm() {
                 <FormItem>
                   <FormLabel>Historia / Descripción</FormLabel>
                   <FormControl>
-                    <Textarea placeholder="Describe su personalidad, qué los hace únicos..." className="min-h-[100px]" {...field} />
+                    <Textarea placeholder="Describe su personalidad, qué los hace únicos..." className="min-h-[100px] rounded-xl" {...field} />
                   </FormControl>
                   <FormDescription>Esta es la base sobre la que la IA construirá su personalidad completa.</FormDescription>
                   <FormMessage />
@@ -267,7 +267,7 @@ export default function CreateCompanionForm() {
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Selecciona un tema visual" />
-                        </SelectTrigger>
+                        </Trigger>
                       </FormControl>
                       <SelectContent>
                         {Object.entries(appThemes).map(([key, theme]) => (
