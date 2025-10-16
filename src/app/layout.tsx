@@ -26,14 +26,21 @@ export default function RootLayout({
   return (
     <html lang="es" suppressHydrationWarning>
       <body className={cn('font-body antialiased', alegreya.variable)}>
+        {/* The script to set dark/light mode is now handled in CompanionProvider, 
+            but this can be kept for the initial non-JS render to avoid flickering. */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
               (function() {
-                const appearance = localStorage.getItem('altered-self-appearance');
-                if (appearance === 'dark' || (!appearance && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                  document.documentElement.classList.add('dark');
-                }
+                try {
+                  const appearance = localStorage.getItem('altered-self-appearance');
+                  const theme = localStorage.getItem('altered-self-theme') || 'sunset-orange';
+                  
+                  if (appearance === 'dark' || (!appearance && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                    document.documentElement.classList.add('dark');
+                  }
+                  document.documentElement.setAttribute('data-theme', theme);
+                } catch (e) {}
               })();
             `,
           }}

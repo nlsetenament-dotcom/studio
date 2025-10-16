@@ -8,6 +8,8 @@ const COMPANION_KEY = 'altered-self-companion';
 const MESSAGES_KEY = 'altered-self-messages';
 const APPEARANCE_KEY = 'altered-self-appearance';
 const WELCOME_GUIDE_KEY = 'altered-self-has-seen-welcome-guide';
+const THEME_KEY = 'altered-self-theme';
+
 
 type Appearance = 'light' | 'dark';
 
@@ -27,14 +29,8 @@ interface CompanionContextType {
 
 const CompanionContext = createContext<CompanionContextType | undefined>(undefined);
 
-function applyThemeColors(themeName: AppTheme) {
-    const theme = appThemes[themeName];
-    const root = document.documentElement;
-
-    if (theme) {
-        root.style.setProperty('--primary', theme.primary);
-        root.style.setProperty('--ring', theme.primary);
-    }
+function applyTheme(themeName: AppTheme) {
+    document.documentElement.setAttribute('data-theme', themeName);
 }
 
 function applyAppearance(appearance: Appearance) {
@@ -60,14 +56,22 @@ export function CompanionProvider({ children }: { children: ReactNode }) {
       setAppearanceState(initialAppearance);
       applyAppearance(initialAppearance);
       
+      const storedTheme = localStorage.getItem(THEME_KEY) as AppTheme | null;
+      if (storedTheme) {
+          applyTheme(storedTheme);
+      } else {
+          applyTheme('sunset-orange'); // Default theme
+      }
+
       const storedCompanion = localStorage.getItem(COMPANION_KEY);
       const storedMessages = localStorage.getItem(MESSAGES_KEY);
 
       if (storedCompanion) {
         const parsedCompanion: Companion = JSON.parse(storedCompanion);
         setCompanion(parsedCompanion);
+        // Theme is already applied from THEME_KEY, but this ensures consistency if keys diverge
         if (parsedCompanion.theme) {
-            applyThemeColors(parsedCompanion.theme);
+            applyTheme(parsedCompanion.theme);
         }
       }
       if (storedMessages) {
@@ -91,7 +95,7 @@ export function CompanionProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const previewTheme = useCallback((themeName: AppTheme) => {
-    applyThemeColors(themeName);
+    applyTheme(themeName);
   }, []);
 
   const saveCompanion = useCallback((newCompanion: Companion | null) => {
@@ -99,13 +103,14 @@ export function CompanionProvider({ children }: { children: ReactNode }) {
     try {
         if (newCompanion) {
             localStorage.setItem(COMPANION_KEY, JSON.stringify(newCompanion));
-            if (newCompanion.theme) {
-                applyThemeColors(newCompanion.theme);
-            }
+            localStorage.setItem(THEME_KEY, newCompanion.theme);
+            applyTheme(newCompanion.theme);
         } else {
             localStorage.removeItem(COMPANION_KEY);
             localStorage.removeItem(MESSAGES_KEY);
             localStorage.removeItem(WELCOME_GUIDE_KEY); // Reset welcome guide
+            localStorage.removeItem(THEME_KEY);
+            applyTheme('sunset-orange'); // Reset to default theme
             setMessages([]);
         }
     } catch (error) {
@@ -152,16 +157,23 @@ export function CompanionProvider({ children }: { children: ReactNode }) {
         
         const updatedCompanion = { ...prevCompanion, ...updates };
 
+        if (updates.theme) {
+            applyTheme(updates.theme);
+             if (!isVolatile) {
+                try {
+                    localStorage.setItem(THEME_KEY, updates.theme);
+                } catch (error) {
+                    console.error('Failed to save theme to localStorage', error);
+                }
+            }
+        }
+
         if (!isVolatile) {
             try {
                 localStorage.setItem(COMPANION_KEY, JSON.stringify(updatedCompanion));
             } catch (error) {
                 console.error('Failed to save updated companion to localStorage', error);
             }
-        }
-
-        if (updates.theme) {
-            applyThemeColors(updates.theme);
         }
         
         return updatedCompanion;
