@@ -144,12 +144,12 @@ export async function reactToUserBehaviorAction(companion: Companion, userMessag
 
             if (roll < successChance) { // Si la tirada es MENOR que la probabilidad, es un éxito
                 const newStatus = getNextRelationshipLevel(companion.relationshipStatus);
-                if (newStatus !== companion.relationshipStatus) {
-                    return { success: true, updates: { relationshipStatus: newStatus }};
-                }
+                // Siempre devolver el nuevo estado, incluso si es el mismo (para notificar el éxito).
+                return { success: true, updates: { relationshipStatus: newStatus }};
             }
         }
         
+        // Si no es positivo, o si falla la tirada, no hay cambios.
         return { success: true, updates: null };
 
     } catch (error) {
