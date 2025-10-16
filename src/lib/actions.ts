@@ -12,7 +12,7 @@ const createCompanionSchema = z.object({
   name: z.string().min(2).max(50),
   residence: z.string().min(2).max(100),
   gender: z.enum(['Masculino', 'Femenino']),
-  birthDate: z.string().datetime(),
+  birthDate: z.string().refine((val) => !isNaN(Date.parse(val)), { message: "Invalid date" }),
   hobbies: z.string().min(3).max(200),
   description: z.string().min(10).max(500),
   theme: z.custom<AppTheme>(value => Object.keys(appThemes).includes(value as string)),
@@ -36,7 +36,8 @@ function calculateAge(birthDate: Date): number {
 }
 
 export async function createCompanionAction(formData: FormData) {
-  const validatedFields = createCompanionSchema.safeParse(Object.fromEntries(formData.entries()));
+  const rawData = Object.fromEntries(formData.entries());
+  const validatedFields = createCompanionSchema.safeParse(rawData);
 
   if (!validatedFields.success) {
     console.error(validatedFields.error.flatten().fieldErrors);
