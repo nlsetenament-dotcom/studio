@@ -111,11 +111,11 @@ export default function SettingsPanel({
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      if (file.size > 2 * 1024 * 1024) { // 2MB limit
+      if (file.size > 10 * 1024 * 1024) { // 10MB limit
         toast({
             variant: 'destructive',
             title: 'Archivo Demasiado Grande',
-            description: 'Por favor, selecciona una imagen de menos de 2MB.',
+            description: 'Por favor, selecciona una imagen de menos de 10MB.',
         });
         return;
       }
@@ -335,3 +335,5 @@ export default function SettingsPanel({
     </Sheet>
   );
 }
+
+    
