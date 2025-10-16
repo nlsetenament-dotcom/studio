@@ -17,8 +17,8 @@ const config: Config = {
     },
     extend: {
       fontFamily: {
-        body: ['var(--font-alegreya)', 'serif'],
-        headline: ['var(--font-alegreya)', 'serif'],
+        body: ['var(--font-nunito)', 'sans-serif'],
+        headline: ['var(--font-nunito)', 'sans-serif'],
         code: ['monospace'],
       },
       colors: {
