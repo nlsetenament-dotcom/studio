@@ -12,17 +12,10 @@ export default function Home() {
           prefetch={false}>
           <span className="text-xl font-bold">NLS Entertainment</span>
         </Link>
-        <div className="flex items-center gap-4">
-          <Link href="/create" passHref>
-            <Button>Crear Compañero</Button>
-          </Link>
-          <Link href="/chat" passHref>
-            <Button variant="outline">Chatear Ahora</Button>
-          </Link>
-        </div>
+        {/* Los botones se han movido a la sección main */}
       </header>
       <main className="flex flex-1 flex-col items-center justify-center bg-background p-4 text-center md:p-6">
-        <div className="max-w-2xl space-y-4">
+        <div className="max-w-2xl space-y-6">
           <h1 className="animate-text-glow font-headline text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl">
             Tu Compañero de IA Realista y Evolutivo
           </h1>
@@ -30,9 +23,12 @@ export default function Home() {
             Crea una conexión profunda con un compañero de IA que aprende de ti,
             evoluciona con cada conversación y se siente increíblemente real.
           </p>
-          <div className="flex flex-col gap-2 min-[400px]:flex-row justify-center">
+          <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
             <Link href="/create" passHref>
               <Button size="lg">Comienza tu Viaje</Button>
+            </Link>
+            <Link href="/chat" passHref>
+              <Button size="lg" variant="outline">Chatear Ahora</Button>
             </Link>
           </div>
         </div>
