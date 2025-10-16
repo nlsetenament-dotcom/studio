@@ -9,13 +9,16 @@ export default function InitialLoader() {
   const { companion, isLoading } = useCompanion();
 
   useEffect(() => {
-    // Redirigir solo cuando la carga de datos haya finalizado
     if (!isLoading) {
-      if (companion) {
-        router.replace('/chat');
-      } else {
-        router.replace('/create');
-      }
+      const randomDelay = Math.random() * 3000 + 5000; // Random delay between 5s and 8s
+      const timer = setTimeout(() => {
+        if (companion) {
+          router.replace('/chat');
+        } else {
+          router.replace('/create');
+        }
+      }, randomDelay);
+      return () => clearTimeout(timer);
     }
   }, [isLoading, companion, router]);
 
