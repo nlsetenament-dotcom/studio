@@ -100,22 +100,23 @@ export default function CreateCompanionForm() {
   }, [appearance, form]);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    // Appearance is already set by the switch's onCheckedChange
-    
     const formData = new FormData();
-
     const { birthDay, birthMonth, birthYear, ...restOfValues } = values;
+
+    // Build birthDate string
     const birthDate = `${birthMonth}/${birthDay}/${birthYear}`;
 
+    // Append all values to formData, including the constructed birthDate
     Object.entries(restOfValues).forEach(([key, value]) => {
-        if(key !== 'appearance' && value !== undefined) {
-            formData.append(key, value.toString());
-        }
+      // Skip appearance as it's handled by the context
+      if (key !== 'appearance' && value !== undefined) {
+        formData.append(key, value.toString());
+      }
     });
-    formData.append('birthDate', birthDate);
     formData.append('birthDay', birthDay);
     formData.append('birthMonth', birthMonth);
     formData.append('birthYear', birthYear);
+    formData.append('birthDate', birthDate); // Ensure birthDate is appended
 
     const result = await createCompanionAction(formData);
 
@@ -126,7 +127,9 @@ export default function CreateCompanionForm() {
         description: result.error,
       });
     } else if (result.success && result.companion) {
-      saveCompanion({...result.companion, theme: values.theme });
+      // Set the final appearance from the form switch
+      setAppearance(values.appearance ? 'dark' : 'light');
+      saveCompanion({ ...result.companion, theme: values.theme });
       toast({
         title: '¡Compañero Creado!',
         description: `${result.companion.name} está listo para conversar.`,
@@ -347,3 +350,5 @@ export default function CreateCompanionForm() {
     </motion.main>
   );
 }
+
+    
