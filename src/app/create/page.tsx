@@ -34,8 +34,10 @@ import { createCompanionAction } from '@/lib/actions';
 import { useCompanion } from '@/hooks/use-companion';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Moon, Sun } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { Switch } from '@/components/ui/switch';
+import { useEffect } from 'react';
 
 const formSchema = z.object({
   name: z.string().min(2, 'El nombre debe tener al menos 2 caracteres.').max(50, 'El nombre no puede tener más de 50 caracteres.'),
@@ -51,11 +53,12 @@ const formSchema = z.object({
   theme: z.custom<AppTheme>(val => Object.keys(appThemes).includes(val as string), {
     message: 'Por favor selecciona un tema válido.',
   }),
+  appearance: z.boolean().default(false), // false for light, true for dark
 });
 
 export default function CreateCompanionForm() {
   const router = useRouter();
-  const { saveCompanion } = useCompanion();
+  const { saveCompanion, appearance, setAppearance, previewTheme } = useCompanion();
   const { toast } = useToast();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -68,13 +71,26 @@ export default function CreateCompanionForm() {
       hobbies: '',
       description: '',
       theme: 'sunset-orange',
+      appearance: appearance === 'dark',
     },
   });
 
+  const selectedTheme = form.watch('theme');
+
+  useEffect(() => {
+    previewTheme(selectedTheme);
+  }, [selectedTheme, previewTheme]);
+
+  useEffect(() => {
+    form.setValue('appearance', appearance === 'dark');
+  }, [appearance, form]);
+
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    setAppearance(values.appearance ? 'dark' : 'light');
+    
     const formData = new FormData();
     Object.entries(values).forEach(([key, value]) => {
-        if(value !== undefined) {
+        if(key !== 'appearance' && value !== undefined) {
             formData.append(key, value.toString());
         }
     });
@@ -88,7 +104,7 @@ export default function CreateCompanionForm() {
         description: result.error,
       });
     } else if (result.success && result.companion) {
-      saveCompanion(result.companion);
+      saveCompanion({...result.companion, theme: values.theme });
       toast({
         title: '¡Compañero Creado!',
         description: `${result.companion.name} está listo para conversar.`,
@@ -217,31 +233,56 @@ export default function CreateCompanionForm() {
                 )}
               />
               
-              <FormField
-                  control={form.control}
-                  name="theme"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Tema Visual</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Selecciona un tema para la aplicación" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {Object.entries(appThemes).map(([key, theme]) => (
-                             <SelectItem key={key} value={key}>{theme.name}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormDescription>
-                        Esto cambiará la paleta de colores de toda la aplicación.
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                <FormField
+                    control={form.control}
+                    name="theme"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Tema de Color</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Selecciona un tema para la aplicación" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {Object.entries(appThemes).map(([key, theme]) => (
+                               <SelectItem key={key} value={key}>{theme.name}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormDescription>
+                          Esto cambiará la paleta de colores de la app.
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="appearance"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Apariencia</FormLabel>
+                          <div className='flex items-center space-x-2 rounded-md border p-2 h-10'>
+                              <Sun className="h-5 w-5 text-muted-foreground" />
+                              <FormControl>
+                                <Switch
+                                  checked={field.value}
+                                  onCheckedChange={field.onChange}
+                                />
+                              </FormControl>
+                              <Moon className="h-5 w-5 text-muted-foreground" />
+                          </div>
+                        <FormDescription>
+                          Elige entre el modo claro y el oscuro.
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+              </div>
 
               <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
                 {form.formState.isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}

@@ -29,15 +29,19 @@ interface CompanionContextType {
 const CompanionContext = createContext<CompanionContextType | undefined>(undefined);
 
 function applyTheme(themeName: AppTheme) {
-    document.documentElement.setAttribute('data-theme', themeName);
+    if (typeof window !== 'undefined') {
+      document.documentElement.setAttribute('data-theme', themeName);
+    }
 }
 
 function applyAppearance(appearance: Appearance) {
-    const root = document.documentElement;
-    if (appearance === 'dark') {
-        root.classList.add('dark');
-    } else {
-        root.classList.remove('dark');
+    if (typeof window !== 'undefined') {
+        const root = document.documentElement;
+        if (appearance === 'dark') {
+            root.classList.add('dark');
+        } else {
+            root.classList.remove('dark');
+        }
     }
 }
 
