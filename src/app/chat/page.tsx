@@ -8,7 +8,7 @@ import ChatHeader from '@/components/chat/chat-header';
 import ChatMessages from '@/components/chat/chat-messages';
 import ChatInput from '@/components/chat/chat-input';
 import { getAIResponseAction, reactToUserBehaviorAction, updatePersonalityAction } from '@/lib/actions';
-import { Message } from '@/lib/types';
+import { Message, Companion } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
 import { Skeleton } from '@/components/ui/skeleton';
 import { motion } from 'framer-motion';
@@ -43,24 +43,20 @@ export default function ChatPage() {
 
     // --- New Immediate Reaction Logic ---
     startTransition(async () => {
-      // We need to get the most up-to-date companion state for the reaction
-      const currentCompanion = await new Promise<typeof companion>((resolve) => {
-        // use-companion's setState is async, we need to wait for it to be updated
-        // before we can get the latest state.
-        // A bit of a hack, but it works for now.
-        setTimeout(() => {
-          const storedCompanion = localStorage.getItem('altered-self-companion');
-          resolve(storedCompanion ? JSON.parse(storedCompanion) : null);
-        }, 100);
-      });
+      // It's crucial to get the most up-to-date companion state from a reliable source.
+      // The state in the closure might be stale. localStorage is the source of truth.
+      const storedCompanionData = localStorage.getItem('altered-self-companion');
+      const currentCompanion: Companion | null = storedCompanionData ? JSON.parse(storedCompanionData) : null;
 
       if (!currentCompanion) return;
       
       const reactionResult = await reactToUserBehaviorAction(currentCompanion, userMessage.text);
       
-      if (reactionResult.success && reactionResult.updates) {
+      if (reactionResult.success && reactionResult.updates?.relationshipStatus) {
         const newStatus = reactionResult.updates.relationshipStatus;
-        if (newStatus && newStatus !== currentCompanion.relationshipStatus) {
+        // Only update if the status has actually changed to avoid unnecessary re-renders/toasts.
+        if (newStatus !== currentCompanion.relationshipStatus) {
+          // This will update the state and localStorage via the hook
           updateCompanionDetails({ relationshipStatus: newStatus });
           toast({
             title: '¡Relación Actualizada!',
@@ -92,8 +88,11 @@ export default function ChatPage() {
 
       // --- Background Personality Update ---
       startTransition(async () => {
-        if (!companion) return; // Guard here as well
-        const personalityResult = await updatePersonalityAction(companion, [...currentMessages, aiMessage]);
+        const storedCompanionData = localStorage.getItem('altered-self-companion');
+        const latestCompanion: Companion | null = storedCompanionData ? JSON.parse(storedCompanionData) : null;
+        if (!latestCompanion) return;
+
+        const personalityResult = await updatePersonalityAction(latestCompanion, [...currentMessages, aiMessage]);
         if (personalityResult.success && personalityResult.updates) {
           updateCompanionDetails(personalityResult.updates);
         } else if (personalityResult.error) {
