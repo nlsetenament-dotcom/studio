@@ -100,6 +100,8 @@ export function CompanionProvider({ children }: { children: ReactNode }) {
         } else {
             localStorage.removeItem(COMPANION_KEY);
             localStorage.removeItem(MESSAGES_KEY);
+            // When companion is removed, also remove the guide seen flag
+            localStorage.removeItem(GUIDE_KEY);
             setMessages([]);
         }
     } catch (error) {

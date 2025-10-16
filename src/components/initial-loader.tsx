@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCompanion } from '@/hooks/use-companion';
-import { Skeleton } from './ui/skeleton';
 
 export default function InitialLoader() {
   const router = useRouter();
@@ -20,7 +19,7 @@ export default function InitialLoader() {
 
     // Función de limpieza para limpiar el temporizador si el componente se desmonta
     return () => clearTimeout(timer);
-  }, []); // El array de dependencias vacío asegura que esto se ejecute solo una vez
+  }, []);
 
   useEffect(() => {
     // Redirigir solo cuando la carga de datos y el temporizador hayan finalizado
@@ -35,19 +34,20 @@ export default function InitialLoader() {
 
   // Muestra un esqueleto de carga mientras se determina a dónde redirigir o el temporizador está activo.
   return (
-      <div className="flex h-screen w-full flex-col">
-        <div className="flex items-center gap-4 border-b p-4">
-          <Skeleton className="h-12 w-12 rounded-full" />
-          <div className="flex-1 space-y-2">
-            <Skeleton className="h-4 w-32" />
-            <Skeleton className="h-3 w-48" />
-          </div>
+    <div className="flex h-screen w-full flex-col items-center justify-center bg-black">
+        <div className="text-center">
+            <h1 className="text-8xl font-bold tracking-tighter text-white animate-text-glow" style={{ fontFamily: 'serif' }}>
+                NLS
+            </h1>
+            <p className="mt-2 text-lg font-light tracking-[0.4em] text-white/80 animate-pulse-subtle">
+                ENTERTAINMENT
+            </p>
         </div>
-        <div className="flex-1 p-4 space-y-4">
-          <Skeleton className="h-16 w-3/4 rounded-lg" />
-          <Skeleton className="h-16 w-3/4 rounded-lg self-end ml-auto" />
-          <Skeleton className="h-24 w-4/5 rounded-lg" />
+        <div className="absolute bottom-20 flex items-center space-x-2">
+            <span className="h-2 w-2 animate-jump-1 rounded-full bg-white/70" />
+            <span className="h-2 w-2 animate-jump-2 rounded-full bg-white/70" />
+            <span className="h-2 w-2 animate-jump-3 rounded-full bg-white/70" />
         </div>
-      </div>
+    </div>
   );
 }
