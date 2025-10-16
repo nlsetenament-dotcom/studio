@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useRouter } from 'next/navigation';
-import { useTransition } from 'react';
+import { useTransition, useEffect } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -17,6 +17,7 @@ import { createCompanionAction } from '@/lib/actions';
 import { useCompanion } from '@/hooks/use-companion';
 import { Loader2 } from 'lucide-react';
 import { AppTheme, appThemes } from '@/lib/types';
+import { Switch } from './ui/switch';
 
 const formSchema = z.object({
   name: z.string().min(2, 'El nombre debe tener al menos 2 caracteres.').max(50, 'El nombre no puede exceder los 50 caracteres.'),
@@ -45,7 +46,7 @@ const formSchema = z.object({
 export default function CreateCompanionForm() {
   const router = useRouter();
   const { toast } = useToast();
-  const { saveCompanion } = useCompanion();
+  const { saveCompanion, appearance, setAppearance, updateCompanionDetails } = useCompanion();
   const [isPending, startTransition] = useTransition();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -61,6 +62,13 @@ export default function CreateCompanionForm() {
       theme: 'sunset-orange',
     },
   });
+
+  const themeValue = form.watch('theme');
+
+  useEffect(() => {
+    // This is for live theme preview
+    updateCompanionDetails({ theme: themeValue }, true);
+  }, [themeValue, updateCompanionDetails]);
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     startTransition(async () => {
@@ -244,29 +252,48 @@ export default function CreateCompanionForm() {
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="theme"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Tema de la Aplicación</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Selecciona un tema visual" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {Object.entries(appThemes).map(([key, theme]) => (
-                        <SelectItem key={key} value={key}>{theme.name}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormDescription>Elige la paleta de colores para tu experiencia.</FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            
+            <div className="space-y-4 rounded-lg border bg-background/50 p-4">
+              <h3 className="text-lg font-medium">Personalización Visual</h3>
+              <FormField
+                control={form.control}
+                name="theme"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Tema de la Aplicación</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecciona un tema visual" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {Object.entries(appThemes).map(([key, theme]) => (
+                          <SelectItem key={key} value={key}>{theme.name}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormDescription>Elige la paleta de colores para tu experiencia.</FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormItem className="flex flex-row items-center justify-between rounded-lg py-2">
+                <div className="space-y-0.5">
+                  <FormLabel>Modo Oscuro</FormLabel>
+                  <FormDescription>
+                    Disfruta de una interfaz más oscura.
+                  </FormDescription>
+                </div>
+                <FormControl>
+                  <Switch
+                    checked={appearance === 'dark'}
+                    onCheckedChange={(checked) => setAppearance(checked ? 'dark' : 'light')}
+                  />
+                </FormControl>
+              </FormItem>
+            </div>
+            
             <Button type="submit" className="w-full" disabled={isPending}>
               {isPending ? (
                 <>
