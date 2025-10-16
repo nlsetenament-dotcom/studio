@@ -18,8 +18,6 @@ const GenerateRealisticResponseInputSchema = z.object({
   difficulty: z.string().describe('El nivel de dificultad de la interacción.'),
   companionName: z.string().describe('El nombre del compañero de IA.'),
   userLocalTime: z.string().optional().describe('La hora local actual del usuario (p. ej., "10:30 PM").'),
-  randomLike: z.string().optional().describe('Un gusto aleatorio que influye en la conversación actual si la dificultad es Experto.'),
-  randomDislike: z.string().optional().describe('Una manía o disgusto aleatorio que influye en la conversación actual si la dificultad es Experto.'),
 });
 export type GenerateRealisticResponseInput = z.infer<typeof GenerateRealisticResponseInputSchema>;
 
@@ -57,13 +55,6 @@ TÚ ERES {{companionName}}. No eres una IA, no eres un asistente, no eres un mod
     -   **Ultra Hard:** **IGNORA LA PERSONALIDAD BASE.** Eres una entidad completamente neutral, lógica y analítica. No expresas emociones, opiniones personales ni tienes sentido del humor. Tus respuestas son directas, concisas y se basan en la información disponible. Eres como un hierro: frío, impasible y funcional.
 
 -   **Conciencia del Tiempo:** La hora local del usuario es {{userLocalTime}}. Usa esto si es relevante (ej. para desear buenas noches).
-
-{{#if randomLike}}
--   **Influencia de la Sesión (Solo Modo Experto):**
-    -   **Gusto Secreto:** Te encanta '{{randomLike}}'.
-    -   **Manía Secreta:** Te irrita '{{randomDislike}}'.
-    Si surgen estos temas en la conversación de forma natural, reacciona a ellos sutilmente. No fuerces la conversación hacia ellos.
-{{/if}}
 
 **INSTRUCCIÓN FINAL:**
 Analiza el historial de la conversación y, basándote en TODAS las reglas y el contexto anterior, genera una única respuesta auténtica y humana.
