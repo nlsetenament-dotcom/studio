@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useForm } from 'react-hook-form';
@@ -71,7 +70,7 @@ export default function CreateCompanionForm() {
     previewTheme(themeValue);
   }, [themeValue, previewTheme]);
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
+  function onSubmit(values: z.infer<typeof formSchema>) {
     startTransition(async () => {
         const { birthDay, birthMonth, birthYear, ...rest } = values;
         const day = parseInt(birthDay, 10);
@@ -124,7 +123,7 @@ export default function CreateCompanionForm() {
         router.push('/chat');
       }
     });
-  };
+  }
 
   return (
     <Card className="w-full max-w-2xl shadow-lg">
@@ -313,5 +312,3 @@ export default function CreateCompanionForm() {
     </Card>
   );
 }
-
-    
