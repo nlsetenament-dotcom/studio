@@ -1,5 +1,4 @@
 'use client';
-import CreateCompanionForm from "@/components/create-companion-form";
 import { motion } from "framer-motion";
 
 export default function CreateCompanionPage() {
@@ -11,7 +10,10 @@ export default function CreateCompanionPage() {
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.5 }}
         >
-            <CreateCompanionForm />
+            <div className="text-center">
+                <h1 className="text-2xl font-bold">Página de creación en mantenimiento.</h1>
+                <p className="text-muted-foreground">El formulario de creación se está reconstruyendo y el archivo anterior ha sido eliminado.</p>
+            </div>
         </motion.main>
     );
 }
