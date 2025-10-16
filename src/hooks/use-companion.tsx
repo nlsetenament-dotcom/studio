@@ -22,6 +22,7 @@ interface CompanionContextType {
   updateCompanionDetails: (updates: Partial<Companion>, isVolatile?: boolean) => void;
   resetChat: () => void;
   setAppearance: (appearance: Appearance) => void;
+  previewTheme: (themeName: AppTheme) => void;
 }
 
 const CompanionContext = createContext<CompanionContextType | undefined>(undefined);
@@ -87,6 +88,10 @@ export function CompanionProvider({ children }: { children: ReactNode }) {
     } catch (error) {
       console.error('Failed to save appearance to localStorage', error);
     }
+  }, []);
+
+  const previewTheme = useCallback((themeName: AppTheme) => {
+    applyThemeColors(themeName);
   }, []);
 
   const saveCompanion = useCallback((newCompanion: Companion | null) => {
@@ -181,6 +186,7 @@ export function CompanionProvider({ children }: { children: ReactNode }) {
     updateCompanionDetails,
     resetChat,
     setAppearance,
+    previewTheme,
   };
 
   return <CompanionContext.Provider value={value}>{children}</CompanionContext.Provider>;

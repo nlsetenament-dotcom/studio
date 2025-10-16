@@ -46,7 +46,7 @@ const formSchema = z.object({
 export default function CreateCompanionForm() {
   const router = useRouter();
   const { toast } = useToast();
-  const { saveCompanion, appearance, setAppearance, updateCompanionDetails } = useCompanion();
+  const { saveCompanion, appearance, setAppearance, previewTheme } = useCompanion();
   const [isPending, startTransition] = useTransition();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -67,8 +67,8 @@ export default function CreateCompanionForm() {
 
   useEffect(() => {
     // This is for live theme preview
-    updateCompanionDetails({ theme: themeValue }, true);
-  }, [themeValue, updateCompanionDetails]);
+    previewTheme(themeValue);
+  }, [themeValue, previewTheme]);
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     startTransition(async () => {
