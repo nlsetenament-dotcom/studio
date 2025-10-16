@@ -7,6 +7,7 @@ import { Companion, Message, appThemes, AppTheme } from '@/lib/types';
 const COMPANION_KEY = 'altered-self-companion';
 const MESSAGES_KEY = 'altered-self-messages';
 const APPEARANCE_KEY = 'altered-self-appearance';
+const WELCOME_GUIDE_KEY = 'altered-self-has-seen-welcome-guide';
 
 type Appearance = 'light' | 'dark';
 
@@ -99,6 +100,7 @@ export function CompanionProvider({ children }: { children: ReactNode }) {
         } else {
             localStorage.removeItem(COMPANION_KEY);
             localStorage.removeItem(MESSAGES_KEY);
+            localStorage.removeItem(WELCOME_GUIDE_KEY); // Reset welcome guide
             setMessages([]);
         }
     } catch (error) {
