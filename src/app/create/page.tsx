@@ -100,7 +100,7 @@ export default function CreateCompanionForm() {
   }, [appearance, form]);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    setAppearance(values.appearance ? 'dark' : 'light');
+    // Appearance is already set by the switch's onCheckedChange
     
     const formData = new FormData();
 
@@ -319,7 +319,10 @@ export default function CreateCompanionForm() {
                               <FormControl>
                                 <Switch
                                   checked={field.value}
-                                  onCheckedChange={field.onChange}
+                                  onCheckedChange={(checked) => {
+                                      field.onChange(checked);
+                                      setAppearance(checked ? 'dark' : 'light');
+                                  }}
                                 />
                               </FormControl>
                               <Moon className="h-5 w-5 text-muted-foreground" />
