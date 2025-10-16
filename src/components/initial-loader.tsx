@@ -50,7 +50,6 @@ export default function InitialLoader() {
         </div>
          <div className="absolute bottom-10 w-full px-4 text-center text-xs text-white/40 space-y-1 animate-pulse-subtle">
             <p>Luis Bravo, Diego Romero, Carlos Ramires</p>
-            <p>Jesus Manuel, Mario Arcia</p>
         </div>
     </div>
   );
