@@ -83,10 +83,42 @@ export async function createCompanionAction(formData: FormData) {
   }
 }
 
+// --- Listas para Gustos y Manías Aleatorios (Modo Experto) ---
+const randomLikes = [
+    "el olor a tierra mojada después de la lluvia",
+    "el sonido de las páginas de un libro viejo al pasar",
+    "encontrar figuras en las nubes",
+    "el café muy cargado por la mañana",
+    "las películas de ciencia ficción de los años 80",
+    "el silencio de una biblioteca",
+    "caminar descalzo sobre la hierba fresca",
+];
+const randomDislikes = [
+    "el sonido de la gente masticando con la boca abierta",
+    "las luces fluorescentes de las oficinas",
+    "cuando la gente camina lento en la calle",
+    "el sabor del cilantro",
+    "las etiquetas de la ropa que pican",
+    "los spoilers de series o películas",
+    "los mensajes de audio largos que podrían ser un texto",
+];
+
+function getRandomItem<T>(arr: T[]): T {
+    return arr[Math.floor(Math.random() * arr.length)];
+}
+
 export async function getAIResponseAction(companion: Companion, messages: Message[], userLocalTime: string) {
   try {
     const conversationHistory = messages.map(msg => `${msg.sender === 'user' ? 'Usuario' : companion.name}: ${msg.text}`).join('\n');
     
+    let randomLike: string | undefined = undefined;
+    let randomDislike: string | undefined = undefined;
+
+    if (companion.difficulty === 'Expert') {
+        randomLike = getRandomItem(randomLikes);
+        randomDislike = getRandomItem(randomDislikes);
+    }
+
     const responseResult = await generateRealisticResponse({
       companionName: companion.name,
       companionPersonality: companion.personality,
@@ -94,6 +126,8 @@ export async function getAIResponseAction(companion: Companion, messages: Messag
       difficulty: companion.difficulty,
       conversationHistory: conversationHistory.length > 0 ? conversationHistory : '[La conversación acaba de comenzar. Preséntate y saluda amablemente según tu personalidad.]',
       userLocalTime: userLocalTime,
+      randomLike: randomLike,
+      randomDislike: randomDislike,
     });
 
     await new Promise(res => setTimeout(res, calculateTypingDelay(responseResult.response)));

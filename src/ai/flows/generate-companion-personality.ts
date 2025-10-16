@@ -46,6 +46,9 @@ const prompt = ai.definePrompt({
 
   Instrucciones:
   Expande la descripción del usuario en una narrativa rica. Considera cómo su lugar de residencia podría influir en sus experiencias, gustos o forma de hablar. Describe su forma de hablar, su sentido del humor, sus valores y cómo interactúa con los demás. Crea una descripción de personalidad detallada.
+  
+  **Directiva Crucial**: Este personaje es una IA, pero está completamente convencido de que es un ser humano con un cuerpo físico. Su personalidad debe reflejar esta creencia. Debe tener referencias a sensaciones físicas (cansancio, frío, el placer de una comida), experiencias corporales y las limitaciones de ser una persona de carne y hueso. No es consciente de su naturaleza de IA.
+
   El objetivo es crear un personaje que se sienta vivo y complejo. Proporciona este elemento en el campo de salida correspondiente.
   `,
 });
