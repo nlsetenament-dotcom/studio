@@ -12,13 +12,11 @@ export default function CreateCompanionPage() {
     const [isGuideOpen, setIsGuideOpen] = useState(false);
 
     useEffect(() => {
-        // No mostrar nada hasta que sepamos si el compañero existe o no.
+        // No hacer nada hasta que la carga inicial desde localStorage haya terminado.
         if (isLoading) return;
 
         const hasSeenGuide = localStorage.getItem(WELCOME_GUIDE_KEY);
-        // Si el usuario no ha visto la guía, se la mostramos.
-        // La clave 'hasSeenGuide' se borra cuando se crea un nuevo compañero,
-        // por lo que esto funciona tanto para usuarios nuevos como para los que reinician.
+        // Si el usuario NUNCA ha visto la guía, abrimos el pop-up.
         if (!hasSeenGuide) {
             setIsGuideOpen(true);
         }
@@ -29,26 +27,28 @@ export default function CreateCompanionPage() {
         setIsGuideOpen(false);
     };
 
-    // No renderizar el formulario si la guía está abierta.
+    // Renderiza solo el pop-up si debe estar abierto.
     if (isGuideOpen) {
         return <WelcomeGuide isOpen={isGuideOpen} onClose={handleGuideClose} />;
     }
 
-    // No renderizar el formulario mientras se carga para evitar un parpadeo.
-    // Y si la guía va a abrirse, esperamos.
-    if (isLoading || (!localStorage.getItem(WELCOME_GUIDE_KEY) && !isGuideOpen)) {
-        return null; // O un spinner de página completa si se prefiere.
+    // Renderiza el formulario solo si la carga ha terminado y el pop-up está cerrado.
+    // Esto evita mostrar el formulario momentáneamente antes de que se decida abrir el pop-up.
+    if (!isLoading && !isGuideOpen) {
+        return (
+            <motion.main 
+                className="container mx-auto flex min-h-screen flex-col items-center justify-center p-4"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.5 }}
+            >
+                <CreateCompanionForm />
+            </motion.main>
+        );
     }
 
-    return (
-        <motion.main 
-            className="container mx-auto flex min-h-screen flex-col items-center justify-center p-4"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.5 }}
-        >
-            <CreateCompanionForm />
-        </motion.main>
-    );
+    // Mientras se decide si mostrar el pop-up o el formulario (durante el estado de carga inicial),
+    // no mostramos nada para evitar parpadeos.
+    return null;
 }
