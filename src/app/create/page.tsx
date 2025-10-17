@@ -61,12 +61,13 @@ const formSchema = z.object({
   if (isNaN(day) || isNaN(month) || isNaN(year)) return false;
   if (day < 1 || day > 31) return false;
   if (month < 1 || month > 12) return false;
-  if (year < 1900) return false; // Prevent very old dates
+  const currentYear = new Date().getFullYear();
+  if (year < 1920 || year > currentYear) return false;
   const date = new Date(year, month - 1, day);
   return date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day;
 }, {
   message: "La fecha de nacimiento no es válida.",
-  path: ["birthDay"],
+  path: ["birthDay"], // You can also apply this to birthMonth or birthYear
 });
 
 export default function CreateCompanionForm() {
@@ -103,10 +104,14 @@ export default function CreateCompanionForm() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const formData = new FormData();
     
-    Object.entries(values).forEach(([key, value]) => {
-      if (value !== undefined) { // Send appearance as well
-        formData.append(key, value.toString());
-      }
+    // Convert boolean to string for FormData
+    const stringifiedValues = {
+        ...values,
+        appearance: String(values.appearance),
+    };
+
+    Object.entries(stringifiedValues).forEach(([key, value]) => {
+        formData.append(key, value);
     });
 
     const result = await createCompanionAction(formData);

@@ -18,6 +18,7 @@ const createCompanionSchema = z.object({
   hobbies: z.string().min(3).max(200),
   description: z.string().min(10).max(500),
   theme: z.custom<AppTheme>(value => Object.keys(appThemes).includes(value as string)),
+  appearance: z.string(), // 'true' or 'false'
 });
 
 function calculateTypingDelay(text: string): number {
