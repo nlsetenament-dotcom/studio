@@ -4,6 +4,7 @@ import './globals.css';
 import { cn } from '@/lib/utils';
 import { Nunito } from 'next/font/google';
 import { CompanionProvider } from '@/hooks/use-companion';
+import { AnimatePresence, motion } from 'framer-motion';
 
 const nunito = Nunito({
   subsets: ['latin'],
@@ -46,7 +47,9 @@ export default function RootLayout({
           }}
         />
         <CompanionProvider>
-          {children}
+          <AnimatePresence mode="wait" initial={false}>
+            {children}
+          </AnimatePresence>
           <Toaster />
         </CompanionProvider>
       </body>
