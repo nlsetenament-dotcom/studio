@@ -1,0 +1,58 @@
+import type { Metadata } from 'next';
+import { Toaster } from '@/components/ui/toaster';
+import './globals.css';
+import { cn } from '@/lib/utils';
+import { Nunito } from 'next/font/google';
+import { CompanionProvider } from '@/hooks/use-companion';
+import { AnimatePresence, motion } from 'framer-motion';
+
+const nunito = Nunito({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-nunito',
+});
+
+
+export const metadata: Metadata = {
+  manifest: '/manifest.json',
+  title: 'Tu Alter Ego',
+  description: 'Una relación inmersiva y evolutiva con un compañero de IA.',
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html lang="es" suppressHydrationWarning>
+      <body className={cn('font-body antialiased', nunito.variable)}>
+        {/* The script to set dark/light mode is now handled in CompanionProvider, 
+            but this can be kept for the initial non-JS render to avoid flickering. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  const appearance = localStorage.getItem('altered-self-appearance');
+                  const theme = localStorage.getItem('altered-self-theme') || 'sunset-orange';
+                  
+                  if (appearance === 'dark' || (!appearance && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                    document.documentElement.classList.add('dark');
+                  }
+                  document.documentElement.setAttribute('data-theme', theme);
+                } catch (e) {}
+              })();
+            `,
+          }}
+        />
+        <CompanionProvider>
+          <AnimatePresence mode="wait" initial={false}>
+            {children}
+          </AnimatePresence>
+          <Toaster />
+        </CompanionProvider>
+      </body>
+    </html>
+  );
+}

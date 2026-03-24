@@ -1,0 +1,224 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    --primary: 24 9.8% 52.4%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 24 9.8% 52.4%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 240 10% 2.9%;
+    --foreground: 0 0% 98%;
+    --card: 240 3.7% 11.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 2.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 240 5.9% 10%;
+    --secondary: 240 3.7% 11.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 3.7% 11.9%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 240 3.7% 11.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 3.7% 11.9%;
+    --input: 240 3.7% 11.9%;
+    --ring: 217.2 91.2% 59.8%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  /* === THEME DEFINITIONS === */
+  html[data-theme='sunset-orange'] {
+    --primary: 24 9.8% 52.4%;
+    --ring: 24 9.8% 52.4%;
+  }
+  .dark[data-theme='sunset-orange'] {
+    --primary: 24 9.8% 52.4%;
+    --ring: 24 9.8% 52.4%;
+  }
+  html[data-theme='emerald-forest'] {
+    --primary: 142.1 76.2% 36.3%;
+    --ring: 142.1 76.2% 36.3%;
+  }
+  .dark[data-theme='emerald-forest'] {
+    --primary: 142.1 76.2% 36.3%;
+    --ring: 142.1 76.2% 36.3%;
+  }
+  html[data-theme='ocean-blue'] {
+    --primary: 217.2 91.2% 59.8%;
+    --ring: 217.2 91.2% 59.8%;
+  }
+  .dark[data-theme='ocean-blue'] {
+    --primary: 217.2 91.2% 59.8%;
+    --ring: 217.2 91.2% 59.8%;
+  }
+  html[data-theme='royal-purple'] {
+    --primary: 262.1 83.3% 57.8%;
+    --ring: 262.1 83.3% 57.8%;
+  }
+  .dark[data-theme='royal-purple'] {
+    --primary: 262.1 83.3% 57.8%;
+    --ring: 262.1 83.3% 57.8%;
+  }
+  html[data-theme='night-sky'] {
+    --primary: 217.2 91.2% 59.8%;
+    --ring: 217.2 91.2% 59.8%;
+  }
+  .dark[data-theme='night-sky'] {
+    --primary: 217.2 91.2% 59.8%;
+    --ring: 217.2 91.2% 59.8%;
+  }
+  html[data-theme='monochrome-light'] {
+    --primary: 240 10% 3.9%;
+    --ring: 240 10% 3.9%;
+  }
+  .dark[data-theme='monochrome-light'] {
+    /* In dark mode, 'monochrome-light' should still look light */
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+    --card: 240 4.8% 95.9%;
+    --card-foreground: 240 10% 3.9%;
+    --primary: 240 10% 3.9%;
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 10% 3.9%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+  }
+  html[data-theme='monochrome-dark'] {
+    /* In light mode, 'monochrome-dark' should still look dark */
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 240 3.7% 15.9%;
+    --card-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+  }
+  .dark[data-theme='monochrome-dark'] {
+    --primary: 0 0% 98%;
+    --ring: 0 0% 98%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+    transition: color 0.5s ease-in-out, background-color 0.5s ease-in-out, border-color 0.5s ease-in-out;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  @keyframes text-glow {
+    0%, 100% {
+      text-shadow: 0 0 15px hsl(var(--foreground) / 0.5), 0 0 30px hsl(var(--foreground) / 0.3);
+    }
+    50% {
+      text-shadow: 0 0 30px hsl(var(--foreground) / 0.7), 0 0 60px hsl(var(--foreground) / 0.5);
+    }
+  }
+
+  .animate-text-glow {
+    animation: text-glow 4s ease-in-out infinite;
+  }
+  
+  @keyframes jump {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+
+  .animate-jump-1 {
+    animation: jump 1.5s infinite;
+  }
+  .animate-jump-2 {
+    animation: jump 1.5s infinite 0.2s;
+  }
+  .animate-jump-3 {
+    animation: jump 1.5s infinite 0.4s;
+  }
+
+  @keyframes pulse-subtle {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.3;
+    }
+  }
+
+  .animate-pulse-subtle {
+    animation: pulse-subtle 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  @keyframes color-cycle {
+    0%, 100% {
+      color: hsl(var(--foreground));
+    }
+    50% {
+      color: hsl(var(--muted-foreground));
+    }
+  }
+
+  .animate-color-cycle {
+    animation: color-cycle 5s ease-in-out infinite;
+  }
+}
