@@ -1,4 +1,4 @@
-name: 🚀 Build Web + APK
+name:  Build Web + APK
 
 on:
   push:
@@ -11,7 +11,7 @@ jobs:
   # JOB 1: Build Next.js y deploy en Vercel
   # ─────────────────────────────────────────────
   build-web:
-    name: 🌐 Build Web (Next.js)
+    name:  Build Web (Next.js)
     runs-on: ubuntu-latest
 
     steps:
@@ -43,7 +43,7 @@ jobs:
   # JOB 2: Build APK Android con Capacitor
   # ─────────────────────────────────────────────
   build-apk:
-    name: 📱 Build APK (Android)
+    name:  Build APK (Android)
     runs-on: ubuntu-latest
     needs: build-web  # Espera a que el web build pase
 
@@ -86,7 +86,7 @@ jobs:
           chmod +x gradlew
           ./gradlew assembleDebug
 
-      - name: 📦 Subir APK como artefacto
+      - name:  Subir APK como artefacto
         uses: actions/upload-artifact@v4
         with:
           name: nls-companion-debug.apk
@@ -105,7 +105,7 @@ jobs:
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
           STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
 
-      - name: 🚀 Subir APK Release
+      - name:  Subir APK Release
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         uses: actions/upload-artifact@v4
         with:
@@ -117,7 +117,7 @@ jobs:
   # JOB 3: Notificación de resultado
   # ─────────────────────────────────────────────
   notify:
-    name: ✅ Resultado Final
+    name:  Resultado Final
     runs-on: ubuntu-latest
     needs: [build-web, build-apk]
     if: always()
@@ -128,8 +128,8 @@ jobs:
           echo "Web build: ${{ needs.build-web.result }}"
           echo "APK build: ${{ needs.build-apk.result }}"
           if [[ "${{ needs.build-web.result }}" == "success" && "${{ needs.build-apk.result }}" == "success" ]]; then
-            echo "✅ Todo el pipeline pasó exitosamente"
+            echo " Todo el pipeline pasó exitosamente"
           else
-            echo "❌ Hubo errores en el pipeline"
+            echo " Hubo errores en el pipeline"
             exit 1
           fi
